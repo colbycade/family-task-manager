@@ -1,3 +1,3 @@
-# Test B
+# Test C
 
 This is a test.
