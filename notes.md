@@ -1,2 +1,3 @@
-I have previous experience with git but I did learn more about the difference between fetch and checkout.
-I also wasn't sure how to resolve merge conflicts in the command line until this exercise.
+Public Elastic IP for web app: `52.3.100.168`
+### To `ssh` into web server: 
+`ssh -i ~Path/To/Private/Key.pem ubuntu@52.3.100.168`
