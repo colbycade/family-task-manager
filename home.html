@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Home Page</title>
+        <link rel="icon" href="favicon.ico" />
+    </head>
+
+    <body>
+        <header>
+            <h1>Family Tracker</h1>
+            <nav>
+            <menu>
+                <li><a href="index.html">Login</a></li>                
+                <li><a href="home.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <div class="log-out">
+                    <button>Log Out</button>
+                </div>
+            </menu>
+            </nav>
+            <hr>
+        </header>
+
+        <section class="profile">
+            <img src="" alt="Profile Picture">
+            <h2>Name Here</h2>
+            <p>bio here</p>
+        </section>
+        
+        <aside class="task-list">
+            <select>
+                <option value="" selected disabled hidden>Choose a Task List</option>
+                <option value="family">Family To-Do List</option>
+                <option value="my_username">My To-Do List</option>
+                <option value="child1_username">Child 1's To-Do List</option>
+                <!-- More options -->
+            </select>
+        </aside>
+        
+        <main class="chore-list">
+            
+            <h2>Example To-Do List</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Due Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="task1">
+                            <label for="task1">Task Name</label>
+                        </td>
+                        <td>
+                            <label for="task1">Monday, Feb 18th, 2023</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="task2">
+                            <label for="task2">Task Name</label>
+                        </td>
+                        <td>
+                            <label for="task2">Tuesday, Feb 19th, 2023</label>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </main>
+
+        <footer>
+            <hr>
+            <span> Made by Colby Wright</span>
+            <br>
+            <a href="https://github.com/colbycade/startup">GitHub</a>
+        </footer>
+    </body>
+
+    
+</html>
