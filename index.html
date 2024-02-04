@@ -15,51 +15,57 @@
                 <li><a href="index.html">Login</a></li>                
                 <li><a href="home.html">Home</a></li>
                 <li><a href="about.html">About</a></li>
+                <div class="log-out">
+                    <button>Log Out</button>
+                </div>
             </menu>
             </nav>
             <hr>
         </header>
-        <div>
-            <h2>Login</h2>
-            <form>
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-                <button type="submit">Login</button>
-            </form>
-        </div>
 
-        <div>
-            <h2>Join Existing Family</h2>
-            <form>
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-                <br>
-                <label for="familycode">Family Code:</label>
-                <input type="username" id="familycode" name="familycode" required>
-                <button type="submit">Join </button>
-            </form>
-        </div>
-
-        <div>
-            <h2>Create New Family</h2>
-            <form method="get" action="home.html">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-                <button type="submit">Create </button>
-            </form>
-        </div>
-
-        <div>
-            <h3>Family Code?</h3>
-            <p>Ask your parents for the family code to join their family.</p>
-            <p>If you are the parent and have not yet created a family, </p>
-        </div>
+        <main> 
+            <div>
+                <h2>Login</h2>
+                <form method="get" action="home.html">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    <button type="submit">Login</button>
+                </form>
+            </div>
+    
+            <div>
+                <h2>Join Existing Family</h2>
+                <form method="get" action="home.html">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    <br>
+                    <label for="familycode">Family Code:</label>
+                    <input type="username" id="familycode" name="familycode" required>
+                    <button type="submit">Join </button>
+                </form>
+            </div>
+    
+            <div>
+                <h2>Create New Family</h2>
+                <form method="get" action="home.html">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    <button type="submit">Create </button>
+                </form>
+            </div>
+    
+            <div>
+                <h3>Family Code?</h3>
+                <p>Ask your parents for the family code to join your family.<br>
+                    If you are the parent and have not yet created a family, create a username and password, then save the provided code to add family members</p>
+            </div>
+        </main>
 
         <footer>
             <hr>
