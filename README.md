@@ -37,3 +37,18 @@ I am going to use the required technologies in the following ways
 - **DB/Login** - Store users and tasks in database. Register and login users. Credentials securely stored in database. 
 - **WebSocket** - Task list status is updated in real time.
 - **React** - Application ported to use the React web framework.
+
+
+## HTML Deliverable
+
+I created the html structure for each page of the web application:
+- `**Login.html**` - used to authenticate/register users
+  - Input forms for DB/Login
+- `**Home.html**` - used to display and interact with various task lists
+  - display real-time status of task lists with WebSocket
+  - placeholder image for user's profile picture
+  - dropdown to select a specific task list
+  - placeholder table for displaying tasks of selected list from Database
+- `**About.html**` - used to provide information about the web application
+
+I added a consistent navigation menu that links between the pages. The login buttons link to the home page.
