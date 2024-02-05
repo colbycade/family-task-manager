@@ -46,11 +46,13 @@ I created the HTML structure for each page of the web application:
   - Input forms for DB/Login
 - `**Home.html**` - used to display and interact with various task lists
   - display real-time status of task lists with WebSocket
+  - link to 3rd party Calendar API (probably Google) to add tasks to personal calendar
   - placeholder image for user's profile picture
   - dropdown to select a specific task list
   - placeholder table for displaying tasks of selected list from Database
 - `**About.html**` - used to provide information about how to use web application
-- `**Calendar.html**`  - used to display tasks throughout the month using WebSocket data
+- `**Calendar.html**` - used to display tasks throughout the month using WebSocket data
+ - ability to get iCalendar feed to link tasks to personal calendar
 
 I added a consistent navigation menu that links between the pages. The login buttons link to the home page.  
 I added some textual content such as basic instructions for how the app will be used. I also put placeholders for where the WebSocket data will be used to populate the task list tables and calendar display, as well as placeholder login forms for the database data.
