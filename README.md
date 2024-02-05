@@ -51,4 +51,5 @@ I created the HTML structure for each page of the web application:
   - placeholder table for displaying tasks of selected list from Database
 - `**About.html**` - used to provide information about how to use web application
 
-I added a consistent navigation menu that links between the pages. The login buttons link to the home page.
+I added a consistent navigation menu that links between the pages. The login buttons link to the home page.  
+I added some textual content such as basic instructions for how the app will be used. I also put placeholders for where the WebSocket data will be used to populate the task list tables, as well as placeholder login forms for the database data.
