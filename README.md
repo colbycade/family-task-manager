@@ -41,7 +41,7 @@ I am going to use the required technologies in the following ways
 
 ## HTML Deliverable
 
-I created the html structure for each page of the web application:
+I created the HTML structure for each page of the web application:
 - `**Login.html**` - used to authenticate/register users
   - Input forms for DB/Login
 - `**Home.html**` - used to display and interact with various task lists
@@ -49,6 +49,6 @@ I created the html structure for each page of the web application:
   - placeholder image for user's profile picture
   - dropdown to select a specific task list
   - placeholder table for displaying tasks of selected list from Database
-- `**About.html**` - used to provide information about the web application
+- `**About.html**` - used to provide information about how to use web application
 
 I added a consistent navigation menu that links between the pages. The login buttons link to the home page.
