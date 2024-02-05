@@ -5,3 +5,5 @@ The public elastic IP address for our web app is `52.3.100.168`
 The domain name for the website is [familytracker.click](http://familytracker.click).  
 Any subdomains also redirect, such as [example.familytracker.click](http://example.familytracker.click).
 
+### To deploy:
+`./deployFiles.sh -k ~/Desktop/BYU/CS260/wrightsaretough.pem -h familytracker.click -s startup`
