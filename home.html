@@ -6,12 +6,15 @@
         <title>Home Page</title>
         <link rel="icon" href="favicon.ico" />
         <link rel="stylesheet" href="styles.css" />
+        <link rel="stylesheet" href="home.css" />
     </head>
 
     <body>
         <header>
-            <img src="favicon.ico" alt="logo" width="100" height="100">
-            <h1>Family Tracker</h1>
+            <div class="logotitle">
+                <img src="favicon.ico" alt="logo" width="100" height="100">
+                <h1>Family Tracker</h1>
+            </div>
             <nav>
                 <div class="menu">
                     <li><a href="index.html">Login</a></li>                
@@ -24,37 +27,36 @@
                 </div>
             </nav>
         </header>
-
-        <section class="profile">
-            <img src="" alt="Profile Picture">
-            <h2>Name Here</h2>
-            <p>username</p>
+        
+        <main>
+        <section class="sidebar">
+            <div class="profile">
+                <img src="generic_profile.jpeg" alt="Profile Picture">
+                <h2>Name Here</h2>
+                <p>username</p>
+            </div>
+        
+            <div class="task-list">
+                <h2>Your Task Lists</h2>
+                <select>
+                    <option value="" selected disabled hidden>Choose a Task List</option>
+                    <option value="family">Family To-Do List</option>
+                    <option value="my_username">My To-Do List</option>
+                    <option value="child1_username">Child 1's To-Do List</option>
+                    <!-- More options -->
+                </select>
+            </div>
         </section>
-
-        <hr>
         
-        <aside class="task-list">
-            <h2>Your Task Lists</h2>
-            <select>
-                <option value="" selected disabled hidden>Choose a Task List</option>
-                <option value="family">Family To-Do List</option>
-                <option value="my_username">My To-Do List</option>
-                <option value="child1_username">Child 1's To-Do List</option>
-                <!-- More options -->
-            </select>
-        </aside>
-
-        <hr>
-        
-        <main class="chore-list">
-            
-            <h2>Example To-Do List (websocket data)</h2>
-            <h3> (app component/3rd party)</h3>
-            <table>
+        <section class="todolist">
+            <h2>Example To-Do List</h2>
+            <table id="task-list">
                 <thead>
                     <tr>
                         <th>Task</th>
                         <th>Due Date</th>
+                        <th class="add-to-calendar"></th>
+                        <th class="remove-task"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,8 +68,11 @@
                         <td>
                             <label for="task1">Monday, Feb 18th, 2023</label>
                         </td>
-                        <td>
+                        <td class="add-to-calendar">
                             <button>Add to Calendar</button>
+                        </td>
+                        <td class="remove-task">
+                            <button>Remove</button>
                         </td>
                     </tr>
                     <tr>
@@ -78,13 +83,53 @@
                         <td>
                             <label for="task2">Tuesday, Feb 19th, 2023</label>
                         </td>
+                        <td class="add-to-calendar">
+                            <button>Add to Calendar</button>
+                        </td>
+                        <td class="remove-task">
+                            <button>Remove</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="task3">
+                            <label for="task3">Task Name</label>
+                        </td>
+                        <td>
+                            <label for="task3">Wednesday, Feb 20th, 2023</label>
+                        </td>
                         <td>
                             <button>Add to Calendar</button>
                         </td>
+                        <td>
+                            <button>Remove</button>
+                        </td>
                     </tr>
+
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
                 </tbody>
             </table>
-
+        </section>
         </main>
 
         <footer>

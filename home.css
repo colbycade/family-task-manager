@@ -1,0 +1,168 @@
+main {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+/* Sidebar Design */
+
+.profile * {
+    margin: 10px;
+    margin-bottom: 0;
+}
+
+div.profile {
+    border-bottom: 2px solid #2a8668;
+}
+
+div.task-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+div.task-list h2 {
+    text-align: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+
+section.sidebar {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 280px;
+    border-right: 1px solid #ddd;
+    padding: 20px;
+    background-color: #e6ffe6;
+    border: 1px solid #004d00;
+    height: 100%;
+}
+
+section.sidebar .profile {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+section.sidebar .profile img {
+    width: 150px;
+    height: 150px;
+    border-radius: 20%;
+    margin-bottom: 10px;
+}
+
+section.sidebar .profile h2, section.sidebar .profile p {
+    color: #004d00;
+    margin: 3px 0;
+}
+
+section.sidebar .task-list h2 {
+    color: #006600;
+    margin-bottom: 10px;
+}
+
+section.sidebar .task-list select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #e6ffe6;
+}
+
+section.sidebar .task-list select:focus {
+    outline: none;
+    border-color: #004d00;
+}
+
+section.sidebar .task-list select::-ms-expand {
+    display: none;
+}
+
+
+/* Todo List Design */
+
+section.todolist {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+}
+
+section.todolist {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+}
+
+section.todolist h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color:#e16200
+}
+
+#task-list {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+    border: #fd8b33 2px solid;
+}
+
+#task-list th, #task-list td {
+    border: 1px solid #ffcc80;
+    padding: 8px;
+    text-align: left;
+}
+
+#task-list thead {
+    background-color: #ffa500; /* Orange background for the header row */
+    color: white; /* White text color */
+    border:#ff8223 2px solid;
+}
+
+#task-list tbody tr:nth-child(even) {
+    background-color: #fbebd3;
+}
+
+#task-list tbody tr:nth-child(odd) {
+    background-color: #fff5e6;
+}
+
+#task-list tbody tr:hover {
+    background-color: #ffcc80;
+}
+
+#task-list tr {
+    height: 40px;
+}
+
+#task-list td {
+    text-align: center;
+    white-space: nowrap;
+    padding: 8px;
+}
+
+#task-list button {
+    padding: 5px 10px;
+    margin: 2px;
+    cursor: pointer;
+    border: none;
+    background-color: #ff8c00;
+    color: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+#task-list button:hover {
+    background-color: #ff7000; /* Slightly darker orange on hover */
+}
