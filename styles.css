@@ -57,15 +57,17 @@ nav .menu {
 
 nav a {
     text-decoration: none;
-    color: white;
+    color: #354bf0;
     padding: 10px 15px;
     margin: 0 10px;
     border-radius: 10px;
+    background-color:#F0F0F0;
     transition: background-color 0.3s;
 }
 
 nav a:hover {
-    background-color: #555;
+    background-color: #384dea;
+    color: white;
 }
 
 nav .log-out {
@@ -74,7 +76,7 @@ nav .log-out {
 }
 
 nav .log-out button {
-    background-color: #364cf4;
+    background-color: #2a41f2;
     color: white;
     padding: 5px 15px;
     border: none;
@@ -83,7 +85,7 @@ nav .log-out button {
 }
 
 nav .log-out button:hover {
-    background-color: #2a41f2; /* Slightly darker on hover */
+    background-color: #1a33ef; /* Slightly darker on hover */
 }
 
 h1, h2, h3 {
