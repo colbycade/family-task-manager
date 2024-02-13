@@ -1,0 +1,24 @@
+main {
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+}
+
+h2 {
+    color:#ff1493;
+    margin: 2px;
+}
+
+#ical {
+    margin: 10px auto;
+    padding: 5px 20px;
+    background-color: #ff69b4;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#ical:hover {
+    background-color: #ff1493;
+}
