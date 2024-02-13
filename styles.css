@@ -31,6 +31,7 @@ footer {
 main {
     flex-grow: 1;
     padding: 20px;
+    background-color: #FFF0F5;
 }
 
 header h1 {
@@ -41,7 +42,7 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #333;
+    background-color: #4d4d4d;
     padding: 10px 20px;
     border-color: white;
     border-style: solid;
@@ -89,7 +90,7 @@ nav .log-out button:hover {
 }
 
 h1, h2, h3 {
-    color: #3f3f3f;
+    color: #ff1493;
 }
 
 h3 {
@@ -99,6 +100,7 @@ h3 {
 p, li {
     line-height: 1.6;
     margin-top: 5px;
+    color:#ff69b4
 }
 
 button {
