@@ -20,7 +20,7 @@ header, footer {
 }
 
 header {
-    padding: 10px;
+    padding: 10px 0px;
 }
 
 footer {
@@ -40,7 +40,6 @@ header h1 {
 
 nav {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     background-color: #4d4d4d;
     padding: 10px 20px;
@@ -52,8 +51,13 @@ nav {
 nav .menu {
     display: flex;
     justify-content: center;
+    align-items: center;
     flex-grow: 1;
     list-style: none;
+}
+
+nav .menu li {
+    margin: 5px;
 }
 
 nav a {
@@ -66,7 +70,7 @@ nav a {
     transition: background-color 0.3s;
 }
 
-nav a:hover {
+nav a:hover, nav a.current-page {
     background-color: #384dea;
     color: white;
 }
