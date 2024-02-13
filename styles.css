@@ -1,15 +1,36 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #dfdfdf;
+    display:flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
 header, footer {
     background-color: #333;
     color: white;
     text-align: center;
-    padding: 1rem 0;
+    flex-grow: 0;
+}
+
+header {
+    padding: 10px;
+}
+
+footer {
+    padding: 0px;
+    padding-bottom: 5px;
+}
+
+main {
+    flex-grow: 1;
+    padding: 20px;
 }
 
 header h1 {
@@ -49,10 +70,11 @@ nav a:hover {
 
 nav .log-out {
     margin-left: auto;
+    flex-grow: 0;
 }
 
 nav .log-out button {
-    background-color: #f44336;
+    background-color: #364cf4;
     color: white;
     padding: 5px 15px;
     border: none;
@@ -61,11 +83,15 @@ nav .log-out button {
 }
 
 nav .log-out button:hover {
-    background-color: #d32f2f; /* Slightly darker on hover */
+    background-color: #2a41f2; /* Slightly darker on hover */
 }
 
 h1, h2, h3 {
     color: #3f3f3f;
+}
+
+h3 {
+    margin: 5px;
 }
 
 p, li {
@@ -79,4 +105,17 @@ button {
 
 footer a {
     color: #368eed;
+}
+
+.logotitle {
+    display: flex;
+    direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.logotitle img {
+    width: 70px;
+    height: 70px;
+    margin-right: 20px;
 }
