@@ -22,3 +22,8 @@ h2 {
 #ical:hover {
     background-color: #473be6;
 }
+
+
+.calendar {
+    border: #2917f1 2px solid;
+}
