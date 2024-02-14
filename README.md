@@ -56,3 +56,13 @@ I created the HTML structure for each page of the web application:
 
 I added a consistent navigation menu that links between the pages. The login buttons link to the home page.  
 I added some textual content such as basic instructions for how the app will be used. I also put placeholders for where the WebSocket data will be used to populate the task list tables and calendar display, as well as placeholder login forms for the database data.
+
+## CSS Deliverable
+
+I added CSS styling to the web application:
+- **Header, footer, and main content body**
+- **Navigation elements** - dynamicically-colored buttons
+- **Responsive to window resizing** - Profile sidebar of home page is hidden when screen is too small
+- **Application elements** - Used good contrast, followed color scheme of logo
+- **Application text content** - Consistent fonts
+- **Application images** - Profile image and logo
