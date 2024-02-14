@@ -196,6 +196,11 @@ section.todolist {
         font-size: 90%;
     }
 
+    section.todolist {
+        padding:0;
+    }
+    
+
     /* selecting task will give popup option to add to calendar or remove */
     .add-to-calendar, .remove-task {
         display: none;
