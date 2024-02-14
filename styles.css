@@ -81,7 +81,7 @@ nav .log-out {
 }
 
 nav .log-out button {
-    background-color: #2a41f2;
+    background-color: #0b26ee;
     color: white;
     padding: 5px 15px;
     border: none;
@@ -90,7 +90,7 @@ nav .log-out button {
 }
 
 nav .log-out button:hover {
-    background-color: #1a33ef; /* Slightly darker on hover */
+    background-color: #0015b6; /* Slightly darker on hover */
 }
 
 h1, h2, h3 {
@@ -128,8 +128,21 @@ footer a {
     margin-right: 20px;
 }
 
+form button {
+    background-color: #ff69b4;
+    color: white;
+    padding: 5px 15px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+form button:hover {
+    background-color: #ff43a1; /* Slightly darker on hover */
+}
+
 /* Adjust spacing for mobile */
-@media screen and (max-width: 768px) {
+@media (max-width: 810px) {
     header, nav, .logotitle, .menu, .log-out {
         display: block;
         text-align: center;
@@ -147,4 +160,13 @@ footer a {
         display: block;
         margin: 5px;
     }
-}
+
+    form label, form input, form button {
+        display: block;
+    }
+
+    form input {
+        margin-bottom: 10px;
+    }
+    }
+
