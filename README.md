@@ -62,7 +62,7 @@ I added some textual content such as basic instructions for how the app will be 
 I added CSS styling to the web application:
 - **Header, footer, and main content body**
 - **Navigation elements** - dynamicically-colored buttons
-- **Responsive to window resizing** - Profile sidebar of home page is hidden when screen is too small
+- **Responsive to window resizing** - Profile sidebar of home page is hidden when screen is too small; task list and other content adjusts for small screen size
 - **Application elements** - Used good contrast, followed color scheme of logo
 - **Application text content** - Consistent fonts
 - **Application images** - Profile image and logo
