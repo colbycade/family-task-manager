@@ -127,3 +127,24 @@ footer a {
     height: 70px;
     margin-right: 20px;
 }
+
+/* Adjust spacing for mobile */
+@media screen and (max-width: 768px) {
+    header, nav, .logotitle, .menu, .log-out {
+        display: block;
+        text-align: center;
+    }
+
+    nav .menu, nav .log-out {
+        padding: 0;
+    }
+
+    nav .menu li, nav .log-out button {
+        margin: 10px 0;
+    }
+
+    nav a {
+        display: block;
+        margin: 5px;
+    }
+}
