@@ -170,3 +170,10 @@ form button:hover {
     }
     }
 
+#login-form label {
+    color:#ff69b4;
+}
+
+#login-form form input {
+    border:#ff43a18d 1px solid;
+}
