@@ -44,21 +44,21 @@ section.sidebar {
 
 section.sidebar .profile {
     text-align: center;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #ddd;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 section.sidebar .profile img {
     width: 150px;
     height: 150px;
     border-radius: 20%;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
-section.sidebar .profile h2, section.sidebar .profile p {
+section.sidebar .profile p {
     color: #004d00;
-    margin: 3px 0;
+    margin: 0px 0;
 }
 
 section.sidebar .task-lists h2 {
@@ -127,8 +127,8 @@ section.todolist {
 }
 
 #task-list thead {
-    background-color: #ffa500; /* Orange background for the header row */
-    color: white; /* White text color */
+    background-color: #ffa500; 
+    color: white; 
     border:#ff8223 2px solid;
 }
 
