@@ -5,7 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Login Page</title>
         <link rel="icon" href="favicon.ico" />
+        
         <link rel="stylesheet" href="styles.css" />
+        <script src="login.js"></script>
     </head>
 
     <body>
@@ -30,32 +32,32 @@
         <main> 
             <div id="login-form">
                 <h2>Login</h2>
-                <form method="get" action="home.html">
+                <form method="get">
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username" required>
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" required>
-                    <button type="submit">Login</button>
+                    <button type="submit" onclick="return login(this.form)">Login</button>
                 </form>
 
                 <h2>Join Existing Family</h2>
-                <form method="get" action="home.html">
+                <form method="get">
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username" required>
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" required>
                     <label for="familycode">Family Code:</label>
                     <input type="username" id="familycode" name="familycode" required>
-                    <button type="submit">Join </button>
+                    <button type="submit" onclick="return login(this.form)">Join </button>
                 </form>
 
                 <h2>Create New Family</h2>
-                <form method="get" action="home.html">
+                <form method="get">
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username" required>
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" required>
-                    <button type="submit">Create </button>
+                    <button type="submit" onclick="return login(this.form)">Create </button>
                 </form>
                 <br>
             </div>
