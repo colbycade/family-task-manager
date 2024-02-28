@@ -19,9 +19,8 @@ function saveProfilePic() {
             var reader = new FileReader();
             
             reader.onload = function(e) {
-                // Save the Base64 string to local storage
                 localStorage.setItem('profilePic', e.target.result);
-                displayProfilePic(); // Update the profile picture display
+                displayProfilePic();
             };
             
             reader.readAsDataURL(event.target.files[0]);
@@ -44,6 +43,53 @@ displayProfilePic();
 
 // TASK LIST
 
+
+function initializeTaskLists(userFamily) {
+    userFamily.forEach(member => {
+        if (!localStorage.getItem(member)) {
+            localStorage.setItem(member, JSON.stringify([])); // Initialize with an empty array
+        }
+        const dropdownEl = document.getElementById('task-list-dropdown');
+        dropdownEl.innerHTML += `<option value="${member}">${member}'s To-Do List</option>`;
+
+    });
+}
+
+// for now just use example, but after implementing database we will keep track of a user and their family
+exampleFamilyLists = ['my_username', 'Sally', 'Bobby']
+initializeTaskLists(exampleFamilyLists); 
+
+
+function retrieveTaskList(taskListName) {
+    const selectedList = document.querySelector('.task-list-dropdown').value;
+    const tbody = document.getElementById('task-list').querySelector('tbody');
+    tbody.innerHTML = ''; // Clear existing rows
+    const tasks = JSON.parse(localStorage.getItem(selectedList)) || [];
+
+    tasks.forEach((task, index) => {
+        const newRow = tbody.insertRow();
+        
+        const taskCell = newRow.insertCell(0);
+        taskCell.textContent = task.name;
+        
+        const dateCell = newRow.insertCell(1);
+        dateCell.textContent = task.dueDate;
+        
+        const addToCalendarCell = newRow.insertCell(2);
+        addToCalendarCell.className = 'add-to-calendar';
+        addToCalendarCell.innerHTML = '<button>Add to Calendar</button>';
+        
+        const removeTaskCell = newRow.insertCell(3);
+        removeTaskCell.className = 'remove-task';
+        removeTaskCell.innerHTML = `<button onclick="removeTask(this, '${selectedList}', ${index})">Remove</button>`;
+    });
+}
+
+function displayTaskList(taskList) {
+
+}
+
+
 function removeTask(button) {
     button.closest('tr').remove();
 }
@@ -52,10 +98,10 @@ function addTask() {
     const taskName = document.getElementById('new-task-name').value;
     const taskDueDate = document.getElementById('new-task-date').value;
 
-    // if (!taskName || !taskDueDate) {
-    //     alert('Please fill in all fields.');
-    //     return;
-    // }
+    if (!taskName || !taskDueDate) {
+        alert('Please fill in all fields.');
+        return;
+    }
 
     const tbody = document.getElementById('task-list').querySelector('tbody');
     const newRow = tbody.insertRow(tbody.rows.length - 1);
@@ -79,6 +125,7 @@ function addTask() {
 }
 
 
+
 // WEB SOCKET Live Family Event Log
 // will log when family members complete a task
 
@@ -86,14 +133,13 @@ function addTask() {
 setInterval(() => {
     [familyMember, task] = getRandomEvent();
     const eventLog = document.querySelector('#events');
-    eventLog.innerHTML =
+    eventLog.innerHTML +=
         `<div class="event">
             <span class="event-action"> 
                 <span class="family-member">${familyMember}</span> completed: 
             </span>
             <span class="task-name">${task}</span>
         </div>` 
-        + eventLog.innerHTML;
   }, 5000);
 
 function getRandomEvent() {
