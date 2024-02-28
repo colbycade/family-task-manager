@@ -1,24 +1,66 @@
-function login(form) {
-    event.preventDefault(); // Prevent the form from submitting unti we implement database stuff
-    
-    const username = form.username.value;
-    localStorage.setItem("userName", username);
+function login() {
+    const username = document.querySelector("#login-username").value;
+    const password = document.getElementById('login-password').value;
+
+    if (!username || !password) {
+        alert('All fields are required.');
+        return; 
+    }
+
+    localStorage.setItem("username", username);
     window.location.href = "home.html";
 }
 
-function joinFamily(form) {
-    event.preventDefault();
 
-    const username = form.username.value;
-    const familyCode = form.familycode.value;
-    localStorage.setItem("userName", username);
+function joinFamily() {
+    const username = document.getElementById("join-username").value;
+    const password = document.getElementById("join-password").value;
+    const familyCode = document.getElementById("join-familycode").value;
+
+    if (!username || !password || !familyCode) {
+        alert('All fields are required.');
+        return;
+    }    
+    
+    localStorage.setItem("username", username);
     window.location.href = "home.html";
 }
 
-function createFamily(form) {
-    event.preventDefault();
-    
-    const username = form.username.value;
-    localStorage.setItem("userName", username);
+function createFamily() {
+    const username = document.getElementById("create-username").value;
+    const password = document.getElementById("create-password").value;
+
+    if (!username || !password) {
+        alert('Username and password are required.');
+        return;
+    }
+
+    localStorage.setItem("username", username);
+    const familyCode = generateUniqueCode();
+    localStorage.setItem("familyCode", familyCode);
     window.location.href = "home.html";
+}
+
+function generateUniqueCode() {
+    let code = generateRandomCode();
+    while (!checkUniqueCode(code)) {
+        code = generateRandomCode();
+    }
+    return code;
+}
+
+function generateRandomCode() {
+    length = 8
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
+function checkUniqueCode(code) {
+    // Check if code has already been used in the database
+    return true;
 }
