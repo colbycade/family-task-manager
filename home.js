@@ -42,7 +42,6 @@ displayUserInfo();
 displayProfilePic();
 
 
-
 // TASK LIST
 
 function removeTask(button) {
@@ -78,3 +77,37 @@ function addTask() {
     document.getElementById('new-task-name').value = '';
     document.getElementById('new-task-date').value = '';
 }
+
+
+// WEB SOCKET Live Family Event Log
+// will log when family members complete a task
+
+// Simulate event messages that will come over WebSocket
+setInterval(() => {
+    [familyMember, task] = getRandomEvent();
+    const eventLog = document.querySelector('#events');
+    eventLog.innerHTML =
+        `<div class="event">
+        <span class="family-member">${familyMember}</span> completed:
+        <span class="task-name">${task}</span>
+        </div>` 
+        + eventLog.innerHTML;
+  }, 5000);
+
+function getRandomEvent() {
+    const familyMembers = ["Eich", "Turing", "Lovelace", "Hopper", "Babbage"];
+    const tasks = [
+        "clean the kitchen", "take out the trash", 
+        "feed the dog", "do the laundry", "wash the car",
+        "solve world hunger", "write a compiler",
+        "take vitamins", "do 100 pushups", "read a book"
+    ];
+    const task = this.getRandomElement(tasks);
+    const familyMember = this.getRandomElement(familyMembers);
+    return [familyMember, task];
+    }
+
+function getRandomElement(elements) {
+    const randomIndex = Math.floor(Math.random() * elements.length);
+    return elements[randomIndex];
+    }

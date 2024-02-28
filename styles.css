@@ -142,7 +142,7 @@ footer a {
 }
 
 /* Adjust spacing for mobile */
-@media (max-width: 810px) {
+@media (max-width: 1000px) {
     header, nav, .logotitle, .menu, .log-out {
         display: block;
         text-align: center;

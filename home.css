@@ -10,22 +10,27 @@ div.profile {
     border-bottom: 2px solid #2a8668;
 }
 
-div.task-lists {
+div#task-lists {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
 }
 
-div.task-lists h2 {
+#task-lists h2, #event-log h2 {
     text-align: center;
     margin-top: 5px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    color: #006600;
+}
+
+#event-log h2 {
+    margin-top: 20px;
 }
 
 
 section.sidebar {
-    flex-basis: 350px;
+    flex-basis: 450px;
     padding: 10px;
     margin: 15px;
     background-color: #e6ffe6;
@@ -45,7 +50,7 @@ section.sidebar .profile {
     display: inline-block;
     padding: 10px 10px;
     margin: 5px;
-    background-color: #006600; /* Bootstrap primary color */
+    background-color: #006600;
     color: white;
     border-radius: 5px;
     cursor: pointer;
@@ -77,11 +82,6 @@ section.sidebar .profile .userDisplay {
     font-weight: bold;
 }
 
-section.sidebar .task-lists h2 {
-    color: #006600;
-    margin-bottom: 10px;
-}
-
 section.sidebar .task-list-dropdown {
     width: 100%;
     padding: 8px;
@@ -91,13 +91,21 @@ section.sidebar .task-list-dropdown {
     font-size: 90%;
 }
 
-section.sidebar .task-lists select:focus {
-    outline: none;
-    border-color: #004d00;
+/* Event Log Design */
+
+#event-log .event {
+    color: #004d00;
 }
 
-section.sidebar .task-lists select::-ms-expand {
-    display: none;
+#event-log .family-member {
+    font-weight: bold;
+    color: #004d00;
+}
+
+#event-log .task-name {
+    color: #2cb02c;
+    font-style: italic;
+    font-size: medium;
 }
 
 
@@ -158,6 +166,7 @@ section.todolist {
     padding: 5px 10px;
     margin: 2px;
     width: 80%;
+    max-width: 175px;
     cursor: pointer;
     border: none;
     background-color: #ff8c00;
@@ -172,14 +181,7 @@ section.todolist {
 
 /* Form for adding tasks */
 
-#task-list input[type="text"], #task-list input[type="date"] {
-    width: 100%;
-    border: 1px solid #ffcc80;
-    padding: 5px;
-    border-radius: 4px;
-}
-
-#task-list input[type="text"], #task-list input[type="date"] {
+#task-list input {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -204,7 +206,7 @@ section.todolist {
 }
 
 
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
     section.sidebar {
         display: none; /* hide the sidebar on small screens */
     }

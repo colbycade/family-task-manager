@@ -33,6 +33,7 @@
         <section class="sidebar">
             <div class="profile">
                 <img id="profilePic" src="generic_profile.jpeg" alt="Profile Picture">
+                <br>
                 <label for="profilePicInput" class="fileInputLabel">Choose a profile picture</label>
                 <input type="file" id="profilePicInput" accept="image/*" style="display: none;">
                 <div id="userInfo">
@@ -43,7 +44,7 @@
             </div>
             
         
-            <div class="task-lists">
+            <div id="task-lists">
                 <h2>Your Task Lists</h2>
                 <select class="task-list-dropdown">
                     <option value="" selected disabled hidden>Choose a Task List</option>
@@ -52,6 +53,20 @@
                     <option value="child1_username">Child 1's To-Do List</option>
                     <!-- More options -->
                 </select>
+            </div>
+
+            <div id="event-log">
+                <h2>Event Log</h2>
+                <div id="events">
+                    <div class="event">
+                        <span class="family-member">Bob</span> completed: 
+                        <span class="task-name">take out the trash</span>
+                    </div>
+                    <div class="event">
+                        <span class="family-member">Tim</span> completed: 
+                        <span class="task-name">clean the kitchen</span>
+                    </div>
+                </div>
             </div>
         </section>
         
