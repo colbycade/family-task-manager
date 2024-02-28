@@ -88,7 +88,7 @@
                             <button>Add to Calendar</button>
                         </td>
                         <td class="remove-task">
-                            <button>Remove</button>
+                            <button onclick="removeTask(this)">Remove</button>
                         </td>
                     </tr>
                     <tr>
@@ -102,7 +102,7 @@
                             <button>Add to Calendar</button>
                         </td>
                         <td class="remove-task">
-                            <button>Remove</button>
+                            <button onclick="removeTask(this)">Remove</button>
                         </td>
                     </tr>
                     <tr>
@@ -116,7 +116,7 @@
                             <button>Add to Calendar</button>
                         </td>
                         <td class="remove-task">
-                            <button>Remove</button>
+                            <button onclick="removeTask(this)">Remove</button>
                         </td>
                     </tr>
                     
@@ -129,7 +129,7 @@
                             <input type="date" id="new-task-date" name="taskDate" required>
                         </td>
                         <td colspan="2">
-                            <button type="button" onclick="addTask()">Add Task</button>
+                            <button type="button" onclick="addTask()" id="add-task-button">Add Task</button>
                         </td>
                     </tr>
 
