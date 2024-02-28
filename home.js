@@ -44,11 +44,12 @@ displayProfilePic();
 // TASK LIST
 
 // for now just use example family, but after implementing database we will keep track of a user and their family
-const exampleFamilyTaskList = [{name: "Take Sally to School", dueDate: "2024-02-29"}, { name: "Clean the kitchen", dueDate: "" },
-{ name: "Take out the trash", dueDate: "2024-03-02" }];
-const exampleMyTaskList = [{ name: "Buy groceries", dueDate: "2024-03-01" },
-{ name: "Doctor's appointment", dueDate: "2024-03-05" }];
-const exampleJillTaskList = [{ name: "Feed the dog", dueDate: "2024-03-01" }]
+const exampleFamilyTaskList = [{name: "Take Sally to School", dueDate: "2024-02-29", completed: true }, 
+{ name: "Clean the kitchen", dueDate: "", completed: false },
+{ name: "Take out the trash", dueDate: "2024-03-02", completed: false}];
+const exampleMyTaskList = [{ name: "Buy groceries", dueDate: "2024-03-01", completed: false },
+{ name: "Doctor's appointment", dueDate: "2024-03-05", completed: false }];
+const exampleJillTaskList = [{ name: "Feed the dog", dueDate: "2024-03-01", completed: false }]
 localStorage.setItem('family', JSON.stringify(exampleFamilyTaskList));
 localStorage.setItem('user', JSON.stringify(exampleMyTaskList));
 localStorage.setItem('Jill', JSON.stringify(exampleJillTaskList));
@@ -82,27 +83,44 @@ function initializeTaskLists(userFamily) {
 
 function loadSelectedTaskList() {
     const selectedList = document.getElementById('task-list-dropdown').value;
-    const tbody = document.getElementById('task-list').querySelector('tbody');
+    const tbody = document.getElementById('task-list-data');
     tbody.innerHTML = ''; // Clear existing rows
     const taskList = JSON.parse(localStorage.getItem(selectedList)) || [];
     taskList.forEach((task, index) => {
-        const newRow = tbody.insertRow(tbody.rows.length - 1);
+        const newRow = tbody.insertRow();
         
-        const taskCell = newRow.insertCell(0);
+        if (task.completed) {
+            newRow.classList.add('completed-task');
+        }
+        
+        const completeTaskCell = newRow.insertCell(0);
+        completeTaskCell.innerHTML = `<span class="checkbox ${task.completed ? 'completed' : ''}" 
+            onclick="toggleTaskCompletion('${selectedList}', ${index})"></span>`;
+
+        const taskCell = newRow.insertCell(1);
         taskCell.textContent = task.name;
         
-        const dateCell = newRow.insertCell(1);
+        const dateCell = newRow.insertCell(2);
         dateCell.textContent = task.dueDate;
         
-        const addToCalendarCell = newRow.insertCell(2);
+        const addToCalendarCell = newRow.insertCell(3);
         addToCalendarCell.className = 'add-to-calendar';
         addToCalendarCell.innerHTML = '<button>Add to Calendar</button>';
         
-        const removeTaskCell = newRow.insertCell(3);
+        const removeTaskCell = newRow.insertCell(4);
         removeTaskCell.className = 'remove-task';
         removeTaskCell.innerHTML = `<button onclick="removeTask(this, '${selectedList}', ${index})">Remove</button>`;
     });
 }
+
+function toggleTaskCompletion(listName, taskIndex, checkBoxEl) {
+    const tasks = JSON.parse(localStorage.getItem(listName));
+    tasks[taskIndex].completed = !tasks[taskIndex].completed;
+    localStorage.setItem(listName, JSON.stringify(tasks));
+
+    loadSelectedTaskList();
+}
+
 
 
 function removeTask(button, listName, taskIndex) {
@@ -135,6 +153,30 @@ function addTask() {
 }
 
 
+function sortByDate() {
+    const tableBody = document.getElementById('task-list-data');
+    const rows = Array.from(tableBody.rows);
+    if (!rows) return;
+
+    // Determine the current sorting direction
+    const isAscending = tableBody.getAttribute('data-sort-ascending') === 'true';
+    
+    rows.sort((a, b) => {
+        const dateA = a.cells[1].textContent ? new Date(a.cells[1].textContent) : new Date(0);
+        const dateB = b.cells[1].textContent ? new Date(b.cells[1].textContent) : new Date(0);
+        
+        return isAscending ? dateA - dateB : dateB - dateA;
+    });
+
+    // Re-append rows in sorted order
+    rows.forEach(row => tableBody.appendChild(row));
+
+    // Toggle the sorting direction for the next click
+    tableBody.setAttribute('data-sort-ascending', !isAscending);
+}
+
+document.getElementById('task-date-header').addEventListener('click', sortByDate);
+
 
 // WEB SOCKET Live Family Event Log
 // will log when family members complete a task
@@ -150,7 +192,7 @@ setInterval(() => {
             </span>
             <span class="task-name">${task}</span>
         </div>` 
-  }, 5000);
+  }, 50000);
 
 function getRandomEvent() {
     const familyMembers = ["Eich", "Turing", "Lovelace", "Hopper", "Babbage"];

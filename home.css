@@ -185,8 +185,23 @@ section.todolist {
     background-color: #ffd597;
 }
 
+#task-list tfoot tr {
+    background-color: #ffa500;
+}
+
+#task-list tbody tr.completed-task {
+    text-decoration: line-through;
+    color: #986903da;
+    background-color: #e56b00c7;
+}
+
+#task-list tbody tr.completed-task td {
+    color: #fcf5d9;
+}
+
+
 /* Buttons */
-#task-list button, #add-task-form button, #add-task-row button {
+#task-list button {
     padding: 5px 10px;
     margin: 2px;
     width: 80%;
@@ -199,9 +214,43 @@ section.todolist {
     transition: background-color 0.3s ease;
 }
 
-#task-list button:hover, #add-task-form button:hover {
+#task-list button:hover {
     background-color: #ff7000;
 }
+
+#add-task-form button {
+    background-color: #ffefd7;
+    color: #ff7000;
+    border: 3px solid #ff7000;
+    font-weight: bold;
+    font-size: large;
+}
+
+#add-task-form button:hover {
+    background-color: #ff7000;
+}
+
+.checkbox {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    background-color: #f0f0f0; 
+    border: 1px solid #dcdcdc; 
+    text-align: center;
+}
+
+.completed {
+    font-size: 24px;
+    color: e56b00c7;
+    background-color: #fa7500c7;
+}
+
+.checkbox.completed::before {
+    content: "\2713"; /* add checkmark */
+}
+
+
 
 /* Form for adding tasks */
 
