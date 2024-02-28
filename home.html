@@ -8,7 +8,6 @@
 
         <link rel="stylesheet" href="styles.css" />
         <link rel="stylesheet" href="home.css" />
-        <script src="tasklists.js"></script>
     </head>
 
     <body>
@@ -33,9 +32,16 @@
         <main>
         <section class="sidebar">
             <div class="profile">
-                <img src="generic_profile.jpeg" alt="Profile Picture">
-                <p id="usernameDisplay"> username</p>
+                <img id="profilePic" src="generic_profile.jpeg" alt="Profile Picture">
+                <label for="profilePicInput" class="fileInputLabel">Choose a profile picture</label>
+                <input type="file" id="profilePicInput" accept="image/*" style="display: none;">
+                <div id="userInfo">
+                    Username: <span class="userDisplay" id="usernameDisplay"></span>
+                    <br>
+                    Family Code: <span class="userDisplay" id="familyCodeDisplay"></span>
+                </div>
             </div>
+            
         
             <div class="task-lists">
                 <h2>Your Task Lists</h2>
@@ -64,8 +70,8 @@
             <table id="task-list">
                 <thead>
                     <tr>
-                        <th>Task</th>
-                        <th>Due Date</th>
+                        <th class="task">Task</th>
+                        <th class="task-date">Due Date</th>
                         <th class="add-to-calendar"></th>
                         <th class="remove-task"></th>
                     </tr>
@@ -77,7 +83,7 @@
                             <label for="task1">Task Name</label>
                         </td>
                         <td>
-                            <label for="task1">Monday, Feb 18th, 2023</label>
+                            Monday, Feb 18th, 2023
                         </td>
                         <td class="add-to-calendar">
                             <button>Add to Calendar</button>
@@ -92,7 +98,7 @@
                             <label for="task2">Task Name</label>
                         </td>
                         <td>
-                            <label for="task2">Tuesday, Feb 19th, 2023</label>
+                            Tuesday, Feb 19th, 2023
                         </td>
                         <td class="add-to-calendar">
                             <button>Add to Calendar</button>
@@ -107,7 +113,7 @@
                             <label for="task3">Task Name</label>
                         </td>
                         <td>
-                            <label for="task3">Wednesday, Feb 20th, 2023</label>
+                            Wednesday, Feb 20th, 2023
                         </td>
                         <td class="add-to-calendar">
                             <button>Add to Calendar</button>
@@ -161,6 +167,8 @@
             <br>
             <a href="https://github.com/colbycade/startup">GitHub</a>
         </footer>
+
+        <script src="home.js"></script>
     </body>
 
     
