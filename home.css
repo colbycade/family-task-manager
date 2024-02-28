@@ -41,12 +41,12 @@ div#task-lists {
 
 
 section.sidebar {
-    flex-basis: 450px;
+    flex-basis: 500px;
     padding: 10px;
     margin: 15px;
     background-color: #e6ffe6;
-    border: 1px solid #004d00;
     height: calc(100% - 30px); /* Adjust based on total vertical margins */
+    flex: 2.5;
 }
 
 section.sidebar .profile {
@@ -104,19 +104,31 @@ section.sidebar .task-list-dropdown {
 
 /* Event Log Design */
 
+#events {
+    padding: 3px;
+    margin-left: 2px;
+}
+
 #event-log .event {
+    display: flex;
+    flex-direction: row;
+    margin-top: 3px;
+}
+
+#event-log .event-action {
     color: #004d00;
+    width: 190px;
 }
 
 #event-log .family-member {
     font-weight: bold;
-    color: #004d00;
 }
 
 #event-log .task-name {
     color: #2cb02c;
     font-style: italic;
     font-size: medium;
+
 }
 
 
@@ -128,6 +140,7 @@ section.todolist {
     align-items: center;
     width: 100%;
     padding: 20px;
+    flex: 5;
 }
 
 .todolist-header h2, .todolist-header {

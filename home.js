@@ -88,8 +88,10 @@ setInterval(() => {
     const eventLog = document.querySelector('#events');
     eventLog.innerHTML =
         `<div class="event">
-        <span class="family-member">${familyMember}</span> completed:
-        <span class="task-name">${task}</span>
+            <span class="event-action"> 
+                <span class="family-member">${familyMember}</span> completed: 
+            </span>
+            <span class="task-name">${task}</span>
         </div>` 
         + eventLog.innerHTML;
   }, 5000);
