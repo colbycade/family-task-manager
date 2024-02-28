@@ -17,7 +17,18 @@ div#task-lists {
     width: 100%;
 }
 
-#task-lists h2, #event-log h2 {
+.task-list-dropdown {
+    display: block;
+    width: 100%;
+    margin: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #ffa500;
+    color:white;
+    font-size: 90%;
+}
+
+#event-log h2 {
     text-align: center;
     margin-top: 5px;
     margin-bottom: 10px;
@@ -211,24 +222,7 @@ section.todolist {
         display: none; /* hide the sidebar on small screens */
     }
 
-    .alt-task-list-dropdown {
-        display: block; /* on small screens, show dropdown by to-do list */
-        width: 100%;
-        margin: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background-color: #ffa500;
-        color:white;
-        font-size: 90%;
-    }
-
-    .todolist-header h2 {
-        display: none;
-    }
-
     section.todolist {
         padding:0;
     }
-
-
 }
