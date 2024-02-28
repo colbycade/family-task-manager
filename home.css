@@ -218,11 +218,7 @@ section.todolist {
 
 
 @media (max-width: 1000px) {
-    section.sidebar {
-        display: none; /* hide the sidebar on small screens */
-    }
-
-    section.todolist {
-        padding:0;
+    main {
+        flex-direction: column;
     }
 }
