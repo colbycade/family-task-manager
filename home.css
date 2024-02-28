@@ -77,16 +77,6 @@ section.sidebar .profile .userDisplay {
     font-weight: bold;
 }
 
-
-
-
-
-
-
-
-
-
-
 section.sidebar .task-lists h2 {
     color: #006600;
     margin-bottom: 10px;
@@ -114,7 +104,6 @@ section.sidebar .task-lists select::-ms-expand {
 /* Todo List Design */
 
 section.todolist {
-    flex-grow: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -122,67 +111,53 @@ section.todolist {
     padding: 20px;
 }
 
-.todolist-header h2 {
+.todolist-header h2, .todolist-header {
     text-align: center;
-    margin-bottom: 20px;
-    margin-top: 10px;
-    color:#e16200
+    margin: 10px 0 10px;
+    color: #e16200;
 }
 
+/* Table */
 #task-list {
     width: 100%;
     border-collapse: collapse;
-    table-layout: auto;
-    border: #fd8b33 2px solid;
+    border: 2px solid #fd8b33;
 }
 
 #task-list th, #task-list td {
     border: 1px solid #ffcc80;
     padding: 8px;
-}
-
-#task-list thead {
-    background-color: #ffa500; 
-    color: white; 
-    border:#ff8223 2px solid;
-}
-
-#task-list thead th {
     text-align: center;
-    font-weight: bold;
-    font-size: large;
-}
-
-#task-list td {
     color: #db8f31;
 }
 
+#task-list thead {
+    background-color: #ffa500;
+}
 
-#task-list tbody tr:nth-child(even) {
-    background-color: #fbebd3;
+#task-list thead th {
+    font-weight: bold;
+    font-size: 20px;
+    color: white;
 }
 
 #task-list tbody tr:nth-child(odd) {
     background-color: #fff5e6;
 }
 
+#task-list tbody tr:nth-child(even) {
+    background-color: #fae4c3;
+}
+
 #task-list tbody tr:hover {
     background-color: #ffd597;
 }
 
-#task-list tr {
-    height: 40px;
-}
-
-#task-list td {
-    text-align: center;
-    white-space: nowrap;
-    padding: 8px;
-}
-
-#task-list button {
+/* Buttons */
+#task-list button, #add-task-form button, #add-task-row button {
     padding: 5px 10px;
     margin: 2px;
+    width: 80%;
     cursor: pointer;
     border: none;
     background-color: #ff8c00;
@@ -191,15 +166,38 @@ section.todolist {
     transition: background-color 0.3s ease;
 }
 
-#task-list button:hover {
-    background-color: #ff7000; /* Slightly darker orange on hover */
+#task-list button:hover, #add-task-form button:hover {
+    background-color: #ff7000;
 }
 
-.todolist-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* Form for adding tasks */
+
+#task-list input[type="text"], #task-list input[type="date"] {
+    width: 100%;
+    border: 1px solid #ffcc80;
+    padding: 5px;
+    border-radius: 4px;
 }
+
+#task-list input[type="text"], #task-list input[type="date"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ffcc80;
+    border-radius: 4px;
+    text-align: center;
+    color: #db8f31; /* date text */
+    background-color: #fff5e6;
+}
+
+#task-list input::placeholder {
+    color: #db8f31; /* task placeholder text */
+}
+
+
+/* Adjustments for small screens */
 
 .alt-task-list-dropdown {
     display: none; /* Initially hidden */
@@ -229,11 +227,6 @@ section.todolist {
     section.todolist {
         padding:0;
     }
-    
 
-    /* selecting task will give popup option to add to calendar or remove */
-    .add-to-calendar, .remove-task {
-        display: none;
-    }
 
 }

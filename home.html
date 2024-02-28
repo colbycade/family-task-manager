@@ -72,15 +72,14 @@
                     <tr>
                         <th class="task">Task</th>
                         <th class="task-date">Due Date</th>
-                        <th class="add-to-calendar"></th>
-                        <th class="remove-task"></th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>
-                            <input type="checkbox" id="task1">
-                            <label for="task1">Task Name</label>
+                            Task Name
                         </td>
                         <td>
                             Monday, Feb 18th, 2023
@@ -94,8 +93,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="checkbox" id="task2">
-                            <label for="task2">Task Name</label>
+                            Task Name
                         </td>
                         <td>
                             Tuesday, Feb 19th, 2023
@@ -109,8 +107,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="checkbox" id="task3">
-                            <label for="task3">Task Name</label>
+                            Task Name
                         </td>
                         <td>
                             Wednesday, Feb 20th, 2023
@@ -122,42 +119,23 @@
                             <button>Remove</button>
                         </td>
                     </tr>
-
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td class="add-to-calendar">
-
+                    
+                    <!-- Last row is a form for adding additional tasks -->
+                    <tr id="add-task-row">
+                        <td>
+                            <input type="text" id="new-task-name" name="taskName" placeholder="Enter task name" required>
                         </td>
-                        <td class="remove-task">
-
+                        <td>
+                            <input type="date" id="new-task-date" name="taskDate" required>
                         </td>
-                    </tr>
-
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td class="add-to-calendar">
-
-                        </td>
-                        <td class="remove-task">
-
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td class="add-to-calendar">
-
-                        </td>
-                        <td class="remove-task">
-
+                        <td colspan="2">
+                            <button type="button" onclick="addTask()">Add Task</button>
                         </td>
                     </tr>
 
                 </tbody>
             </table>
+
         </section>
         </main>
 
