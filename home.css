@@ -1,17 +1,10 @@
 main {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
-    justify-content: flex-end;
     width: 100%;
 }
 
 /* Sidebar Design */
-
-.profile * {
-    margin: 10px;
-    margin-bottom: 0;
-}
 
 div.profile {
     border-bottom: 2px solid #2a8668;
@@ -32,14 +25,12 @@ div.task-lists h2 {
 
 
 section.sidebar {
-    display: flex;
-    flex-direction: column;
-    flex-basis: 280px;
-    border-right: 1px solid #ddd;
-    padding: 20px;
+    flex-basis: 350px;
+    padding: 10px;
+    margin: 15px;
     background-color: #e6ffe6;
     border: 1px solid #004d00;
-    height: 100%;
+    height: calc(100% - 30px); /* Adjust based on total vertical margins */
 }
 
 section.sidebar .profile {
@@ -50,15 +41,22 @@ section.sidebar .profile {
 }
 
 section.sidebar .profile img {
-    width: 150px;
-    height: 150px;
+    width: 175px;
+    height: 175px;
     border-radius: 20%;
     margin-bottom: 5px;
+    border: 2px solid #004d00;
 }
 
-section.sidebar .profile p {
+section.sidebar .profile #userInfo {
     color: #004d00;
     margin: 0px 0;
+}
+
+section.sidebar .profile .userDisplay {
+    color: #053205;
+    margin: 0px 0;
+    font-weight: bold;
 }
 
 section.sidebar .task-lists h2 {
@@ -96,16 +94,6 @@ section.todolist {
     padding: 20px;
 }
 
-section.todolist {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    padding-left: 20px;
-    padding-right: 0px;
-    padding-top: 0px;
-}
-
 .todolist-header h2 {
     text-align: center;
     margin-bottom: 20px;
@@ -123,7 +111,6 @@ section.todolist {
 #task-list th, #task-list td {
     border: 1px solid #ffcc80;
     padding: 8px;
-    text-align: left;
 }
 
 #task-list thead {
@@ -131,6 +118,17 @@ section.todolist {
     color: white; 
     border:#ff8223 2px solid;
 }
+
+#task-list thead th {
+    text-align: center;
+    font-weight: bold;
+    font-size: large;
+}
+
+#task-list td {
+    color: #db8f31;
+}
+
 
 #task-list tbody tr:nth-child(even) {
     background-color: #fbebd3;
@@ -180,7 +178,7 @@ section.todolist {
 }
 
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
     section.sidebar {
         display: none; /* hide the sidebar on small screens */
     }
