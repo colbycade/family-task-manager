@@ -53,7 +53,7 @@ const exampleJillTaskList = [{ name: "Feed the dog", dueDate: "2024-03-01", comp
 localStorage.setItem('family', JSON.stringify(exampleFamilyTaskList));
 localStorage.setItem('user', JSON.stringify(exampleMyTaskList));
 localStorage.setItem('Jill', JSON.stringify(exampleJillTaskList));
-exampleFamily = ['Jill', 'Sally', 'Bobby']
+exampleFamily = ['Jill', 'Bobby']
 initializeTaskLists(exampleFamily); 
 
 
@@ -136,10 +136,10 @@ function addTask() {
     const taskDueDate = document.getElementById('new-task-date').value;
     const selectedList = document.getElementById('task-list-dropdown').value;
 
-    // if (!taskName) {
-    //     alert('Please enter a task name');
-    //     return;
-    // }
+    if (!taskName) {
+        alert('Please enter a task name');
+        return;
+    }
 
     const task = { name: taskName, dueDate: taskDueDate };
     const tasks = JSON.parse(localStorage.getItem(selectedList)) || [];
