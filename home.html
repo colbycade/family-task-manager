@@ -67,7 +67,8 @@
                 <div id="task-lists">
                     <h2>Your Task Lists</h2>
                     <select id="task-list-dropdown">
-                        <option value="family" selected hidden>Family To-Do List</option>
+                        <option value="family" selected>Family To-Do List</option>
+                        <option value="user">My To-Do List</option>
                     </select>
                 </div>
             </div>
@@ -75,56 +76,13 @@
             <table id="task-list">
                 <thead>
                     <tr>
-                        <th class="task">Task</th>
-                        <th class="task-date">Due Date</th>
+                        <th id="task-name-header">Task</th>
+                        <th id="task-date-header">Due Date</th>
                         <th></th>
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            Task Name
-                        </td>
-                        <td>
-                            Monday, Feb 18th, 2023
-                        </td>
-                        <td class="add-to-calendar">
-                            <button>Add to Calendar</button>
-                        </td>
-                        <td class="remove-task">
-                            <button onclick="removeTask(this)">Remove</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Task Name
-                        </td>
-                        <td>
-                            Tuesday, Feb 19th, 2023
-                        </td>
-                        <td class="add-to-calendar">
-                            <button>Add to Calendar</button>
-                        </td>
-                        <td class="remove-task">
-                            <button onclick="removeTask(this)">Remove</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Task Name
-                        </td>
-                        <td>
-                            Wednesday, Feb 20th, 2023
-                        </td>
-                        <td class="add-to-calendar">
-                            <button>Add to Calendar</button>
-                        </td>
-                        <td class="remove-task">
-                            <button onclick="removeTask(this)">Remove</button>
-                        </td>
-                    </tr>
-                    
+                <tbody>          
                     <!-- Last row is a form for adding additional tasks -->
                     <tr id="add-task-row">
                         <td>
@@ -137,7 +95,6 @@
                             <button type="button" onclick="addTask()" id="add-task-button">Add Task</button>
                         </td>
                     </tr>
-
                 </tbody>
             </table>
 

@@ -43,31 +43,50 @@ displayProfilePic();
 
 // TASK LIST
 
+// for now just use example family, but after implementing database we will keep track of a user and their family
+const exampleFamilyTaskList = [{name: "Take Sally to School", dueDate: "2024-02-29"}, { name: "Clean the kitchen", dueDate: "" },
+{ name: "Take out the trash", dueDate: "2024-03-02" }];
+const exampleMyTaskList = [{ name: "Buy groceries", dueDate: "2024-03-01" },
+{ name: "Doctor's appointment", dueDate: "2024-03-05" }];
+const exampleJillTaskList = [{ name: "Feed the dog", dueDate: "2024-03-01" }]
+localStorage.setItem('family', JSON.stringify(exampleFamilyTaskList));
+localStorage.setItem('user', JSON.stringify(exampleMyTaskList));
+localStorage.setItem('Jill', JSON.stringify(exampleJillTaskList));
+exampleFamily = ['Jill', 'Sally', 'Bobby']
+initializeTaskLists(exampleFamily); 
+
 
 function initializeTaskLists(userFamily) {
+    // Initialize default family and personal task lists
+    if (!localStorage.getItem('family')) {
+        localStorage.setItem('family', JSON.stringify([])); // Initialize with an empty array
+    }
+    if (!localStorage.getItem('user')) {
+        localStorage.setItem('user', JSON.stringify([]));
+    }
+
+    // Initialize other family members
     userFamily.forEach(member => {
         if (!localStorage.getItem(member)) {
-            localStorage.setItem(member, JSON.stringify([])); // Initialize with an empty array
+            localStorage.setItem(member, JSON.stringify([]));
         }
         const dropdownEl = document.getElementById('task-list-dropdown');
         dropdownEl.innerHTML += `<option value="${member}">${member}'s To-Do List</option>`;
-
     });
+
+    loadSelectedTaskList(); // Load default family list
+    document.getElementById('task-list-dropdown') // Listen for new selection
+        .addEventListener('change', loadSelectedTaskList);
 }
 
-// for now just use example, but after implementing database we will keep track of a user and their family
-exampleFamilyLists = ['my_username', 'Sally', 'Bobby']
-initializeTaskLists(exampleFamilyLists); 
 
-
-function retrieveTaskList(taskListName) {
-    const selectedList = document.querySelector('.task-list-dropdown').value;
+function loadSelectedTaskList() {
+    const selectedList = document.getElementById('task-list-dropdown').value;
     const tbody = document.getElementById('task-list').querySelector('tbody');
     tbody.innerHTML = ''; // Clear existing rows
-    const tasks = JSON.parse(localStorage.getItem(selectedList)) || [];
-
-    tasks.forEach((task, index) => {
-        const newRow = tbody.insertRow();
+    const taskList = JSON.parse(localStorage.getItem(selectedList)) || [];
+    taskList.forEach((task, index) => {
+        const newRow = tbody.insertRow(tbody.rows.length - 1);
         
         const taskCell = newRow.insertCell(0);
         taskCell.textContent = task.name;
@@ -85,41 +104,32 @@ function retrieveTaskList(taskListName) {
     });
 }
 
-function displayTaskList(taskList) {
 
-}
+function removeTask(button, listName, taskIndex) {
+    const tasks = JSON.parse(localStorage.getItem(listName));
+    tasks.splice(taskIndex, 1); // Remove the task at the specified index
+    localStorage.setItem(listName, JSON.stringify(tasks));
 
-
-function removeTask(button) {
-    button.closest('tr').remove();
+    loadSelectedTaskList();
 }
 
 function addTask() {
     const taskName = document.getElementById('new-task-name').value;
     const taskDueDate = document.getElementById('new-task-date').value;
+    const selectedList = document.getElementById('task-list-dropdown').value;
 
-    if (!taskName || !taskDueDate) {
-        alert('Please fill in all fields.');
-        return;
-    }
+    // if (!taskName) {
+    //     alert('Please enter a task name');
+    //     return;
+    // }
 
-    const tbody = document.getElementById('task-list').querySelector('tbody');
-    const newRow = tbody.insertRow(tbody.rows.length - 1);
-    
-    const taskCell = newRow.insertCell(0);
-    taskCell.innerHTML = `${taskName}`;
-    
-    const dateCell = newRow.insertCell(1);
-    dateCell.textContent = taskDueDate;
-    
-    const addToCalendarCell = newRow.insertCell(2);
-    addToCalendarCell.className = 'add-to-calendar';
-    addToCalendarCell.innerHTML = '<button>Add to Calendar</button>';
-    
-    const removeTaskCell = newRow.insertCell(3);
-    removeTaskCell.className = 'remove-task';
-    removeTaskCell.innerHTML = '<button onclick="removeTask(this)">Remove</button>';
-    
+    const task = { name: taskName, dueDate: taskDueDate };
+    const tasks = JSON.parse(localStorage.getItem(selectedList)) || [];
+    tasks.push(task);
+    localStorage.setItem(selectedList, JSON.stringify(tasks));
+
+    loadSelectedTaskList(); // Refresh the list display
+
     document.getElementById('new-task-name').value = '';
     document.getElementById('new-task-date').value = '';
 }
