@@ -112,6 +112,10 @@ function loadSelectedTaskList() {
         removeTaskCell.className = 'remove-task';
         removeTaskCell.innerHTML = `<button onclick="removeTask(this, '${selectedList}', ${index})">Remove</button>`;
     });
+    const tableBody = document.getElementById('task-list-data');
+    const isAscending = tableBody.getAttribute('data-sort-ascending') === 'true';
+    tableBody.setAttribute('data-sort-ascending', !isAscending);
+    sortByDate();
 }
 
 function toggleTaskCompletion(listName, taskIndex, checkBoxEl) {
@@ -165,6 +169,7 @@ function addTask() {
 
 function sortByDate() {
     const tableBody = document.getElementById('task-list-data');
+    
     const rows = Array.from(tableBody.rows);
     if (!rows) return;
 
