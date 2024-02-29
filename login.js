@@ -1,3 +1,27 @@
+// Example data until database is implemented
+const exampleFamily = [
+    { username: "John", role: "Parent" },
+    { username: "Jane", role: "Parent" },
+    { username: "Jill", role: "Child" },
+    { username: "Bobby", role: "Child" }
+];
+localStorage.setItem('familyData', JSON.stringify(exampleFamily));
+
+function updateUsername(username) { // This is temporary just to update the example data
+    localStorage.setItem("username", username);
+    familyData = JSON.parse(localStorage.getItem('familyData'));
+    if (familyData) {
+        for (let i = 0; i < familyData.length; i++) {
+            if (familyData[i].role === "Parent") {
+                familyData[i].username = username;
+                break;
+            }
+        }
+
+        localStorage.setItem('familyData', JSON.stringify(familyData));
+    }
+}
+
 function login() {
     const username = document.querySelector("#login-username").value;
     const password = document.getElementById('login-password').value;
@@ -7,7 +31,7 @@ function login() {
         return; 
     }
 
-    localStorage.setItem("username", username);
+    updateUsername(username);
     window.location.href = "home.html";
 }
 
@@ -22,7 +46,7 @@ function joinFamily() {
         return;
     }    
     
-    localStorage.setItem("username", username);
+    updateUsername(username);
     window.location.href = "home.html";
 }
 
@@ -35,7 +59,7 @@ function createFamily() {
         return;
     }
 
-    localStorage.setItem("username", username);
+    updateUsername(username);
     const familyCode = generateUniqueCode();
     localStorage.setItem("familyCode", familyCode);
     window.location.href = "home.html";
