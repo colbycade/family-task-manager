@@ -66,3 +66,21 @@ I added CSS styling to the web application:
 - **Application elements** - Used good contrast, followed color scheme of logo
 - **Application text content** - Consistent fonts
 - **Application images** - Profile image and logo
+
+
+## JavaScript Deliverable
+For this deliverable I used JavaScript so that the application works for a single user using local storage.
+
+- **login** - All fields are required for logging in and registering. 
+  - The app stores and displays the entered username and will generate and display a unique family code upon registering.
+  - You can also upload a profile picture that is displayed and saved locally.
+- **database** - The app can retrieve and display data for various task lists, as well as update this data upon adding/removing tasks. 
+  - Currently this data is stored and retrieved from local storage, but it will be replaced with the database data later.
+  - I added some default task lists to use, but all the dynamic parts work and any changes are saved locally.
+  - The about page displays the current family members and their roles (Parent or Child)
+- **WebSocket** - I used the `setInterval` function to periodically display example event logs for the completion of tasks by family members. 
+  - This will be fully implemented with WebSocket later to display real-time task completions within the family.
+- **application logic** - The main application logic is with the task lists. 
+  - I added the ability to choose between several lists. You can mark tasks as completed, as well as add and remove them. 
+  - I added the ability to sort the task lists by date by clicking the symbol.
+  - Although right now I'm just using example data for the family with the user always being a parent, I added the logic to not allow children to remove tasks, only add or complete them.
