@@ -30,6 +30,7 @@ function saveProfilePic() {
 
 // Display profile picture from local storage
 function displayProfilePic() {
+    saveProfilePic();
     const profilePic = localStorage.getItem('profilePic');
     if (profilePic) {
         document.getElementById('profilePic').src = profilePic;
