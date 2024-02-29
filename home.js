@@ -54,7 +54,7 @@ const exampleJillTaskList = [{ name: "Feed the dog", dueDate: "2024-03-01", comp
 localStorage.setItem('family', JSON.stringify(exampleFamilyTaskList));
 localStorage.setItem('user', JSON.stringify(exampleMyTaskList));
 localStorage.setItem('Jill', JSON.stringify(exampleJillTaskList));
-exampleFamily = ['Jill', 'Bobby']
+exampleFamily = ['Jane', 'Jill', 'Bobby']
 initializeTaskLists(exampleFamily); 
 
 
@@ -122,9 +122,18 @@ function toggleTaskCompletion(listName, taskIndex, checkBoxEl) {
     loadSelectedTaskList();
 }
 
-
+function getUserRole() {
+    const username = localStorage.getItem('username');
+    const familyData = JSON.parse(localStorage.getItem('familyData'));
+    const user = familyData.find(member => member.username === username);
+    return user.role;
+}
 
 function removeTask(button, listName, taskIndex) {
+    if (getUserRole() !== 'Parent') {
+        alert('Only parents have permission to remove tasks');
+        return;
+    }
     const tasks = JSON.parse(localStorage.getItem(listName));
     tasks.splice(taskIndex, 1); // Remove the task at the specified index
     localStorage.setItem(listName, JSON.stringify(tasks));
