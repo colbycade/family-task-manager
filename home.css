@@ -250,6 +250,24 @@ section.todolist {
     content: "\2713"; /* add checkmark */
 }
 
+#task-date-header {
+    text-align: center;
+    position: relative;
+}
+
+#date-header-content {
+    display: inline-block;
+    text-align: center;
+}
+
+#date-sort-icon {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 50%; /* Center the icon vertically */
+    transform: translateY(-50%); 
+}
+
 
 
 /* Form for adding tasks */

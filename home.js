@@ -172,8 +172,8 @@ function sortByDate() {
     const isAscending = tableBody.getAttribute('data-sort-ascending') === 'true';
     
     rows.sort((a, b) => {
-        const dateA = a.cells[1].textContent ? new Date(a.cells[1].textContent) : new Date(0);
-        const dateB = b.cells[1].textContent ? new Date(b.cells[1].textContent) : new Date(0);
+        const dateA = a.cells[2].textContent ? new Date(a.cells[2].textContent) : new Date(0); // if no date set
+        const dateB = b.cells[2].textContent ? new Date(b.cells[2].textContent) : new Date(0);
         
         return isAscending ? dateA - dateB : dateB - dateA;
     });
@@ -185,7 +185,7 @@ function sortByDate() {
     tableBody.setAttribute('data-sort-ascending', !isAscending);
 }
 
-document.getElementById('task-date-header').addEventListener('click', sortByDate);
+document.getElementById('date-sort-icon').addEventListener('click', sortByDate);
 
 
 // WEB SOCKET Live Family Event Log
@@ -202,7 +202,7 @@ setInterval(() => {
             </span>
             <span class="task-name">${task}</span>
         </div>` 
-  }, 50000);
+  }, 5000);
 
 function getRandomEvent() {
     const familyMembers = ["Eich", "Turing", "Lovelace", "Hopper", "Babbage"];

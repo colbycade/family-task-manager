@@ -78,13 +78,15 @@
                     <tr>
                         <th></th>
                         <th id="task-name-header">Task</th>
-                        <th id="task-date-header">Due Date</th>
+                        <th id="task-date-header">
+                            <span id="date-header-content"> Due Date <span id="date-sort-icon">⇅</span> </span>
+                        </th>
                         <th></th>
                         <th></th>
                     </tr>
                 </thead>
                 <!-- Dynamically loaded data-->
-                <tbody id="task-list-data"></tbody>
+                <tbody id="task-list-data" data-sort-ascending = "true"></tbody>
                 <tfoot id="add-task-form">
                     <!-- Last row is a form for adding additional tasks -->
                     <tr>
