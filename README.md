@@ -9,7 +9,7 @@ Does your family struggle to keep track of everything going on in your busy live
 
 ### Design
 
-![Mock](mock.png)
+![Mock](public/assets/mock.png)
 
 ### Key features
 
