@@ -54,7 +54,7 @@ const exampleJillTaskList = [{ name: "Feed the dog", dueDate: "2024-03-01", comp
 localStorage.setItem('family', JSON.stringify(exampleFamilyTaskList));
 localStorage.setItem('user', JSON.stringify(exampleMyTaskList));
 localStorage.setItem('Jill', JSON.stringify(exampleJillTaskList));
-exampleFamily = ['Jane', 'Jill', 'Bobby']
+exampleFamily = ['Jane', 'Jill', 'Bobby'];
 initializeTaskLists(exampleFamily); 
 
 
