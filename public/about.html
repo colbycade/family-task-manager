@@ -1,71 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>About Page</title>
-        <link rel="icon" href="assets/favicon.ico" />
-        <link rel="stylesheet" href="styles.css" />
-    </head>
 
-    <body>
-        <header>
-            <div class="logotitle">
-                <img src="assets/favicon.ico" alt="logo" width="100" height="100">
-                <h1>Family Tracker</h1>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Page</title>
+    <link rel="icon" href="assets/favicon.ico" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <header>
+        <div class="logotitle">
+            <img src="assets/favicon.ico" alt="logo" width="100" height="100">
+            <h1>Family Tracker</h1>
+        </div>
+        <nav>
+            <div class="menu">
+                <li><a href="index.html">Login</a></li>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="calendar.html">Calendar</a></li>
+                <li><a class="current-page" href="about.html">About</a></li>
             </div>
-            <nav>
-                <div class="menu">
-                    <li><a href="index.html">Login</a></li>                
-                    <li><a href="home.html">Home</a></li>
-                    <li><a href="calendar.html">Calendar</a></li>
-                    <li><a class="current-page" href="about.html">About</a></li>
+            <div class="log-out">
+                <button>Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div>
+            <h1>About</h1>
+            <p>This is a web application made for CS260</p>
+        </div>
+        <hr>
+
+        <div id="family-members-container">
+            <h1>Family Members</h1>
+
+            <div id="family-container">
+                <div class="family-member"><span class="family-member-name">asdfasf</span><span
+                        class="family-member-role">(Child)</span><button>Remove</button><button>Change Role</button>
                 </div>
-                <div class="log-out">
-                    <button>Logout</button>
+                <div class="family-member"><span class="family-member-name">asdfasf</span><span
+                        class="family-member-role">(Child)</span><button>Remove</button><button>Change Role</button>
                 </div>
-            </nav>
-        </header>
-        
-        <main>
-            <div>
-                <h1>About</h1>
-                <p>This is a web application made for CS260</p>
-            </div>
-            <hr>
 
-            <div>
-                <h1>My Family:</h1>
-                <div id="family-container"></div>
             </div>
 
-            <hr>
-            <div>
-                <h1>How to Use</h1>
-                <h3>Setting Up Your Family</h3>
-                <p>
+
+            <form id="add-member-form">
+                <input type="text" id="username-input" placeholder="Username" required>
+                <select id="role-select">
+                    <option value="Parent">Parent</option>
+                    <option value="Child">Child</option>
+                </select>
+                <button type="submit">Add Member</button>
+            </form>
+        </div>
+
+        <hr>
+        <div>
+            <h1>How to Use</h1>
+            <h3>Setting Up Your Family</h3>
+            <p>
                 One parent of the family should register under the `Login` page where they will receive a family code.
-                Other members of the family will be able use this code to join the family. 
+                Other members of the family will be able use this code to join the family.
                 The parent who registered can designate other members as parents/admins after they join.
-                </p>
-                <h3>Using the app</h3>
-                <p>
-                    Once you are logged in, you will be able to see your family's to-do list, as well as your personal list.
-                    Tasks can be added and marked as complete by by anyone, but only an admin can remove tasks.
-                </p>
-            </div>
-
-            
-        </main>
+            </p>
+            <h3>Using the app</h3>
+            <p>
+                Once you are logged in, you will be able to see your family's to-do list, as well as your personal list.
+                Tasks can be added and marked as complete by by anyone, but only an admin can remove tasks.
+            </p>
+        </div>
 
 
-        <footer>
-            <hr>
-            <span> Made by Colby Wright</span>
-            <br>
-            <a href="https://github.com/colbycade/startup">GitHub</a>
-        </footer>
+    </main>
 
-        <script src="family.js"></script>
-    </body>
+
+    <footer>
+        <hr>
+        <span> Made by Colby Wright</span>
+        <br>
+        <a href="https://github.com/colbycade/startup">GitHub</a>
+    </footer>
+
+    <script src="family.js"></script>
+</body>
+
 </html>
