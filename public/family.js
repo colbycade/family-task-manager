@@ -51,6 +51,9 @@ window.onload = displayFamilyMembers();
 async function addFamilyMember(event) {
     event.preventDefault();
 
+    const currUserResponse = await fetch('/api/user');
+    const currUser = await currUserResponse.json();
+
     if (currUser.role === 'Child') {
         alert('Only parents can add family members');
         return;
@@ -65,6 +68,16 @@ async function addFamilyMember(event) {
     try {
         const familyCodeResponse = await fetch('/api/family/family-code');
         const { familyCode } = await familyCodeResponse.json();
+
+        // Check if the username already exists
+        const existingMemberResponse = await fetch(`/api/family/${familyCode}`);
+        const existingMembers = await existingMemberResponse.json();
+        const usernameExists = existingMembers.some(member => member.username === username);
+
+        if (usernameExists) {
+            alert('Username already exists. Please choose a different username.');
+            return;
+        }
 
         const response = await fetch(`/api/family/${familyCode}`, {
             method: 'POST',
@@ -92,6 +105,9 @@ document.querySelector('#add-member-form').addEventListener('submit', addFamilyM
 // Remove a family member
 async function removeFamilyMember(username) {
     try {
+        const currUserResponse = await fetch('/api/user');
+        const currUser = await currUserResponse.json();
+
         if (currUser.role === 'Child') {
             alert('Only parents can remove family members');
             return;
@@ -112,6 +128,10 @@ async function removeFamilyMember(username) {
         console.error('Error removing family member:', error);
     }
 }
+
+
+// Event listener for removing a new family member
+document.querySelector('#add-member-form').addEventListener('submit', addFamilyMember);
 
 // Change the role of a family member
 async function changeRole(username) {
