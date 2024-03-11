@@ -123,6 +123,11 @@ async function removeFamilyMember(username) {
             return;
         }
 
+        if (currUser.username === username) {
+            alert('You cannot delete yourself from the family. Please ask another parent to remove you.');
+            return;
+        }
+
         const familyCodeResponse = await fetch('/api/family/family-code');
         const { familyCode } = await familyCodeResponse.json();
 
@@ -149,13 +154,13 @@ async function changeRole(username) {
         const currUserResponse = await fetch('/api/user');
         const currUser = await currUserResponse.json();
 
-        if (currUser.username === username) {
-            alert('You cannot change your own role to child');
+        if (currUser.role === 'Child') {
+            alert('Only parents can change roles');
             return;
         }
 
-        if (currUser.role === 'Child') {
-            alert('Only parents can change roles');
+        if (currUser.username === username) {
+            alert('You cannot change your own role to child');
             return;
         }
 
