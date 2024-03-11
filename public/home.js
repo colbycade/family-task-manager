@@ -1,151 +1,217 @@
-// PROFILE
+async function displayUserInfo() {
+    try {
+        const userResponse = await fetch('/api/user');
+        const userInfo = await userResponse.json();
 
-function displayUserInfo() {
-    // username
-    const username = localStorage.getItem("username");
-    const usernameEl = document.getElementById("usernameDisplay")
-    usernameEl.textContent = username ?? "Unknown";
+        const usernameEl = document.getElementById("usernameDisplay");
+        usernameEl.textContent = userInfo.username || "Unknown";
 
-    // family code
-    const familyCode = localStorage.getItem("familyCode");
-    const familyCodeEl = document.getElementById("familyCodeDisplay")
-    familyCodeEl.textContent = familyCode ?? "Unknown";
+        const familyCodeEl = document.getElementById("familyCodeDisplay");
+        familyCodeEl.textContent = userInfo.familyCode || "Unknown";
+    } catch (error) {
+        console.error('Error fetching user information:', error);
+    }
 }
 
-// Save profile picture to local storage upon upload
-function saveProfilePic() {
-    document.getElementById('profilePicInput').addEventListener('change', function(event) {
-        if (event.target.files && event.target.files[0]) {
-            var reader = new FileReader();
-            
-            reader.onload = function(e) {
-                localStorage.setItem('profilePic', e.target.result);
-                displayProfilePic();
-            };
-            
-            reader.readAsDataURL(event.target.files[0]);
+// Save profile picture
+async function saveProfilePic(event) {
+    if (event.target.files && event.target.files[0]) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = async function (e) {
+            const base64Image = e.target.result.split(',')[1];
+
+            try {
+                const response = await fetch('/api/profile-pic', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ profilePic: base64Image })
+                });
+
+                if (response.ok) {
+                    displayProfilePic();
+                } else {
+                    console.error('Error saving profile picture:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error saving profile picture:', error);
+            }
+        };
+
+        reader.readAsDataURL(file);
+    }
+}
+
+// Display profile picture or generic profile picture if not found
+async function displayProfilePic() {
+    try {
+        const response = await fetch('/api/profile-pic');
+
+        if (response.ok) {
+            const data = await response.json();
+            const profilePicEl = document.getElementById('profilePic');
+            profilePicEl.src = data.profilePic ? `data:image/jpeg;base64,${data.profilePic}` : 'assets/generic_profile.jpeg';
+        } else if (response.status === 404) {
+            const profilePicEl = document.getElementById('profilePic');
+            profilePicEl.src = 'assets/generic_profile.jpeg';
+        } else {
+            console.error('Error fetching profile picture:', response.statusText);
         }
-    });
-}
-
-// Display profile picture from local storage
-function displayProfilePic() {
-    saveProfilePic();
-    const profilePic = localStorage.getItem('profilePic');
-    if (profilePic) {
-        document.getElementById('profilePic').src = profilePic;
+    } catch (error) {
+        console.error('Error fetching profile picture:', error);
     }
 }
 
 // Run when the page loads
-displayUserInfo();
-displayProfilePic();
+window.onload = async () => {
+    await displayUserInfo();
+    await displayProfilePic();
+    await initializeTaskLists();
+};
 
+document.getElementById('profilePicInput').addEventListener('change', saveProfilePic);
 
 // TASK LIST
 
-// for now just use example family, but after implementing database we will keep track of a user and their family
-const exampleFamilyTaskList = [{name: "Take Sally to School", dueDate: "2024-02-29", completed: true }, 
-{ name: "Clean the kitchen", dueDate: "", completed: false },
-{ name: "Take out the trash", dueDate: "2024-03-02", completed: false}];
-const exampleMyTaskList = [{ name: "Buy groceries", dueDate: "2024-03-01", completed: false },
-{ name: "Doctor's appointment", dueDate: "2024-03-05", completed: false }];
-const exampleJillTaskList = [{ name: "Feed the dog", dueDate: "2024-03-01", completed: false }]
-localStorage.setItem('family', JSON.stringify(exampleFamilyTaskList));
-localStorage.setItem('user', JSON.stringify(exampleMyTaskList));
-localStorage.setItem('Jill', JSON.stringify(exampleJillTaskList));
-exampleFamily = ['Jane', 'Jill', 'Bobby'];
-initializeTaskLists(exampleFamily); 
+async function initializeTaskLists() {
+    try {
+        const familyCodeResponse = await fetch('/api/family');
+        const { familyCode } = await familyCodeResponse.json();
 
+        const response = await fetch(`/api/tasks/${familyCode}`);
+        const familyTaskLists = await response.json();
 
-function initializeTaskLists(userFamily) {
-    // Initialize default family and personal task lists
-    if (!localStorage.getItem('family')) {
-        localStorage.setItem('family', JSON.stringify([])); // Initialize with an empty array
-    }
-    if (!localStorage.getItem('user')) {
-        localStorage.setItem('user', JSON.stringify([]));
-    }
-
-    // Initialize other family members
-    userFamily.forEach(member => {
-        if (!localStorage.getItem(member)) {
-            localStorage.setItem(member, JSON.stringify([]));
-        }
         const dropdownEl = document.getElementById('task-list-dropdown');
-        dropdownEl.innerHTML += `<option value="${member}">${member}'s To-Do List</option>`;
-    });
+        dropdownEl.innerHTML = '';
 
-    loadSelectedTaskList(); // Load default family list
-    document.getElementById('task-list-dropdown') // Listen for new selection
-        .addEventListener('change', loadSelectedTaskList);
+        for (const member in familyTaskLists) {
+            dropdownEl.innerHTML += `<option value="${member}">${member}'s To-Do List</option>`;
+        }
+
+        await loadSelectedTaskList(); // Load default family list
+        document.getElementById('task-list-dropdown') // Listen for new selection
+            .addEventListener('change', loadSelectedTaskList);
+    } catch (error) {
+        console.error('Error fetching task lists:', error);
+    }
 }
 
-
-function loadSelectedTaskList() {
+async function loadSelectedTaskList() {
     const selectedList = document.getElementById('task-list-dropdown').value;
     const tbody = document.getElementById('task-list-data');
     tbody.innerHTML = ''; // Clear existing rows
-    const taskList = JSON.parse(localStorage.getItem(selectedList)) || [];
-    taskList.forEach((task, index) => {
-        const newRow = tbody.insertRow();
-        
-        if (task.completed) {
-            newRow.classList.add('completed-task');
-        }
-        
-        const completeTaskCell = newRow.insertCell(0);
-        completeTaskCell.innerHTML = `<span class="checkbox ${task.completed ? 'completed' : ''}" 
-            onclick="toggleTaskCompletion('${selectedList}', ${index})"></span>`;
 
-        const taskCell = newRow.insertCell(1);
-        taskCell.textContent = task.name;
-        
-        const dateCell = newRow.insertCell(2);
-        dateCell.textContent = task.dueDate;
-        
-        const addToCalendarCell = newRow.insertCell(3);
-        addToCalendarCell.className = 'add-to-calendar';
-        addToCalendarCell.innerHTML = '<button>Add to Calendar</button>';
-        
-        const removeTaskCell = newRow.insertCell(4);
-        removeTaskCell.className = 'remove-task';
-        removeTaskCell.innerHTML = `<button onclick="removeTask(this, '${selectedList}', ${index})">Remove</button>`;
-    });
-    const tableBody = document.getElementById('task-list-data');
-    const isAscending = tableBody.getAttribute('data-sort-ascending') === 'true';
-    tableBody.setAttribute('data-sort-ascending', !isAscending);
-    sortByDate();
-}
+    try {
+        const familyCodeResponse = await fetch('/api/family');
+        const { familyCode } = await familyCodeResponse.json();
 
-function toggleTaskCompletion(listName, taskIndex, checkBoxEl) {
-    const tasks = JSON.parse(localStorage.getItem(listName));
-    tasks[taskIndex].completed = !tasks[taskIndex].completed;
-    localStorage.setItem(listName, JSON.stringify(tasks));
+        const response = await fetch(`/api/tasks/${familyCode}/${selectedList}`);
+        const taskList = await response.json();
 
-    loadSelectedTaskList();
-}
+        taskList.forEach((task, index) => {
+            const newRow = tbody.insertRow();
 
-function getUserRole() {
-    const username = localStorage.getItem('username');
-    const familyData = JSON.parse(localStorage.getItem('familyData'));
-    const user = familyData.find(member => member.username === username);
-    return user.role;
-}
+            if (task.completed) {
+                newRow.classList.add('completed-task');
+            }
 
-function removeTask(button, listName, taskIndex) {
-    if (getUserRole() !== 'Parent') {
-        alert('Only parents have permission to remove tasks');
-        return;
+            const completeTaskCell = newRow.insertCell(0);
+            completeTaskCell.innerHTML = `<span class="checkbox ${task.completed ? 'completed' : ''}" 
+        onclick="toggleTaskCompletion('${selectedList}', ${index}, this)"></span>`;
+
+            const taskCell = newRow.insertCell(1);
+            taskCell.textContent = task.name;
+
+            const dateCell = newRow.insertCell(2);
+            dateCell.textContent = task.dueDate;
+
+            const addToCalendarCell = newRow.insertCell(3);
+            addToCalendarCell.className = 'add-to-calendar';
+            addToCalendarCell.innerHTML = '<button>Add to Calendar</button>';
+
+            const removeTaskCell = newRow.insertCell(4);
+            removeTaskCell.className = 'remove-task';
+            removeTaskCell.innerHTML = `<button onclick="removeTask(this, '${selectedList}', ${index})">Remove</button>`;
+        });
+
+        const tableBody = document.getElementById('task-list-data');
+        const isAscending = tableBody.getAttribute('data-sort-ascending') === 'true';
+        tableBody.setAttribute('data-sort-ascending', !isAscending);
+        sortByDate();
+    } catch (error) {
+        console.error('Error fetching task list:', error);
     }
-    const tasks = JSON.parse(localStorage.getItem(listName));
-    tasks.splice(taskIndex, 1); // Remove the task at the specified index
-    localStorage.setItem(listName, JSON.stringify(tasks));
-
-    loadSelectedTaskList();
 }
 
-function addTask() {
+async function toggleTaskCompletion(listName, taskIndex, checkBoxEl) {
+    try {
+        const familyCodeResponse = await fetch('/api/family');
+        const { familyCode } = await familyCodeResponse.json();
+
+        const response = await fetch(`/api/tasks/${familyCode}/${listName}`);
+        const tasks = await response.json();
+
+        tasks[taskIndex].completed = !tasks[taskIndex].completed;
+
+        await fetch(`/api/tasks/${familyCode}/${listName}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(tasks)
+        });
+
+        await loadSelectedTaskList();
+    } catch (error) {
+        console.error('Error updating task list:', error);
+    }
+}
+
+async function getUserRole() {
+    try {
+        const userResponse = await fetch('/api/user');
+        const userInfo = await userResponse.json();
+        return userInfo.role;
+    } catch (error) {
+        console.error('Error fetching user role:', error);
+    }
+}
+
+async function removeTask(button, listName, taskIndex) {
+    try {
+        const userRole = await getUserRole();
+
+        if (userRole !== 'Parent') {
+            alert('Only parents have permission to remove tasks');
+            return;
+        }
+
+        const familyCodeResponse = await fetch('/api/family');
+        const { familyCode } = await familyCodeResponse.json();
+
+        const response = await fetch(`/api/tasks/${familyCode}/${listName}`);
+        const tasks = await response.json();
+
+        tasks.splice(taskIndex, 1); // Remove the task at the specified index
+
+        await fetch(`/api/tasks/${familyCode}/${listName}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(tasks)
+        });
+
+        await loadSelectedTaskList();
+    } catch (error) {
+        console.error('Error updating task list:', error);
+    }
+}
+
+async function addTask() {
     const taskName = document.getElementById('new-task-name').value;
     const taskDueDate = document.getElementById('new-task-date').value;
     const selectedList = document.getElementById('task-list-dropdown').value;
@@ -155,31 +221,41 @@ function addTask() {
         return;
     }
 
-    const task = { name: taskName, dueDate: taskDueDate };
-    const tasks = JSON.parse(localStorage.getItem(selectedList)) || [];
-    tasks.push(task);
-    localStorage.setItem(selectedList, JSON.stringify(tasks));
+    const newTask = { name: taskName, dueDate: taskDueDate, completed: false };
 
-    loadSelectedTaskList(); // Refresh the list display
+    try {
+        const familyCodeResponse = await fetch('/api/family');
+        const { familyCode } = await familyCodeResponse.json();
 
-    document.getElementById('new-task-name').value = '';
-    document.getElementById('new-task-date').value = '';
+        await fetch(`/api/tasks/${familyCode}/${selectedList}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newTask)
+        });
+
+        await loadSelectedTaskList();
+        document.getElementById('new-task-name').value = '';
+        document.getElementById('new-task-date').value = '';
+    } catch (error) {
+        console.error('Error adding task:', error);
+    }
 }
-
 
 function sortByDate() {
     const tableBody = document.getElementById('task-list-data');
-    
+
     const rows = Array.from(tableBody.rows);
     if (!rows) return;
 
     // Determine the current sorting direction
     const isAscending = tableBody.getAttribute('data-sort-ascending') === 'true';
-    
+
     rows.sort((a, b) => {
         const dateA = a.cells[2].textContent ? new Date(a.cells[2].textContent) : new Date(0); // if no date set
         const dateB = b.cells[2].textContent ? new Date(b.cells[2].textContent) : new Date(0);
-        
+
         return isAscending ? dateA - dateB : dateB - dateA;
     });
 
@@ -191,38 +267,3 @@ function sortByDate() {
 }
 
 document.getElementById('date-sort-icon').addEventListener('click', sortByDate);
-
-
-// WEB SOCKET Live Family Event Log
-// will log when family members complete a task
-
-// Simulate event messages that will come over WebSocket
-setInterval(() => {
-    [familyMember, task] = getRandomEvent();
-    const eventLog = document.querySelector('#events');
-    eventLog.innerHTML +=
-        `<div class="event">
-            <span class="event-action"> 
-                <span class="family-member">${familyMember}</span> completed: 
-            </span>
-            <span class="task-name">${task}</span>
-        </div>` 
-  }, 5000);
-
-function getRandomEvent() {
-    const familyMembers = ["Eich", "Turing", "Lovelace", "Hopper", "Babbage"];
-    const tasks = [
-        "clean the kitchen", "take out the trash", 
-        "feed the dog", "do the laundry", "wash the car",
-        "solve world hunger", "write a compiler",
-        "take vitamins", "do 100 pushups", "read a book"
-    ];
-    const task = this.getRandomElement(tasks);
-    const familyMember = this.getRandomElement(familyMembers);
-    return [familyMember, task];
-    }
-
-function getRandomElement(elements) {
-    const randomIndex = Math.floor(Math.random() * elements.length);
-    return elements[randomIndex];
-    }
