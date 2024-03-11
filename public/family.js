@@ -44,9 +44,17 @@ async function displayFamilyMembers() {
     }
 }
 
+// Initial display of family members
+window.onload = displayFamilyMembers();
+
 // Add a new family member
 async function addFamilyMember(event) {
     event.preventDefault();
+
+    if (currUser.role === 'Child') {
+        alert('Only parents can add family members');
+        return;
+    }
 
     const usernameInput = document.querySelector('#username-input');
     const roleSelect = document.querySelector('#role-select');
@@ -78,9 +86,17 @@ async function addFamilyMember(event) {
     }
 }
 
+// Event listener for adding a new family member
+document.querySelector('#add-member-form').addEventListener('submit', addFamilyMember);
+
 // Remove a family member
 async function removeFamilyMember(username) {
     try {
+        if (currUser.role === 'Child') {
+            alert('Only parents can remove family members');
+            return;
+        }
+
         const familyCodeResponse = await fetch('/api/family/family-code');
         const { familyCode } = await familyCodeResponse.json();
 
@@ -100,6 +116,19 @@ async function removeFamilyMember(username) {
 // Change the role of a family member
 async function changeRole(username) {
     try {
+        const currUserResponse = await fetch('/api/user');
+        const currUser = await currUserResponse.json();
+
+        if (currUser.username === username) {
+            alert('You cannot change your own role to child');
+            return;
+        }
+
+        if (currUser.role === 'Child') {
+            alert('Only parents can change roles');
+            return;
+        }
+
         const familyCodeResponse = await fetch('/api/family/family-code');
         const { familyCode } = await familyCodeResponse.json();
 
@@ -116,9 +145,3 @@ async function changeRole(username) {
         console.error('Error changing role:', error);
     }
 }
-
-// Event listener for adding a new family member
-document.querySelector('#add-member-form').addEventListener('submit', addFamilyMember);
-
-// Initial display of family members
-window.onload = displayFamilyMembers();
