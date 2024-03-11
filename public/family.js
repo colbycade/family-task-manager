@@ -44,9 +44,6 @@ async function displayFamilyMembers() {
     }
 }
 
-// Initial display of family members
-window.onload = displayFamilyMembers();
-
 // Add a new family member
 async function addFamilyMember(event) {
     event.preventDefault();
@@ -180,3 +177,30 @@ async function changeRole(username) {
         console.error('Error changing role:', error);
     }
 }
+
+// 3rd Party API quotes about family
+const quoteAPIKey = 'OjGxIKgEi0GdgkCLjXu8Zg==qdPcUObV6hC4DX7m';
+async function getFamilyQuotes() {
+    try {
+        const response = await fetch('https://api.api-ninjas.com/v1/quotes?category=family', {
+            headers: {
+                'X-Api-Key': quoteAPIKey
+            }
+        });
+        const data = await response.json();
+        const quote = data[0].quote;
+        const author = data[0].author;
+        const quoteElement = document.querySelector('#quote-text');
+        quoteElement.textContent = quote;
+        const authorElement = document.querySelector('#quote-author');
+        authorElement.textContent = `- ${author}`;
+    } catch (error) {
+        console.error('Error fetching family quotes:', error);
+    }
+}
+
+// Initial display of family members and quote
+window.onload = async () => {
+    await displayFamilyMembers();
+    await getFamilyQuotes();
+};

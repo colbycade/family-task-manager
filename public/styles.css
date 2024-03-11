@@ -201,6 +201,23 @@ footer a {
     color: #ff1493
 }
 
+#quote {
+    margin-left: 10px;
+    max-width: 600px;
+}
+
+#quote-text {
+    color: #f5a5cdf6;
+    padding: 10px;
+    border-left: 4px solid #de5399f6;
+    display: block;
+}
+
+#quote-author {
+    padding: 10px;
+    color: #de5399f6;
+}
+
 /* Adjust spacing for mobile */
 @media (max-width: 1000px) {
 
