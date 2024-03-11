@@ -23,7 +23,7 @@ async function saveProfilePic(event) {
             const base64Image = e.target.result.split(',')[1];
 
             try {
-                const response = await fetch('/api/profile-pic', {
+                const response = await fetch('/api/user/profile-pic', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -48,7 +48,7 @@ async function saveProfilePic(event) {
 // Display profile picture or generic profile picture if not found
 async function displayProfilePic() {
     try {
-        const response = await fetch('/api/profile-pic');
+        const response = await fetch('/api/user/profile-pic');
 
         if (response.ok) {
             const data = await response.json();
@@ -78,7 +78,7 @@ document.getElementById('profilePicInput').addEventListener('change', saveProfil
 
 async function initializeTaskLists() {
     try {
-        const familyCodeResponse = await fetch('/api/family');
+        const familyCodeResponse = await fetch('/api/family/family-code');
         const { familyCode } = await familyCodeResponse.json();
 
         const response = await fetch(`/api/tasks/${familyCode}`);
@@ -105,7 +105,7 @@ async function loadSelectedTaskList() {
     tbody.innerHTML = ''; // Clear existing rows
 
     try {
-        const familyCodeResponse = await fetch('/api/family');
+        const familyCodeResponse = await fetch('/api/family/family-code');
         const { familyCode } = await familyCodeResponse.json();
 
         const response = await fetch(`/api/tasks/${familyCode}/${selectedList}`);
@@ -148,7 +148,7 @@ async function loadSelectedTaskList() {
 
 async function toggleTaskCompletion(listName, taskIndex, checkBoxEl) {
     try {
-        const familyCodeResponse = await fetch('/api/family');
+        const familyCodeResponse = await fetch('/api/family/family-code');
         const { familyCode } = await familyCodeResponse.json();
 
         const response = await fetch(`/api/tasks/${familyCode}/${listName}`);
@@ -189,7 +189,7 @@ async function removeTask(button, listName, taskIndex) {
             return;
         }
 
-        const familyCodeResponse = await fetch('/api/family');
+        const familyCodeResponse = await fetch('/api/family/family-code');
         const { familyCode } = await familyCodeResponse.json();
 
         const response = await fetch(`/api/tasks/${familyCode}/${listName}`);
@@ -224,7 +224,7 @@ async function addTask() {
     const newTask = { name: taskName, dueDate: taskDueDate, completed: false };
 
     try {
-        const familyCodeResponse = await fetch('/api/family');
+        const familyCodeResponse = await fetch('/api/family/family-code');
         const { familyCode } = await familyCodeResponse.json();
 
         await fetch(`/api/tasks/${familyCode}/${selectedList}`, {

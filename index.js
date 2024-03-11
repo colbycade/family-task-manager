@@ -36,8 +36,34 @@ app.get('/api/user', (req, res) => {
   }
 });
 
+// GET profile picture
+app.get('/api/user/profile-pic', (req, res) => {
+  const username = 'john_doe'; // Will implement authentication logic later
+  const user = getUser(username);
+
+  if (user) {
+    res.json({ profilePic: user.profilePic });
+  } else {
+    res.status(404).json({ error: 'Profile picture not found' });
+  }
+});
+
+// PUT (update) profile picture
+app.put('/api/user/profile-pic', (req, res) => {
+  const username = 'john_doe'; // Will implement authentication logic later
+  const user = getUser(username);
+  const profilePicData = req.body.profilePic;
+
+  if (user && profilePicData) {
+    updateProfilePicture(username, profilePicData);
+    res.json({ success: true });
+  } else {
+    res.status(400).json({ error: 'Error updating profile picture' });
+  }
+});
+
 // GET family code for the authenticated user
-app.get('/api/family', (req, res) => {
+app.get('/api/family/family-code', (req, res) => {
   const username = 'john_doe'; // Will implement authentication logic later
   const user = getUser(username);
 
@@ -81,32 +107,6 @@ app.post('/api/tasks/:familyCode/:listName', (req, res) => {
   const newTask = req.body;
   createTask(familyCode, listName, newTask);
   res.json({ success: true });
-});
-
-// GET profile picture
-app.get('/api/profile-pic', (req, res) => {
-  const username = 'john_doe'; // Will implement authentication logic later
-  const user = getUser(username);
-
-  if (user) {
-    res.json({ profilePic: user.profilePic });
-  } else {
-    res.status(404).json({ error: 'Profile picture not found' });
-  }
-});
-
-// PUT (update) profile picture
-app.put('/api/profile-pic', (req, res) => {
-  const username = 'john_doe'; // Will implement authentication logic later
-  const user = getUser(username);
-  const profilePicData = req.body.profilePic;
-
-  if (user && profilePicData) {
-    updateProfilePicture(username, profilePicData);
-    res.json({ success: true });
-  } else {
-    res.status(400).json({ error: 'Error updating profile picture' });
-  }
 });
 
 
