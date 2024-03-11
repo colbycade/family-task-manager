@@ -121,7 +121,7 @@ async function removeFamilyMember(username) {
         }
 
         if (currUser.username === username) {
-            alert('You cannot delete yourself from the family. Please ask another parent to remove you.');
+            alert('You cannot delete yourself from the family. \n Please ask another parent to remove you.');
             return;
         }
 
@@ -157,7 +157,7 @@ async function changeRole(username) {
         }
 
         if (currUser.username === username) {
-            alert('You cannot change your own role to child');
+            alert('You cannot change your own role to child. \n Please ask another parent to change your role.');
             return;
         }
 

@@ -84,3 +84,20 @@ For this deliverable I used JavaScript so that the application works for a singl
   - I added the ability to choose between several lists. You can mark tasks as completed, as well as add and remove them. 
   - I added the ability to sort the task lists by date by clicking the symbol.
   - Although right now I'm just using example data for the family with the user always being a parent, I added the logic to not allow children to remove tasks, only add or complete them.
+
+
+## Services Deliverable
+
+For this deliverable I added backend endpoints for task lists 
+
+- **Node.js/Express HTTP service** - done!
+- **Static middleware for frontend** - done!
+- **Calls to third party service endpoints** - 
+  - I implemented the "Add to Calendar" button to add tasks to Google Calendar, but it turns out you don't need to use an API, you just generate a url following a certain format. 
+  - Because of this, I also added a quote block in `about.html` that retrieves and displays a random quote about family.
+- **Backend service endpoints** - I have endpoints that are used to create, update, and delete task lists, as well as manage families and family members.
+  - For now, the server uses in-memory storage and initializes with example data, but I extracted all database operations from the endpoints so that it will be simple to switch to an external database implementation
+  - I also added a placholder endpoint for future login authentication
+- **Frontend calls service endpoints** - 
+  - My `home.js` file now uses the api to retrieve and edit task lists
+  - `family.js` uses the api to manage family members and automatically delete the users task list upon their removal, as well as initalize a blank task list upon a new user's creation.
