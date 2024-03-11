@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '10mb' })); // increase the limit to support profile pictures (gifs work!)
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Get database operation functions
@@ -67,6 +67,17 @@ app.put('/api/user/profile-pic', (req, res) => {
 
 // Endpoints for family data
 
+// GET family code for the authenticated user
+app.get('/api/family/family-code', (req, res) => {
+  const username = 'john_doe'; // Will implement authentication logic later
+  const familyCode = getUserFamilyCode(username);
+  if (familyCode) {
+    res.json({ familyCode });
+  } else {
+    res.status(404).json({ error: 'User not found' });
+  }
+});
+
 // GET family members
 app.get('/api/family/:familyCode', (req, res) => {
   const { familyCode } = req.params;
@@ -102,17 +113,6 @@ app.put('/api/family/:familyCode/:username/role', (req, res) => {
     res.sendStatus(200);
   } else {
     res.sendStatus(404);
-  }
-});
-
-// GET family code for the authenticated user
-app.get('/api/family/family-code', (req, res) => {
-  const username = 'john_doe'; // Will implement authentication logic later
-  const familyCode = getUserFamilyCode(username);
-  if (familyCode) {
-    res.json({ familyCode });
-  } else {
-    res.status(404).json({ error: 'User not found' });
   }
 });
 

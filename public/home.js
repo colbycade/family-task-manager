@@ -65,14 +65,14 @@ async function displayProfilePic() {
     }
 }
 
+document.getElementById('profilePicInput').addEventListener('change', saveProfilePic);
+
 // Run when the page loads
 window.onload = async () => {
     await displayUserInfo();
     await displayProfilePic();
     await initializeTaskLists();
 };
-
-document.getElementById('profilePicInput').addEventListener('change', saveProfilePic);
 
 // TASK LIST
 
@@ -265,5 +265,3 @@ function sortByDate() {
     // Toggle the sorting direction for the next click
     tableBody.setAttribute('data-sort-ascending', !isAscending);
 }
-
-document.getElementById('date-sort-icon').addEventListener('click', sortByDate);
