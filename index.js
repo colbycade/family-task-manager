@@ -23,6 +23,11 @@ app.use(`/api`, apiRouter);
 
 // Endpoints for user data
 
+// PUT login user (placeholder for future authentication)
+app.put('/api/login', (req, res) => {
+  const { username, password } = req.body;
+}
+
 // GET user information 
 app.get('/api/user', (req, res) => {
   const username = 'john_doe'; // Will implement authentication logic later
