@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 
+// Get database operation functions
+const { getUser, getFamilyTaskLists, getFamilyTaskList, updateTaskList, createTask, updateProfilePicture } = require('./public/database');
+
 // The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 8080;
 
@@ -14,40 +17,95 @@ app.use(express.static('public'));
 var apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
-// Example database data
-let families = {
-  "a273B1": {
-    "Family": [{name: "Take Sally to School", dueDate: "2024-02-29", completed: true }, 
-        { name: "Clean the kitchen", dueDate: "", completed: false },
-        { name: "Take out the trash", dueDate: "2024-03-02", completed: false}],
-    "John": [{ name: "Buy groceries", dueDate: "2024-03-01", completed: false },
-        { name: "Doctor's appointment", dueDate: "2024-03-05", completed: false }],
-    "Jill": [{ name: "Feed the dog", dueDate: "2024-03-01", completed: false }]
-  }
-};
+// GET user information
+app.get('/api/user', (req, res) => {
+  const username = 'john_doe'; // Will implement authentication logic later
+  const user = getUser(username);
 
-// Get a specific task list for a family
-app.get('/api/tasks/:familyName/:listName', (req, res) => {
+  if (user) {
+    res.json({
+      username: user.username,
+      familyCode: user.familyCode,
+      role: user.role
+    });
+  } else {
+    res.status(404).json({ error: 'User not found' });
+  }
+});
+
+// GET family code for the authenticated user
+app.get('/api/family', (req, res) => {
+  const username = 'john_doe'; // Will implement authentication logic later
+  const user = getUser(username);
+
+  if (user) {
+    res.json({ familyCode: user.familyCode });
+  } else {
+    res.status(404).json({ error: 'User not found' });
+  }
+});
+
+// GET all task lists for a family
+app.get('/api/tasks/:familyCode', (req, res) => {
+  const { familyCode } = req.params;
+  const familyTaskLists = getFamilyTaskLists(familyCode);
+  res.json(familyTaskLists);
+});
+
+// GET a specific task list for a family
+app.get('/api/tasks/:familyCode/:listName', (req, res) => {
   const { familyCode, listName } = req.params;
-  const taskList = families[familyCode][listName];
+  const taskList = getFamilyTaskList(familyCode, listName);
+
   if (taskList) {
     res.json(taskList);
   } else {
-    res.status(404).send({ message: "Task list not found" });
+    res.status(404).json({ error: 'Task list not found' });
   }
 });
 
-// Update a specific task list for a family (for adding or editing tasks)
-app.put('/api/tasks/:familyName/:listName', (req, res) => {
-  const { familyName, listName } = req.params;
-  const tasks = req.body; 
-  if (families[familyName] && Array.isArray(tasks)) {
-    families[familyName][listName] = tasks;
-    res.status(200).send(families[familyName][listName]);
+// PUT (update) a specific task list
+app.put('/api/tasks/:familyCode/:listName', (req, res) => {
+  const { familyCode, listName } = req.params;
+  const updatedTasks = req.body;
+  updateTaskList(familyCode, listName, updatedTasks);
+  res.json({ success: true });
+});
+
+// POST (create) a new task
+app.post('/api/tasks/:familyCode/:listName', (req, res) => {
+  const { familyCode, listName } = req.params;
+  const newTask = req.body;
+  createTask(familyCode, listName, newTask);
+  res.json({ success: true });
+});
+
+// GET profile picture
+app.get('/api/profile-pic', (req, res) => {
+  const username = 'john_doe'; // Will implement authentication logic later
+  const user = getUser(username);
+
+  if (user) {
+    res.json({ profilePic: user.profilePic });
   } else {
-    res.status(400).send({ message: "Invalid request" });
+    res.status(404).json({ error: 'Profile picture not found' });
   }
 });
+
+// PUT (update) profile picture
+app.put('/api/profile-pic', (req, res) => {
+  const username = 'john_doe'; // Will implement authentication logic later
+  const user = getUser(username);
+  const profilePicData = req.body.profilePic;
+
+  if (user && profilePicData) {
+    updateProfilePicture(username, profilePicData);
+    res.json({ success: true });
+  } else {
+    res.status(400).json({ error: 'Error updating profile picture' });
+  }
+});
+
 
 // Return the application's default page if the path is unknown
 app.use((_req, res) => {
@@ -56,7 +114,7 @@ app.use((_req, res) => {
 
 // Error handling middleware
 app.use(function (err, req, res, next) {
-  res.status(500).send({type: err.name, message: err.message});
+  res.status(500).send({ type: err.name, message: err.message });
 });
 
 app.listen(port, () => {
