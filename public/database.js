@@ -12,9 +12,10 @@ let families = {
     "Family": [{ name: "Take Sally to School", dueDate: "2024-02-29", completed: true },
     { name: "Clean the kitchen", dueDate: "", completed: false },
     { name: "Take out the trash", dueDate: "2024-03-02", completed: false }],
-    "John": [{ name: "Buy groceries", dueDate: "2024-03-01", completed: false },
+    "john_doe": [{ name: "Buy groceries", dueDate: "2024-03-01", completed: false },
     { name: "Doctor's appointment", dueDate: "2024-03-05", completed: false }],
-    "Jill": [{ name: "Feed the dog", dueDate: "2024-03-01", completed: false }]
+    "jane_doe": [],
+    "jill_doe": [{ name: "Feed the dog", dueDate: "2024-03-01", completed: false }]
   }
 };
 
@@ -70,6 +71,12 @@ function updateTaskList(familyCode, listName, updatedTasks) {
   }
 }
 
+function deleteTaskList(familyCode, listName) {
+  if (families[familyCode]) {
+    delete families[familyCode][listName];
+  }
+}
+
 function createTask(familyCode, listName, newTask) {
   const taskList = getFamilyTaskList(familyCode, listName);
   if (taskList) {
@@ -98,5 +105,6 @@ module.exports = {
   addFamilyMember,
   removeFamilyMember,
   changeFamilyMemberRole,
-  getUserFamilyCode
+  getUserFamilyCode,
+  deleteTaskList
 };
