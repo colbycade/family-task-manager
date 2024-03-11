@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
+
 // Get database operation functions
 const { getUser, getFamilyTaskLists, getFamilyTaskList, updateTaskList, createTask, updateProfilePicture } = require('./public/database');
 
