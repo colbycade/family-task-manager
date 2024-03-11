@@ -90,6 +90,16 @@ async function addFamilyMember(event) {
         if (response.ok) {
             usernameInput.value = '';
             roleSelect.value = 'Child';
+
+            // Create a new blank task list for the added user
+            await fetch(`/api/tasks/${familyCode}/${username}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify([])
+            });
+
             displayFamilyMembers();
         } else {
             console.error('Error adding family member:', response.statusText);

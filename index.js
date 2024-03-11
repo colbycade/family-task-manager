@@ -6,7 +6,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Get database operation functions
 const { getUser, getFamilyTaskLists, getFamilyTaskList, updateTaskList, createTask, updateProfilePicture, getFamily,
-  addFamilyMember, removeFamilyMember, changeFamilyMemberRole, getUserFamilyCode } = require('./public/database');
+  addFamilyMember, removeFamilyMember, changeFamilyMemberRole, getUserFamilyCode, deleteTaskList } = require('./public/database');
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 8080;
@@ -137,12 +137,23 @@ app.get('/api/tasks/:familyCode/:listName', (req, res) => {
   }
 });
 
-// PUT (update) a specific task list
+// PUT (create/update) a specific task list
 app.put('/api/tasks/:familyCode/:listName', (req, res) => {
   const { familyCode, listName } = req.params;
   const updatedTasks = req.body;
   updateTaskList(familyCode, listName, updatedTasks);
   res.json({ success: true });
+});
+
+// DELETE a task list
+app.delete('/api/tasks/:familyCode/:listName', (req, res) => {
+  const { familyCode, listName } = req.params;
+  deleteTaskList(familyCode, listName);
+  if (!getFamilyTaskList(familyCode, listName)) {
+    res.json({ success: true });
+  } else {
+    res.status(500).json({ error: 'Error deleting task list' });
+  }
 });
 
 // POST (create) a new task
@@ -152,7 +163,6 @@ app.post('/api/tasks/:familyCode/:listName', (req, res) => {
   createTask(familyCode, listName, newTask);
   res.json({ success: true });
 });
-
 
 // Return the application's default page if the path is unknown
 app.use((_req, res) => {

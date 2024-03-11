@@ -274,6 +274,8 @@ function sortByDate() {
     tableBody.setAttribute('data-sort-ascending', !isAscending);
 }
 
+document.getElementById('date-sort-icon').addEventListener('click', sortByDate);
+
 
 // Generate a Google Calendar URL for a task
 function generateCalendarUrl(taskData) {
