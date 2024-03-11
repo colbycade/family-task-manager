@@ -5,7 +5,8 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Get database operation functions
-const { getUser, getFamilyTaskLists, getFamilyTaskList, updateTaskList, createTask, updateProfilePicture } = require('./public/database');
+const { getUser, getFamilyTaskLists, getFamilyTaskList, updateTaskList, createTask, updateProfilePicture, getFamily,
+  addFamilyMember, removeFamilyMember, changeFamilyMemberRole, getUserFamilyCode } = require('./public/database');
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 8080;
@@ -20,7 +21,9 @@ app.use(express.static('public'));
 var apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
-// GET user information
+// Endpoints for user data
+
+// GET user information 
 app.get('/api/user', (req, res) => {
   const username = 'john_doe'; // Will implement authentication logic later
   const user = getUser(username);
@@ -62,17 +65,58 @@ app.put('/api/user/profile-pic', (req, res) => {
   }
 });
 
+// Endpoints for family data
+
+// GET family members
+app.get('/api/family/:familyCode', (req, res) => {
+  const { familyCode } = req.params;
+  const family = getFamily(familyCode);
+  res.json(family);
+});
+
+// POST (add) a new family member
+app.post('/api/family/:familyCode', (req, res) => {
+  const { familyCode } = req.params;
+  const { username, role } = req.body;
+  const newMember = {
+    username,
+    familyCode,
+    role
+  };
+  addFamilyMember(newMember);
+  res.sendStatus(201);
+});
+
+// DELETE a family member
+app.delete('/api/family/:familyCode/:username', (req, res) => {
+  const { familyCode, username } = req.params;
+  removeFamilyMember(familyCode, username);
+  res.sendStatus(200);
+});
+
+// PUT (change) the role of a family member
+app.put('/api/family/:familyCode/:username/role', (req, res) => {
+  const { familyCode, username } = req.params;
+  const updatedUser = changeFamilyMemberRole(familyCode, username);
+  if (updatedUser) {
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(404);
+  }
+});
+
 // GET family code for the authenticated user
 app.get('/api/family/family-code', (req, res) => {
   const username = 'john_doe'; // Will implement authentication logic later
-  const user = getUser(username);
-
-  if (user) {
-    res.json({ familyCode: user.familyCode });
+  const familyCode = getUserFamilyCode(username);
+  if (familyCode) {
+    res.json({ familyCode });
   } else {
     res.status(404).json({ error: 'User not found' });
   }
 });
+
+// Endpoints for task list data
 
 // GET all task lists for a family
 app.get('/api/tasks/:familyCode', (req, res) => {

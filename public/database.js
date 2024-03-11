@@ -1,3 +1,5 @@
+// Database implementation (in-memory for now)
+
 // Example database data
 let users = [
   { username: 'john_doe', familyCode: 'a273B1', role: 'Parent', profilePic: null },
@@ -18,9 +20,40 @@ let families = {
 
 // In-memory implementation
 
+
+// User and family data functions
+
 function getUser(username) {
   return users.find(user => user.username === username);
 }
+
+function getFamily(familyCode) {
+  return users.filter(user => user.familyCode === familyCode);
+}
+
+function addFamilyMember(newMember) {
+  users.push(newMember);
+}
+
+function removeFamilyMember(familyCode, username) {
+  users = users.filter(user => user.username !== username || user.familyCode !== familyCode);
+}
+
+function changeFamilyMemberRole(familyCode, username) {
+  const user = users.find(user => user.username === username && user.familyCode === familyCode);
+  if (user) {
+    user.role = user.role === 'Parent' ? 'Child' : 'Parent';
+    return user;
+  }
+  return null;
+}
+
+function getUserFamilyCode(username) {
+  const user = users.find(user => user.username === username);
+  return user ? user.familyCode : null;
+}
+
+// Task list functions
 
 function getFamilyTaskLists(familyCode) {
   return families[familyCode] || {};
@@ -60,5 +93,10 @@ module.exports = {
   getFamilyTaskList,
   updateTaskList,
   createTask,
-  updateProfilePicture
+  updateProfilePicture,
+  getFamily,
+  addFamilyMember,
+  removeFamilyMember,
+  changeFamilyMemberRole,
+  getUserFamilyCode
 };
