@@ -26,10 +26,12 @@ async function displayFamilyMembers() {
 
             const removeButton = document.createElement('button');
             removeButton.textContent = 'Remove';
+            // Event listener for removing a new family member
             removeButton.addEventListener('click', () => removeFamilyMember(member.username));
 
             const changeRoleButton = document.createElement('button');
             changeRoleButton.textContent = 'Change Role';
+            // Event listener for changing the role of a family member
             changeRoleButton.addEventListener('click', () => changeRole(member.username));
 
             memberElement.appendChild(nameElement);
@@ -132,6 +134,7 @@ async function removeFamilyMember(username) {
             method: 'DELETE'
         });
         if (response.ok) {
+            removeTaskList(username);
             displayFamilyMembers();
         } else {
             console.error('Error removing family member:', response.statusText);
@@ -142,7 +145,22 @@ async function removeFamilyMember(username) {
 }
 
 
-// Event listener for removing a new family member
+async function removeTaskList(username) {
+    const familyCodeResponse = await fetch('/api/family/family-code');
+    const { familyCode } = await familyCodeResponse.json();
+
+    const response = await fetch(`/api/tasks/${familyCode}/${username}`, {
+        method: 'DELETE'
+    });
+    if (response.ok) {
+        return;
+    } else {
+        console.error('Error removing family member:', response.statusText);
+    }
+}
+
+
+// Event listener for adding a new family member
 document.querySelector('#add-member-form').addEventListener('submit', addFamilyMember);
 
 // Change the role of a family member
