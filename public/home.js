@@ -280,6 +280,10 @@ document.getElementById('date-sort-icon').addEventListener('click', sortByDate);
 // Generate a Google Calendar URL for a task
 function generateCalendarUrl(taskData) {
     const dueDate = new Date(taskData.dueDate);
+    if (isNaN(dueDate)) {
+        alert('Only tasks with a valid due date can be added to the calendar');
+        return;
+    }
     const year = dueDate.getFullYear();
     // Month and day need to be 0-padded if less than 10
     const month = String(dueDate.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
