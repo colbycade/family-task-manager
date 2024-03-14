@@ -14,58 +14,38 @@ async function displayUserInfo() {
 }
 
 // Save profile picture
-async function saveProfilePic(event) {
-    if (event.target.files && event.target.files[0]) {
-        const file = event.target.files[0];
-        const reader = new FileReader();
+async function saveProfilePic(fileInput) {
+    const file = fileInput.files[0];
+    if (file) {
+        const formData = new FormData();
+        formData.append('profilePic', file);
 
-        reader.onload = async function (e) {
-            const base64Image = e.target.result.split(',')[1];
+        const response = await fetch('/api/user/profile-pic', {
+            method: 'PUT',
+            body: formData
+        });
 
-            try {
-                const response = await fetch('/api/user/profile-pic', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ profilePic: base64Image })
-                });
-
-                if (response.ok) {
-                    displayProfilePic();
-                } else {
-                    console.error('Error saving profile picture:', response.statusText);
-                }
-            } catch (error) {
-                console.error('Error saving profile picture:', error);
-            }
-        };
-
-        reader.readAsDataURL(file);
+        if (response.ok) {
+            displayProfilePic();
+        } else {
+            console.error('Error saving profile picture:', response.statusText);
+        }
     }
-}
+};
 
 // Display profile picture or generic profile picture if not found
 async function displayProfilePic() {
-    try {
-        const response = await fetch('/api/user/profile-pic');
-
-        if (response.ok) {
-            const data = await response.json();
-            const profilePicEl = document.getElementById('profilePic');
-            profilePicEl.src = data.profilePic ? `data:image/jpeg;base64,${data.profilePic}` : 'assets/generic_profile.jpeg';
-        } else if (response.status === 404) {
-            const profilePicEl = document.getElementById('profilePic');
-            profilePicEl.src = 'assets/generic_profile.jpeg';
-        } else {
-            console.error('Error fetching profile picture:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error fetching profile picture:', error);
+    const response = await fetch('/api/user/profile-pic');
+    if (response.ok) {
+        const profilePicEl = document.getElementById('profilePic');
+        profilePicEl.src = response.url;
+    } else if (response.status === 404) {
+        const profilePicEl = document.getElementById('profilePic');
+        profilePicEl.src = 'assets/generic_profile.jpeg';
+    } else {
+        console.error('Error fetching profile picture:', response.statusText);
     }
 }
-
-document.getElementById('profilePicInput').addEventListener('change', saveProfilePic);
 
 // Run when the page loads
 window.onload = async () => {

@@ -1,8 +1,20 @@
 const express = require('express');
+const multer = require('multer');
 const app = express();
 
-app.use(express.json({ limit: '10mb' })); // increase the limit to support profile pictures (gifs work!)
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+// Set up multer for file uploads
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: 'uploads/',
+    filename: (req, file, cb) => {
+      const filetype = file.originalname.split('.').pop();
+      const id = Math.round(Math.random() * 1e9);
+      const filename = `${id}.${filetype}`;
+      cb(null, filename);
+    },
+  }),
+  limits: { fileSize: 64000 },
+});
 
 // Get database operation functions
 const { getUser, getFamilyTaskLists, getFamilyTaskList, updateTaskList, createTask, updateProfilePicture, getFamily,
@@ -175,8 +187,12 @@ app.use((_req, res) => {
 });
 
 // Error handling middleware
-app.use(function (err, req, res, next) {
-  res.status(500).send({ type: err.name, message: err.message });
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    res.status(413).send({ message: err.message });
+  } else {
+    res.status(500).send({ message: err.message });
+  }
 });
 
 app.listen(port, () => {
