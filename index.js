@@ -35,151 +35,200 @@ app.use(`/api`, apiRouter);
 
 // Endpoints for user data
 
-// PUT login user (placeholder for future authentication)
-app.put('/api/login', (req, res) => {
+// PUT login user
+app.put('/api/login', async (req, res) => {
   const { username, password } = req.body;
+  // Placeholder for future authentication logic
 });
 
 // GET user information 
-app.get('/api/user', (req, res) => {
+app.get('/api/user', async (req, res) => {
   const username = 'john_doe'; // Will implement authentication logic later
-  const user = getUser(username);
-
-  if (user) {
-    res.json({
-      username: user.username,
-      familyCode: user.familyCode,
-      role: user.role
-    });
-  } else {
-    res.status(404).json({ error: 'User not found' });
+  try {
+    const user = await getUser(username);
+    if (user) {
+      res.json({
+        username: user.username,
+        familyCode: user.familyCode,
+        role: user.role
+      });
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
 // GET profile picture
-app.get('/api/user/profile-pic', (req, res) => {
-  const username = 'john_doe'; // Will implement authentication logic later
-  const user = getUser(username);
-
-  if (user) {
-    res.json({ profilePic: user.profilePic });
-  } else {
-    res.status(404).json({ error: 'Profile picture not found' });
+app.get('/api/user/profile-pic', async (req, res) => {
+  const username = 'john_doe'; // Placeholder for future authentication logic
+  try {
+    const user = await getUser(username);
+    if (user) {
+      res.json({ profilePic: user.profilePic });
+    } else {
+      res.status(404).json({ error: 'Profile picture not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
 // PUT (update) profile picture
-app.put('/api/user/profile-pic', (req, res) => {
-  const username = 'john_doe'; // Will implement authentication logic later
-  const user = getUser(username);
+app.put('/api/user/profile-pic', async (req, res) => {
+  const username = 'john_doe'; // Placeholder for future authentication logic
   const profilePicData = req.body.profilePic;
-
-  if (user && profilePicData) {
-    updateProfilePicture(username, profilePicData);
-    res.json({ success: true });
-  } else {
-    res.status(400).json({ error: 'Error updating profile picture' });
+  try {
+    const result = await updateProfilePicture(username, profilePicData);
+    if (result.modifiedCount === 1) {
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ error: 'User not found or no update needed' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
 // Endpoints for family data
 
 // GET family code for the authenticated user
-app.get('/api/family/family-code', (req, res) => {
-  const username = 'john_doe'; // Will implement authentication logic later
-  const familyCode = getUserFamilyCode(username);
-  if (familyCode) {
-    res.json({ familyCode });
-  } else {
-    res.status(404).json({ error: 'User not found' });
+app.get('/api/family/family-code', async (req, res) => {
+  const username = 'john_doe'; // Placeholder for future authentication logic
+  try {
+    const familyCode = await getUserFamilyCode(username);
+    if (familyCode) {
+      res.json({ familyCode });
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
 // GET family members
-app.get('/api/family/:familyCode', (req, res) => {
+app.get('/api/family/:familyCode', async (req, res) => {
   const { familyCode } = req.params;
-  const family = getFamily(familyCode);
-  res.json(family);
+  try {
+    const family = await getFamily(familyCode);
+    res.json(family);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // POST (add) a new family member
-app.post('/api/family/:familyCode', (req, res) => {
+app.post('/api/family/:familyCode', async (req, res) => {
   const { familyCode } = req.params;
   const { username, role } = req.body;
-  const newMember = {
-    username,
-    familyCode,
-    role
-  };
-  addFamilyMember(newMember);
-  res.sendStatus(201);
+  try {
+    await addFamilyMember({ username, familyCode, role });
+    res.sendStatus(201);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // DELETE a family member
-app.delete('/api/family/:familyCode/:username', (req, res) => {
+app.delete('/api/family/:familyCode/:username', async (req, res) => {
   const { familyCode, username } = req.params;
-  removeFamilyMember(familyCode, username);
-  res.sendStatus(200);
+  try {
+    const result = await removeFamilyMember(familyCode, username);
+    if (result.deletedCount === 1) {
+      res.sendStatus(200);
+    } else {
+      res.status(404).json({ error: 'Family member not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // PUT (change) the role of a family member
-app.put('/api/family/:familyCode/:username/role', (req, res) => {
+app.put('/api/family/:familyCode/:username/role', async (req, res) => {
   const { familyCode, username } = req.params;
-  const updatedUser = changeFamilyMemberRole(familyCode, username);
-  if (updatedUser) {
-    res.sendStatus(200);
-  } else {
-    res.sendStatus(404);
+  try {
+    const updatedUser = await changeFamilyMemberRole(familyCode, username);
+    if (updatedUser) {
+      res.sendStatus(200);
+    } else {
+      res.sendStatus(404).json({ error: 'Family member not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
 // Endpoints for task list data
 
 // GET all task lists for a family
-app.get('/api/tasks/:familyCode', (req, res) => {
+app.get('/api/tasks/:familyCode', async (req, res) => {
   const { familyCode } = req.params;
-  const familyTaskLists = getFamilyTaskLists(familyCode);
-  res.json(familyTaskLists);
+  try {
+    const familyTaskLists = await getFamilyTaskLists(familyCode);
+    res.json(familyTaskLists);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // GET a specific task list for a family
-app.get('/api/tasks/:familyCode/:listName', (req, res) => {
+app.get('/api/tasks/:familyCode/:listName', async (req, res) => {
   const { familyCode, listName } = req.params;
-  const taskList = getFamilyTaskList(familyCode, listName);
-
-  if (taskList) {
-    res.json(taskList);
-  } else {
-    res.status(404).json({ error: 'Task list not found' });
+  try {
+    const taskList = await getFamilyTaskList(familyCode, listName);
+    if (taskList) {
+      res.json(taskList);
+    } else {
+      res.status(404).json({ error: 'Task list not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
 // PUT (create/update) a specific task list
-app.put('/api/tasks/:familyCode/:listName', (req, res) => {
+app.put('/api/tasks/:familyCode/:listName', async (req, res) => {
   const { familyCode, listName } = req.params;
   const updatedTasks = req.body;
-  updateTaskList(familyCode, listName, updatedTasks);
-  res.json({ success: true });
+  try {
+    await updateTaskList(familyCode, listName, updatedTasks);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // DELETE a task list
-app.delete('/api/tasks/:familyCode/:listName', (req, res) => {
+app.delete('/api/tasks/:familyCode/:listName', async (req, res) => {
   const { familyCode, listName } = req.params;
-  deleteTaskList(familyCode, listName);
-  if (!getFamilyTaskList(familyCode, listName)) {
-    res.json({ success: true });
-  } else {
-    res.status(500).json({ error: 'Error deleting task list' });
+  try {
+    const result = await deleteTaskList(familyCode, listName);
+    if (result.modifiedCount === 1) {
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ error: 'Task list not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
 // POST (create) a new task
-app.post('/api/tasks/:familyCode/:listName', (req, res) => {
+app.post('/api/tasks/:familyCode/:listName', async (req, res) => {
   const { familyCode, listName } = req.params;
   const newTask = req.body;
-  createTask(familyCode, listName, newTask);
-  res.json({ success: true });
+  try {
+    await createTask(familyCode, listName, newTask);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
+
+
 
 // Return the application's default page if the path is unknown
 app.use((_req, res) => {
