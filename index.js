@@ -17,7 +17,7 @@ const upload = multer({
 });
 
 // Get database operation functions
-const { getUser, getFamilyTaskLists, getFamilyTaskList, updateTaskList, createTask, updateProfilePicture, getFamily,
+const { dbConnect, getUser, getFamilyTaskLists, getFamilyTaskList, updateTaskList, createTask, updateProfilePicture, getFamily,
   addFamilyMember, removeFamilyMember, changeFamilyMemberRole, getUserFamilyCode, deleteTaskList } = require('./database');
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
@@ -195,6 +195,15 @@ app.use((err, req, res, next) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
-});
+
+// Connect to database then start the server
+dbConnect()
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`Listening on port ${port}`);
+    });
+  })
+  .catch((error) => {
+    console.error('Error connecting to the database:', error);
+    process.exit(1);
+  });

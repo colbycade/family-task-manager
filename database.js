@@ -5,9 +5,9 @@ const config = require('./dbConfig.json');
 
 const uri = `mongodb+srv://${config.userName}:${config.password}@${config.hostname}`;
 
-let client, db, user_collection, family_collection;
+let client, db, user_collection, task_collection;
 
-async function main() {
+async function dbConnect() {
   // Connect to the database cluster
   const url = `mongodb+srv://${config.userName}:${config.password}@${config.hostname}`;
   client = new MongoClient(url);
@@ -15,21 +15,30 @@ async function main() {
 
   db = client.db('familytracker');
   user_collection = db.collection('user');
-  family_collection = db.collection('family');
+  task_collection = db.collection('task');
 
   // Test the connection
   await db.command({ ping: 1 });
+
+  // // insert test data
+  // await user_collection.insertOne({
+  //   username: 'john_doe', familyCode: 'a273B1', role: 'Parent', profilePic: null
+  // });
+  // await task_collection.insertOne({
+  //   familyCode: 'a273B1',
+  //   tasks: {
+  //     Family: [{ name: "Take Sally to School", dueDate: "2024-02-29", completed: true }, { name: "Clean the kitchen", dueDate: "", completed: false }, { name: "Take out the trash", dueDate: "2024-03-02", completed: false }],
+  //     john_doe: [{ name: "Buy groceries", dueDate: "2024-03-01", completed: false }, { name: "Doctor's appointment", dueDate: "2024-03-05", completed: false }]
+  //   }
+  // });
 }
-main().catch(console.error);
+dbConnect().catch(console.error);
 
+// User and family data functions
 
+// // In-memory implementation
 
-
-
-
-// In-memory implementation
-
-// Example database data
+// // Example database data
 // let users = [
 //   { username: 'john_doe', familyCode: 'a273B1', role: 'Parent', profilePic: null },
 //   { username: 'jane_doe', familyCode: 'a273B1', role: 'Child', profilePic: null },
