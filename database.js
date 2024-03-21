@@ -60,13 +60,13 @@ async function getUserFamilyCode(username) {
 // Task list functions
 
 async function getFamilyTaskLists(familyCode) {
-  console.log(await task_collection.findOne({ familyCode: familyCode }))
-  return await task_collection.findOne({ familyCode: familyCode }) || {};
+  task_document = await task_collection.findOne({ familyCode: familyCode });
+  return task_document.tasks || {};
 }
 
 async function getFamilyTaskList(familyCode, listName) {
-  const family = await getFamilyTaskLists(familyCode);
-  return family.tasks && family.tasks[listName] ? family.tasks[listName] : null;
+  const familyTasks = await getFamilyTaskLists(familyCode);
+  return familyTasks[listName] || null;
 }
 
 async function updateTaskList(familyCode, listName, updatedTasks) {
