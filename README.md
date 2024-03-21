@@ -1,4 +1,4 @@
-# Family Chore Tracker
+# Family To-Do Tracker
 
 This is a web application that allows families to efficiently plan and track tasks and events at home.
 
