@@ -3,8 +3,6 @@
 const { MongoClient } = require('mongodb');
 const config = require('./dbConfig.json');
 
-const uri = `mongodb+srv://${config.userName}:${config.password}@${config.hostname}`;
-
 let client, db, user_collection, task_collection;
 
 async function dbConnect() {
@@ -20,21 +18,102 @@ async function dbConnect() {
   // Test the connection
   await db.command({ ping: 1 });
 
-  // // insert test data
-  // await user_collection.insertOne({
-  //   username: 'john_doe', familyCode: 'a273B1', role: 'Parent', profilePic: null
-  // });
-  // await task_collection.insertOne({
-  //   familyCode: 'a273B1',
-  //   tasks: {
-  //     Family: [{ name: "Take Sally to School", dueDate: "2024-02-29", completed: true }, { name: "Clean the kitchen", dueDate: "", completed: false }, { name: "Take out the trash", dueDate: "2024-03-02", completed: false }],
-  //     john_doe: [{ name: "Buy groceries", dueDate: "2024-03-01", completed: false }, { name: "Doctor's appointment", dueDate: "2024-03-05", completed: false }]
-  //   }
-  // });
+  // insert test data if needed
+  await insertTestData();
+
 }
 dbConnect().catch(console.error);
 
 // User and family data functions
+
+async function getUser(username) {
+  return await user_collection.findOne({ username: username });
+}
+
+async function getFamily(familyCode) {
+  return await user_collection.find({ familyCode: familyCode }).toArray();
+}
+
+async function addFamilyMember(newMember) {
+  await user_collection.insertOne(newMember);
+}
+
+async function removeFamilyMember(familyCode, username) {
+  await user_collection.deleteOne({ username: username, familyCode: familyCode });
+}
+
+async function changeFamilyMemberRole(familyCode, username) {
+  const user = await getUser(username);
+  if (user && user.familyCode === familyCode) {
+    const newRole = user.role === 'Parent' ? 'Child' : 'Parent';
+    await user_collection.updateOne({ username: username, familyCode: familyCode }, { $set: { role: newRole } });
+    return await getUser(username); // Return the updated user
+  }
+  return null;
+}
+
+async function getUserFamilyCode(username) {
+  const user = await getUser(username);
+  return user ? user.familyCode : null;
+}
+
+// Task list functions
+
+async function getFamilyTaskLists(familyCode) {
+  console.log(await task_collection.findOne({ familyCode: familyCode }))
+  return await task_collection.findOne({ familyCode: familyCode }) || {};
+}
+
+async function getFamilyTaskList(familyCode, listName) {
+  const family = await getFamilyTaskLists(familyCode);
+  return family.tasks && family.tasks[listName] ? family.tasks[listName] : null;
+}
+
+async function updateTaskList(familyCode, listName, updatedTasks) {
+  await task_collection.updateOne({ familyCode: familyCode }, { $set: { [`tasks.${listName}`]: updatedTasks } });
+}
+
+async function deleteTaskList(familyCode, listName) {
+  await task_collection.updateOne({ familyCode: familyCode }, { $unset: { [`tasks.${listName}`]: "" } });
+}
+
+async function createTask(familyCode, listName, newTask) {
+  await task_collection.updateOne({ familyCode: familyCode }, { $push: { [`tasks.${listName}`]: newTask } });
+}
+
+async function updateProfilePicture(username, profilePicData) {
+  await user_collection.updateOne({ username: username }, { $set: { profilePic: profilePicData } });
+}
+
+module.exports = {
+  dbConnect,
+  getUser,
+  getFamilyTaskLists,
+  getFamilyTaskList,
+  updateTaskList,
+  createTask,
+  updateProfilePicture,
+  getFamily,
+  addFamilyMember,
+  removeFamilyMember,
+  changeFamilyMemberRole,
+  getUserFamilyCode,
+  deleteTaskList
+};
+
+async function insertTestData() {
+  await user_collection.insertOne({
+    username: 'john_doe', familyCode: 'a273B1', role: 'Parent', profilePic: null
+  });
+  await task_collection.insertOne({
+    familyCode: 'a273B1',
+    tasks: {
+      Family: [{ name: "Take Sally to School", dueDate: "2024-02-29", completed: true }, { name: "Clean the kitchen", dueDate: "", completed: false }, { name: "Take out the trash", dueDate: "2024-03-02", completed: false }],
+      john_doe: [{ name: "Buy groceries", dueDate: "2024-03-01", completed: false }, { name: "Doctor's appointment", dueDate: "2024-03-05", completed: false }]
+    }
+  });
+}
+
 
 // // In-memory implementation
 
