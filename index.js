@@ -1,6 +1,8 @@
 const express = require('express');
 const multer = require('multer');
+const fs = require('fs').promises;
 const path = require('path');
+
 const app = express();
 
 // Set up multer for file uploads
@@ -88,6 +90,13 @@ app.put('/api/user/profile-pic', upload.single('profilePic'), async (req, res) =
   const relativePath = profilePicPath.replace(/^public\//, '');
 
   try {
+    // Delete the previous profile picture file from storage if it exists
+    const user = await getUser(username);
+    if (user.profilePic) {
+      const previousPicPath = `public/${user.profilePic}`;
+      await fs.unlink(previousPicPath);
+    }
+
     const result = await updateProfilePicture(username, relativePath);
     if (result.modifiedCount === 1) {
       res.json({ success: true });
