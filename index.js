@@ -6,7 +6,7 @@ const app = express();
 // Set up multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/');
+    cb(null, 'public/uploads/');
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -66,8 +66,8 @@ app.get('/api/user/profile-pic', async (req, res) => {
   const username = 'john_doe'; // Placeholder for future authentication logic
   try {
     const user = await getUser(username);
-    if (user.ProfilePic) {
-      res.json({ profilePic: user.profilePic });
+    if (user.profilePic) {
+      res.json({ profilePicPath: user.profilePic });
     } else {
       res.status(404).json({ error: 'Profile picture not found' });
     }
@@ -77,13 +77,26 @@ app.get('/api/user/profile-pic', async (req, res) => {
 });
 
 // PUT (update) profile picture of current user
-app.put('/api/user/profile-pic', upload.single('profilePic'), (req, res) => {
+app.put('/api/user/profile-pic', upload.single('profilePic'), async (req, res) => {
+  const username = 'john_doe'; // Placeholder for future authentication logic
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded.' });
   }
 
-  // File uploaded successfully
-  console.log('Profile picture uploaded: ' + req.file.filename);
+  // Extract the relative path from the file object (e.g. public/uploads/profilePic.jpg -> uploads/profilePic.jpg)
+  const profilePicPath = req.file.path;
+  const relativePath = profilePicPath.replace(/^public\//, '');
+
+  try {
+    const result = await updateProfilePicture(username, relativePath);
+    if (result.modifiedCount === 1) {
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ error: 'User not found or no update needed' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Endpoints for family data

@@ -81,8 +81,8 @@ async function createTask(familyCode, listName, newTask) {
   await task_collection.updateOne({ familyCode: familyCode }, { $push: { [`tasks.${listName}`]: newTask } });
 }
 
-async function updateProfilePicture(username, profilePicData) {
-  return user_collection.updateOne({ username: username }, { $set: { profilePic: profilePicData } });
+async function updateProfilePicture(username, profilePicPath) {
+  return user_collection.updateOne({ username: username }, { $set: { profilePic: profilePicPath } });
 }
 
 module.exports = {

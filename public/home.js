@@ -25,7 +25,7 @@ async function saveProfilePic(fileInput) {
     });
 
     if (response.ok) {
-        // displayProfilePic();
+        displayProfilePic();
     } else {
         const errorData = await response.json();
         console.error('Error saving profile picture: ', errorData.error);
@@ -34,13 +34,19 @@ async function saveProfilePic(fileInput) {
 
 // Display profile picture or generic profile picture if not found
 async function displayProfilePic() {
-    try {
-        const response = await fetch('/api/user/profile-pic');
+    const profilePicEl = document.getElementById('profilePic');
+    const response = await fetch('/api/user/profile-pic');
+
+    if (response.ok) {
         const data = await response.json();
-        const profilePicEl = document.getElementById('profilePic');
-        profilePicEl.src = data.profilePic || 'assets/generic_profile.jpeg';
-    } catch (error) {
-        console.error('Error fetching profile picture:', error);
+        profilePicEl.src = data.profilePicPath;
+        console.log(profilePicEl.src)
+    } else if (response.status === 404) {
+        profilePicEl.src = 'assets/generic_profile.jpeg';
+    }
+    else {
+        const errorData = await response.json();
+        console.error('Error displaying profile picture: ', errorData.error);
     }
 }
 
