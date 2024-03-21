@@ -46,71 +46,6 @@ async function displayFamilyMembers() {
     }
 }
 
-// Add a new family member
-async function addFamilyMember(event) {
-    event.preventDefault();
-
-    const currUserResponse = await fetch('/api/user');
-    const currUser = await currUserResponse.json();
-
-    if (currUser.role === 'Child') {
-        alert('Only parents can add family members');
-        return;
-    }
-
-    const usernameInput = document.querySelector('#username-input');
-    const roleSelect = document.querySelector('#role-select');
-
-    const username = usernameInput.value;
-    const role = roleSelect.value;
-
-    try {
-        const familyCodeResponse = await fetch('/api/family/family-code');
-        const { familyCode } = await familyCodeResponse.json();
-
-        // Check if the username already exists
-        const existingMemberResponse = await fetch(`/api/family/${familyCode}`);
-        const existingMembers = await existingMemberResponse.json();
-        const usernameExists = existingMembers.some(member => member.username === username);
-
-        if (usernameExists) {
-            alert('Username already exists. Please choose a different username.');
-            return;
-        }
-
-        const response = await fetch(`/api/family/${familyCode}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username, role })
-        });
-
-        if (response.ok) {
-            usernameInput.value = '';
-            roleSelect.value = 'Child';
-
-            // Create a new blank task list for the added user
-            await fetch(`/api/tasks/${familyCode}/${username}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify([])
-            });
-
-            displayFamilyMembers();
-        } else {
-            console.error('Error adding family member:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error adding family member:', error);
-    }
-}
-
-// Event listener for adding a new family member
-document.querySelector('#add-member-form').addEventListener('submit', addFamilyMember);
-
 // Remove a family member
 async function removeFamilyMember(username) {
     try {
@@ -145,6 +80,7 @@ async function removeFamilyMember(username) {
 }
 
 
+// Remove the task list of a family member
 async function removeTaskList(username) {
     const familyCodeResponse = await fetch('/api/family/family-code');
     const { familyCode } = await familyCodeResponse.json();
@@ -159,9 +95,6 @@ async function removeTaskList(username) {
     }
 }
 
-
-// Event listener for adding a new family member
-document.querySelector('#add-member-form').addEventListener('submit', addFamilyMember);
 
 // Change the role of a family member
 async function changeRole(username) {
