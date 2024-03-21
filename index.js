@@ -1,20 +1,21 @@
 const express = require('express');
 const multer = require('multer');
+const path = require('path');
 const app = express();
 
 // Set up multer for file uploads
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: 'uploads/',
-    filename: (req, file, cb) => {
-      const filetype = file.originalname.split('.').pop();
-      const id = Math.round(Math.random() * 1e9);
-      const filename = `${id}.${filetype}`;
-      cb(null, filename);
-    },
-  }),
-  limits: { fileSize: 64000 },
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'profile-pic-' + uniqueSuffix + path.extname(file.originalname));
+  }
 });
+
+// Create the Multer upload instance
+const upload = multer({ storage: storage });
 
 // Get database operation functions
 const { dbConnect, getUser, getFamilyTaskLists, getFamilyTaskList, updateTaskList, createTask, updateProfilePicture, getFamily,
@@ -60,12 +61,12 @@ app.get('/api/user', async (req, res) => {
   }
 });
 
-// GET profile picture
+// GET profile picture of current user
 app.get('/api/user/profile-pic', async (req, res) => {
   const username = 'john_doe'; // Placeholder for future authentication logic
   try {
     const user = await getUser(username);
-    if (user) {
+    if (user.ProfilePic) {
       res.json({ profilePic: user.profilePic });
     } else {
       res.status(404).json({ error: 'Profile picture not found' });
@@ -75,20 +76,14 @@ app.get('/api/user/profile-pic', async (req, res) => {
   }
 });
 
-// PUT (update) profile picture
-app.put('/api/user/profile-pic', async (req, res) => {
-  const username = 'john_doe'; // Placeholder for future authentication logic
-  const profilePicData = req.body.profilePic;
-  try {
-    const result = await updateProfilePicture(username, profilePicData);
-    if (result.modifiedCount === 1) {
-      res.json({ success: true });
-    } else {
-      res.status(404).json({ error: 'User not found or no update needed' });
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+// PUT (update) profile picture of current user
+app.put('/api/user/profile-pic', upload.single('profilePic'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded.' });
   }
+
+  // File uploaded successfully
+  console.log('Profile picture uploaded: ' + req.file.filename);
 });
 
 // Endpoints for family data
@@ -227,8 +222,6 @@ app.post('/api/tasks/:familyCode/:listName', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-
 
 // Return the application's default page if the path is unknown
 app.use((_req, res) => {

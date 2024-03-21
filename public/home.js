@@ -16,34 +16,31 @@ async function displayUserInfo() {
 // Save profile picture
 async function saveProfilePic(fileInput) {
     const file = fileInput.files[0];
-    if (file) {
-        const formData = new FormData();
-        formData.append('profilePic', file);
+    const formData = new FormData();
+    formData.append('profilePic', file);
 
-        const response = await fetch('/api/user/profile-pic', {
-            method: 'PUT',
-            body: formData
-        });
+    const response = await fetch('/api/user/profile-pic', {
+        method: 'PUT',
+        body: formData,
+    });
 
-        if (response.ok) {
-            displayProfilePic();
-        } else {
-            console.error('Error saving profile picture:', response.statusText);
-        }
+    if (response.ok) {
+        // displayProfilePic();
+    } else {
+        const errorData = await response.json();
+        console.error('Error saving profile picture: ', errorData.error);
     }
-};
+}
 
 // Display profile picture or generic profile picture if not found
 async function displayProfilePic() {
-    const response = await fetch('/api/user/profile-pic');
-    if (response.ok) {
+    try {
+        const response = await fetch('/api/user/profile-pic');
+        const data = await response.json();
         const profilePicEl = document.getElementById('profilePic');
-        profilePicEl.src = response.url;
-    } else if (response.status === 404) {
-        const profilePicEl = document.getElementById('profilePic');
-        profilePicEl.src = 'assets/generic_profile.jpeg';
-    } else {
-        console.error('Error fetching profile picture:', response.statusText);
+        profilePicEl.src = data.profilePic || 'assets/generic_profile.jpeg';
+    } catch (error) {
+        console.error('Error fetching profile picture:', error);
     }
 }
 
@@ -134,7 +131,7 @@ async function loadSelectedTaskList() {
     }
 }
 
-async function toggleTaskCompletion(listName, taskIndex, checkBoxEl) {
+async function toggleTaskCompletion(listName, taskIndex) {
     try {
         const familyCodeResponse = await fetch('/api/family/family-code');
         const { familyCode } = await familyCodeResponse.json();

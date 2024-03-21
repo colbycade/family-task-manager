@@ -18,7 +18,7 @@ async function dbConnect() {
   // Test the connection
   await db.command({ ping: 1 });
 
-  // insert test data if needed
+  // clear collections and insert test data for demonstration
   await insertTestData();
 
 }
@@ -82,7 +82,7 @@ async function createTask(familyCode, listName, newTask) {
 }
 
 async function updateProfilePicture(username, profilePicData) {
-  await user_collection.updateOne({ username: username }, { $set: { profilePic: profilePicData } });
+  return user_collection.updateOne({ username: username }, { $set: { profilePic: profilePicData } });
 }
 
 module.exports = {
@@ -102,16 +102,39 @@ module.exports = {
 };
 
 async function insertTestData() {
-  await user_collection.insertOne({
-    username: 'john_doe', familyCode: 'a273B1', role: 'Parent', profilePic: null
-  });
-  await task_collection.insertOne({
-    familyCode: 'a273B1',
-    tasks: {
-      Family: [{ name: "Take Sally to School", dueDate: "2024-02-29", completed: true }, { name: "Clean the kitchen", dueDate: "", completed: false }, { name: "Take out the trash", dueDate: "2024-03-02", completed: false }],
-      john_doe: [{ name: "Buy groceries", dueDate: "2024-03-01", completed: false }, { name: "Doctor's appointment", dueDate: "2024-03-05", completed: false }]
-    }
-  });
+  try {
+    // Clear the user_collection
+    await user_collection.deleteMany({});
+
+    // Clear the task_collection
+    await task_collection.deleteMany({});
+
+    // Insert test user data
+    await user_collection.insertOne({
+      username: 'john_doe',
+      familyCode: 'a273B1',
+      role: 'Parent',
+      profilePic: null
+    });
+
+    // Insert test task data
+    await task_collection.insertOne({
+      familyCode: 'a273B1',
+      tasks: {
+        Family: [
+          { name: "Take Sally to School", dueDate: "2024-02-29", completed: true },
+          { name: "Clean the kitchen", dueDate: "", completed: false },
+          { name: "Take out the trash", dueDate: "2024-03-02", completed: false }
+        ],
+        john_doe: [
+          { name: "Buy groceries", dueDate: "2024-03-01", completed: false },
+          { name: "Doctor's appointment", dueDate: "2024-03-05", completed: false }
+        ]
+      }
+    });
+  } catch (error) {
+    console.error("Error inserting test data:", error);
+  }
 }
 
 
