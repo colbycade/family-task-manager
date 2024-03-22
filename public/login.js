@@ -20,7 +20,8 @@ async function login() {
             window.location.href = "home.html";
         } else {
             const data = await response.json();
-            alert(data.error);
+            console.error('Error:', data.error);
+            alert('An error occurred. Please try again.');
         }
     } catch (error) {
         console.error('Error:', error);
@@ -51,7 +52,8 @@ async function joinFamily() {
             window.location.href = "home.html";
         } else {
             const data = await response.json();
-            alert(data.error);
+            console.error('Error:', data.error);
+            alert('An error occurred. Please try again.');
         }
     } catch (error) {
         console.error('Error:', error);
@@ -81,10 +83,26 @@ async function createFamily() {
             window.location.href = "home.html";
         } else {
             const data = await response.json();
-            alert(data.error);
+            console.error('Error:', data.error);
+            alert('An error occurred. Please try again.');
         }
     } catch (error) {
         console.error('Error:', error);
         alert('An error occurred. Please try again.');
+    }
+}
+
+async function logout() {
+    const response = await fetch('/api/auth/logout', {
+        method: 'DELETE',
+        credentials: 'include', // Include cookies in the request
+    });
+
+    if (response.ok) {
+        window.location.href = '/login';
+        alert('You have been logged out.');
+    } else {
+        const errorData = await response.json();
+        console.error('Error logging out: ', errorData.error);
     }
 }
