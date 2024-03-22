@@ -6,4 +6,4 @@ The domain name for the website is [familytracker.click](http://familytracker.cl
 Any subdomains also redirect, such as [example.familytracker.click](http://example.familytracker.click).
 
 ### To deploy:
-`./deployFiles.sh -k ~/Desktop/BYU/CS260/wrightsaretough.pem -h familytracker.click -s startup`
+`./deployService.sh -k ~/Desktop/BYU/CS260/wrightsaretough.pem -h familytracker.click -s startup`
