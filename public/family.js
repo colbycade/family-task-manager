@@ -2,17 +2,20 @@
 
 // Display family members
 async function displayFamilyMembers() {
-    try {
-        const familyCodeResponse = await fetch('/api/family/family-code');
-        const { familyCode } = await familyCodeResponse.json();
+    const userResponse = await fetch('/api/user', {
+        method: 'GET',
+        credentials: 'include', // Include cookies in the request
+    });
 
-        const response = await fetch(`/api/family/${familyCode}`);
+    if (userResponse.ok) {
+        const userData = await userResponse.json();
+        const response = await fetch(`/api/family/${userData.familyCode}`);
         const familyData = await response.json();
 
-        const container = document.querySelector('#family-container');
+        const container = document.getElementById('family-container');
         container.innerHTML = '';
 
-        familyData.forEach(member => {
+        familyData.family.forEach(member => {
             const memberElement = document.createElement('div');
             memberElement.classList.add('family-member');
 
@@ -41,79 +44,159 @@ async function displayFamilyMembers() {
 
             container.appendChild(memberElement);
         });
-    } catch (error) {
-        console.error('Error fetching family data:', error);
+    } else if (userResponse.status === 401) {
+        // Handle unauthorized access
+        console.error('Authentication cookie not found. Redirecting to login page.');
+        // Redirect the user to the login page
+        window.location.href = '/login';
+        alert('You have been signed out. Please log in again.')
+    } else {
+        const errorData = await userResponse.json();
+        console.error('Error fetching family data: ', errorData.error);
     }
 }
 
+// Add a new family member
+// async function addFamilyMember(event) {
+
+//     try {
+//         const familyCodeResponse = await fetch('/api/family/family-code');
+//         const { familyCode } = await familyCodeResponse.json();
+
+//         // Check if the username already exists
+//         const existingMemberResponse = await fetch(`/api/family/${familyCode}`);
+//         const existingMembers = await existingMemberResponse.json();
+//         const usernameExists = existingMembers.some(member => member.username === username);
+
+//         if (usernameExists) {
+//             alert('Username already exists. Please choose a different username.');
+//             return;
+//         }
+
+//         const response = await fetch(`/api/family/${familyCode}`, {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify({ username, role })
+//         });
+
+//         if (response.ok) {
+//             usernameInput.value = '';
+//             roleSelect.value = 'Child';
+
+//             // Create a new blank task list for the added user
+//             await fetch(`/api/tasks/${familyCode}/${username}`, {
+//                 method: 'PUT',
+//                 headers: {
+//                     'Content-Type': 'application/json'
+//                 },
+//                 body: JSON.stringify([])
+//             });
+
+//             displayFamilyMembers();
+//         } else {
+//             console.error('Error adding family member:', response.statusText);
+//         }
+//     } catch (error) {
+//         console.error('Error adding family member:', error);
+//     }
+// }
+
+
 // Remove a family member
 async function removeFamilyMember(username) {
-    try {
-        const currUserResponse = await fetch('/api/user');
-        const currUser = await currUserResponse.json();
+    const userResponse = await fetch('/api/user', {
+        method: 'GET',
+        credentials: 'include', // Include cookies in the request
+    });
 
-        if (currUser.role === 'Child') {
+    if (userResponse.ok) {
+        const userData = await userResponse.json();
+        const familyCode = userData.familyCode;
+
+        if (userData.role === 'Child') {
             alert('Only parents can remove family members');
             return;
         }
-
-        if (currUser.username === username) {
+        if (userData.username === username) {
             alert('You cannot delete yourself from the family. \n Please ask another parent to remove you.');
             return;
         }
 
-        const familyCodeResponse = await fetch('/api/family/family-code');
-        const { familyCode } = await familyCodeResponse.json();
-
         const response = await fetch(`/api/family/${familyCode}/${username}`, {
             method: 'DELETE'
         });
+
         if (response.ok) {
             removeTaskList(username);
             displayFamilyMembers();
         } else {
-            console.error('Error removing family member:', response.statusText);
+            const errorData = await response.json();
+            console.error('Error removing family member: ', errorData.error);
         }
-    } catch (error) {
-        console.error('Error removing family member:', error);
+
+    } else if (userResponse.status === 401) {
+        // Handle unauthorized access
+        console.error('Authentication cookie not found. Redirecting to login page.');
+        // Redirect the user to the login page
+        window.location.href = '/login';
+        alert('You have been signed out. Please log in again.')
+    } else {
+        const errorData = await userResponse.json();
+        console.error('Error retrieving user data: ', errorData.error);
     }
 }
 
 
 // Remove the task list of a family member
 async function removeTaskList(username) {
-    const familyCodeResponse = await fetch('/api/family/family-code');
-    const { familyCode } = await familyCodeResponse.json();
-
-    const response = await fetch(`/api/tasks/${familyCode}/${username}`, {
-        method: 'DELETE'
+    const userResponse = await fetch('/api/user', {
+        method: 'GET',
+        credentials: 'include', // Include cookies in the request
     });
-    if (response.ok) {
-        return;
+
+    if (userResponse.ok) {
+        const userData = await userResponse.json();
+        const familyCode = userData.familyCode;
+
+        const response = await fetch(`/api/tasks/${familyCode}/${username}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            return;
+        } else {
+            const errorData = await userResponse.json();
+            console.error('Error removing family member: ', errorData.error);
+        }
     } else {
-        console.error('Error removing family member:', response.statusText);
+        const errorData = await userResponse.json();
+        console.error('Error retrieving user data: ', errorData.error);
     }
 }
 
 
 // Change the role of a family member
 async function changeRole(username) {
-    try {
-        const currUserResponse = await fetch('/api/user');
-        const currUser = await currUserResponse.json();
+    const userResponse = await fetch('/api/user', {
+        method: 'GET',
+        credentials: 'include', // Include cookies in the request
+    });
 
-        if (currUser.role === 'Child') {
+    if (userResponse.ok) {
+        const userData = await userResponse.json();
+        const familyCode = userData.familyCode;
+
+        if (userData.role === 'Child') {
             alert('Only parents can change roles');
             return;
         }
 
-        if (currUser.username === username) {
+        if (userData.username === username) {
             alert('You cannot change your own role to child. \n Please ask another parent to change your role.');
             return;
         }
-
-        const familyCodeResponse = await fetch('/api/family/family-code');
-        const { familyCode } = await familyCodeResponse.json();
 
         const response = await fetch(`/api/family/${familyCode}/${username}/role`, {
             method: 'PUT'
@@ -122,10 +205,12 @@ async function changeRole(username) {
         if (response.ok) {
             displayFamilyMembers();
         } else {
-            console.error('Error changing role:', response.statusText);
+            const errorData = await response.json();
+            console.error('Error changing role: ', errorData.error);
         }
-    } catch (error) {
-        console.error('Error changing role:', error);
+    } else {
+        const errorData = await userResponse.json();
+        console.error('Error retrieving user data: ', errorData.error);
     }
 }
 
