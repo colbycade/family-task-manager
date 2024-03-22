@@ -31,6 +31,10 @@ async function getUser(username) {
   return await user_collection.findOne({ username: username });
 }
 
+async function getUserByToken(token) {
+  return await user_collection.findOne({ token: token });
+}
+
 async function getFamily(familyCode) {
   return await user_collection.find({ familyCode: familyCode }).toArray();
 }
@@ -145,7 +149,8 @@ module.exports = {
   deleteTaskList,
   loginUser,
   registerNewFamily,
-  registerJoinFamily
+  registerJoinFamily,
+  getUserByToken
 };
 
 async function insertTestData() {

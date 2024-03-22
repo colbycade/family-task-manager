@@ -20,9 +20,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Get database operation functions
-const { dbConnect, getUser, getFamilyTaskLists, getFamilyTaskList, updateTaskList, createTask, updateProfilePicture,
-  getFamily, removeFamilyMember, changeFamilyMemberRole, getUserFamilyCode, deleteTaskList, loginUser,
-  registerNewFamily, registerJoinFamily } = require('./database');
+const { dbConnect, getUser, getUserByToken, getFamilyTaskLists, getFamilyTaskList, updateTaskList, createTask,
+  updateProfilePicture, getFamily, removeFamilyMember, changeFamilyMemberRole, getUserFamilyCode, deleteTaskList,
+  loginUser, registerNewFamily, registerJoinFamily } = require('./database');
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 8080;
@@ -39,11 +39,13 @@ app.use(`/api`, apiRouter);
 
 // Endpoints for user data
 
-// GET user information 
+// GET user information by authentication token
 app.get('/api/user', async (req, res) => {
-  const username = req.body;
+  const authToken = req.cookies && req.cookies['token'];
+  if (!authToken) return res.status(404).json({ error: 'Unauthorized' });
+
   try {
-    const user = await getUser(username);
+    const user = await getUserByToken(authToken);
     if (user) {
       res.json({
         username: user.username,
@@ -51,7 +53,7 @@ app.get('/api/user', async (req, res) => {
         role: user.role
       });
     } else {
-      res.status(404).json({ error: 'User not found' });
+      res.status(404).json({ error: 'Unauthorized' });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -154,6 +156,12 @@ app.put('/api/auth/create', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+// DELETE logout a user
+app.delete('/api/auth/logout', async (req, res) => {
+  res.clearCookie('token');
+  res.sendStatus(200);
 });
 
 function setAuthCookie(res, authToken) {
