@@ -77,6 +77,12 @@ async function registerJoinFamily(username, password, familyCode) {
     profilePic: null
   };
 
+  // Insert new blank task list for the user
+  await collection.updateOne(
+    { familyCode: familyCode },
+    { $set: { [`tasks.${username}`]: [] } }
+  );
+
   return await user_collection.insertOne(user);
 }
 
@@ -93,6 +99,16 @@ async function registerNewFamily(username, password) {
     role: 'Child',
     profilePic: null
   };
+
+  // Insert new blank task document for the family and user
+  await task_collection.insertOne({ familyCode: familyCode, tasks: {} })
+
+
+  // Insert new blank task list for the user
+  await collection.updateOne(
+    { familyCode: familyCode },
+    { $set: { [`tasks.${username}`]: [] } }
+  );
 
   return await user_collection.insertOne(user);
 }
