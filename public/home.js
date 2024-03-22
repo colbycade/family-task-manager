@@ -1,9 +1,6 @@
 async function displayUserInfo() {
     const userResponse = await fetch('/api/user', {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
         credentials: 'include', // Include cookies in the request
     });
 
@@ -13,18 +10,18 @@ async function displayUserInfo() {
         usernameEl.textContent = userData.username || "Unknown";
         const familyCodeEl = document.getElementById("familyCodeDisplay");
         familyCodeEl.textContent = userData.familyCode || "Unknown";
-    } else {
+    } else if (userResponse.status === 401) {
         // Handle unauthorized access
-        if (userResponse.status === 404 || userResponse.status === 401) {
-            console.error('User not logged in. Redirecting to login page.');
-            // Redirect the user to the login page
-            window.location.href = '/login';
-        } else {
-            const errorData = await userResponse.json();
-            console.error('Error fetching user information: ', errorData.error);
-        }
+        console.error('Authentication cookie not found. Redirecting to login page.');
+        // Redirect the user to the login page
+        window.location.href = '/login';
+        alert('You have been signed out. Please log in again.')
+    } else {
+        const errorData = await userResponse.json();
+        console.error('Error fetching user information: ', errorData.error);
     }
 }
+
 
 // Save profile picture
 async function saveProfilePic(fileInput) {
@@ -35,10 +32,17 @@ async function saveProfilePic(fileInput) {
     const response = await fetch('/api/user/profile-pic', {
         method: 'PUT',
         body: formData,
+        credentials: 'include' // Include cookies in the request
     });
 
     if (response.ok) {
         displayProfilePic();
+    } else if (response.status === 401) {
+        // Handle unauthorized access
+        console.error('Authentication cookie not found. Redirecting to login page.');
+        // Redirect the user to the login page
+        window.location.href = '/login';
+        alert('You have been signed out. Please log in again.')
     } else {
         const errorData = await response.json();
         console.error('Error saving profile picture: ', errorData.error);
@@ -48,17 +52,23 @@ async function saveProfilePic(fileInput) {
 // Display profile picture or generic profile picture if not found
 async function displayProfilePic() {
     const profilePicEl = document.getElementById('profilePic');
-    const response = await fetch('/api/user/profile-pic');
 
-    if (response.ok) {
-        const data = await response.json();
-        profilePicEl.src = data.profilePicPath;
-        console.log(profilePicEl.src)
-    } else if (response.status === 404) {
-        profilePicEl.src = 'assets/generic_profile.jpeg';
-    }
-    else {
-        const errorData = await response.json();
+    const userResponse = await fetch('/api/user', {
+        method: 'GET',
+        credentials: 'include', // Include cookies in the request
+    });
+
+    if (userResponse.ok) {
+        const userData = await userResponse.json();
+        profilePicEl.src = userData.profilePic ? userData.profilePic : profilePicEl.src = 'assets/generic_profile.jpeg';
+    } else if (userResponse.status === 401) {
+        // Handle unauthorized access
+        console.error('Authentication cookie not found. Redirecting to login page.');
+        // Redirect the user to the login page
+        window.location.href = '/login';
+        alert('You have been signed out. Please log in again.')
+    } else {
+        const errorData = await userResponse.json();
         console.error('Error displaying profile picture: ', errorData.error);
     }
 }
@@ -73,9 +83,14 @@ window.onload = async () => {
 // TASK LIST
 
 async function initializeTaskLists() {
-    try {
-        const familyCodeResponse = await fetch('/api/family/family-code');
-        const { familyCode } = await familyCodeResponse.json();
+    const userResponse = await fetch('/api/user', {
+        method: 'GET',
+        credentials: 'include', // Include cookies in the request
+    });
+
+    if (userResponse.ok) {
+        const userData = await userResponse.json();
+        const familyCode = userData.familyCode;
 
         const response = await fetch(`/api/tasks/${familyCode}`);
         const familyTaskLists = await response.json();
@@ -90,8 +105,15 @@ async function initializeTaskLists() {
         await loadSelectedTaskList(); // Load default family list
         document.getElementById('task-list-dropdown') // Listen for new selection
             .addEventListener('change', loadSelectedTaskList);
-    } catch (error) {
-        console.error('Error fetching task lists:', error);
+    } else if (userResponse.status === 401) {
+        // Handle unauthorized access
+        console.error('Authentication cookie not found. Redirecting to login page.');
+        // Redirect the user to the login page
+        window.location.href = '/login';
+        alert('You have been signed out. Please log in again.')
+    } else {
+        const errorData = await userResponse.json();
+        console.error('Error fetching task lists: ', errorData.error);
     }
 }
 
@@ -100,9 +122,14 @@ async function loadSelectedTaskList() {
     const tbody = document.getElementById('task-list-data');
     tbody.innerHTML = ''; // Clear existing rows
 
-    try {
-        const familyCodeResponse = await fetch('/api/family/family-code');
-        const { familyCode } = await familyCodeResponse.json();
+    const userResponse = await fetch('/api/user', {
+        method: 'GET',
+        credentials: 'include', // Include cookies in the request
+    });
+
+    if (userResponse.ok) {
+        const userData = await userResponse.json();
+        const familyCode = userData.familyCode;
 
         const response = await fetch(`/api/tasks/${familyCode}/${selectedList}`);
         const taskList = await response.json();
@@ -138,22 +165,35 @@ async function loadSelectedTaskList() {
 
             const removeTaskCell = newRow.insertCell(4);
             removeTaskCell.className = 'remove-task';
-            removeTaskCell.innerHTML = `<button onclick="removeTask(${selectedList}, ${index})">Remove</button>`;
+            removeTaskCell.innerHTML = `<button onclick="removeTask('${selectedList}', ${index})">Remove</button>`;
         });
 
         const tableBody = document.getElementById('task-list-data');
         const isAscending = tableBody.getAttribute('data-sort-ascending') === 'true';
         tableBody.setAttribute('data-sort-ascending', !isAscending);
         sortByDate();
-    } catch (error) {
-        console.error('Error fetching task list:', error);
+
+    } else if (userResponse.status === 401) {
+        // Handle unauthorized access
+        console.error('Authentication cookie not found. Redirecting to login page.');
+        // Redirect the user to the login page
+        window.location.href = '/login';
+        alert('You have been signed out. Please log in again.')
+    } else {
+        const errorData = await userResponse.json();
+        console.error('Error loading task lists: ', errorData.error);
     }
 }
 
 async function toggleTaskCompletion(listName, taskIndex) {
-    try {
-        const familyCodeResponse = await fetch('/api/family/family-code');
-        const { familyCode } = await familyCodeResponse.json();
+    const userResponse = await fetch('/api/user', {
+        method: 'GET',
+        credentials: 'include', // Include cookies in the request
+    });
+
+    if (userResponse.ok) {
+        const userData = await userResponse.json();
+        const familyCode = userData.familyCode;
 
         const response = await fetch(`/api/tasks/${familyCode}/${listName}`);
         const tasks = await response.json();
@@ -167,49 +207,50 @@ async function toggleTaskCompletion(listName, taskIndex) {
             },
             body: JSON.stringify(tasks)
         });
-
         await loadSelectedTaskList();
-    } catch (error) {
-        console.error('Error updating task list:', error);
+
+    } else if (userResponse.status === 401) {
+        // Handle unauthorized access
+        console.error('Authentication cookie not found. Redirecting to login page.');
+        // Redirect the user to the login page
+        window.location.href = '/login';
+        alert('You have been signed out. Please log in again.')
+    } else {
+        const errorData = await userResponse.json();
+        console.error('Error updating task list: ', errorData.error);
     }
 }
 
 async function getUserRole() {
     const userResponse = await fetch('/api/user', {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
         credentials: 'include', // Include cookies in the request
     });
 
     if (userResponse.ok) {
         const userInfo = await userResponse.json();
         return userInfo.role;
-    } else {
+    } else if (userResponse.status === 401) {
         // Handle unauthorized access
-        if (userResponse.status === 404 || userResponse.status === 401) {
-            console.error('User not logged in. Redirecting to login page.');
-            // Redirect the user to the login page
-            window.location.href = '/login';
-        } else {
-            const errorData = await userResponse.json();
-            console.error('Error fetching user information: ', errorData.error);
-        }
+        console.error('Authentication cookie not found. Redirecting to login page.');
+        // Redirect the user to the login page
+        window.location.href = '/login';
+        alert('You have been signed out. Please log in again.')
+    } else {
+        const errorData = await userResponse.json();
+        console.error('Error fetching user information: ', errorData.error);
     }
 }
 
 async function removeTask(listName, taskIndex) {
-    try {
-        const userRole = await getUserRole();
+    const userResponse = await fetch('/api/user', {
+        method: 'GET',
+        credentials: 'include', // Include cookies in the request
+    });
 
-        if (userRole !== 'Parent') {
-            alert('Only parents have permission to remove tasks');
-            return;
-        }
-
-        const familyCodeResponse = await fetch('/api/family/family-code');
-        const { familyCode } = await familyCodeResponse.json();
+    if (userResponse.ok) {
+        const userData = await userResponse.json();
+        const familyCode = userData.familyCode;
 
         const response = await fetch(`/api/tasks/${familyCode}/${listName}`);
         const tasks = await response.json();
@@ -223,10 +264,17 @@ async function removeTask(listName, taskIndex) {
             },
             body: JSON.stringify(tasks)
         });
-
         await loadSelectedTaskList();
-    } catch (error) {
-        console.error('Error updating task list:', error);
+
+    } else if (userResponse.status === 401) {
+        // Handle unauthorized access
+        console.error('Authentication cookie not found. Redirecting to login page.');
+        // Redirect the user to the login page
+        window.location.href = '/login';
+        alert('You have been signed out. Please log in again.')
+    } else {
+        const errorData = await userResponse.json();
+        console.error('Error updating task list: ', errorData.error);
     }
 }
 
@@ -242,9 +290,14 @@ async function addTask() {
 
     const newTask = { name: taskName, dueDate: taskDueDate, completed: false };
 
-    try {
-        const familyCodeResponse = await fetch('/api/family/family-code');
-        const { familyCode } = await familyCodeResponse.json();
+    const userResponse = await fetch('/api/user', {
+        method: 'GET',
+        credentials: 'include', // Include cookies in the request
+    });
+
+    if (userResponse.ok) {
+        const userData = await userResponse.json();
+        const familyCode = userData.familyCode;
 
         await fetch(`/api/tasks/${familyCode}/${selectedList}`, {
             method: 'POST',
@@ -257,8 +310,16 @@ async function addTask() {
         await loadSelectedTaskList();
         document.getElementById('new-task-name').value = '';
         document.getElementById('new-task-date').value = '';
-    } catch (error) {
-        console.error('Error adding task:', error);
+
+    } else if (userResponse.status === 401) {
+        // Handle unauthorized access
+        console.error('Authentication cookie not found. Redirecting to login page.');
+        // Redirect the user to the login page
+        window.location.href = '/login';
+        alert('You have been signed out. Please log in again.')
+    } else {
+        const errorData = await userResponse.json();
+        console.error('Error adding task: ', errorData.error);
     }
 }
 
