@@ -18,6 +18,10 @@ async function login() {
 
         if (response.ok) {
             window.location.href = "home.html";
+        } else if (response.status === 409) {
+            alert('Username already exists. Please try again.');
+        } else if (response.status === 401) {
+            alert('Invalid username or password.');
         } else {
             const data = await response.json();
             console.error('Error:', data.error);
@@ -50,6 +54,10 @@ async function joinFamily() {
 
         if (response.ok) {
             window.location.href = "home.html";
+        } else if (response.status === 409) {
+            alert('Username already exists. Please try again.');
+        } else if (response.status === 404) {
+            alert('Invalid family code. Please try again.');
         } else {
             const data = await response.json();
             console.error('Error:', data.error);
@@ -66,7 +74,7 @@ async function createFamily() {
     const password = document.getElementById("create-password").value;
 
     if (!username || !password) {
-        alert('Username and password are required.');
+        alert('All fields are required.');
         return;
     }
 
@@ -81,6 +89,8 @@ async function createFamily() {
 
         if (response.ok) {
             window.location.href = "home.html";
+        } else if (response.status === 409) {
+            alert('Username already exists. Please try again.');
         } else {
             const data = await response.json();
             console.error('Error:', data.error);

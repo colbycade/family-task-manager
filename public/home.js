@@ -137,6 +137,10 @@ async function loadSelectedTaskList() {
         const familyCode = userData.familyCode;
 
         const response = await fetch(`/api/tasks/${familyCode}/${selectedList}`);
+        if (response.status === 404) {
+            console.error('Error loading task list: List not found');
+            return;
+        }
         const taskList = await response.json();
 
         taskList.forEach((task, index) => {
@@ -186,7 +190,7 @@ async function loadSelectedTaskList() {
         alert('You have been signed out. Please log in again.')
     } else {
         const errorData = await userResponse.json();
-        console.error('Error loading task lists: ', errorData.error);
+        console.error('Error retrieving user info: ', errorData.error);
     }
 }
 

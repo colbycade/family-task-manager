@@ -123,6 +123,8 @@ app.put('/api/auth/join', async (req, res) => {
   try {
     if (await getUser(username)) {
       res.status(409).json({ error: 'Username already exists' });
+    } else if ((await getFamily(familyCode)).length === 0) {
+      res.status(404).json({ error: 'Family not found' });
     } else {
       const user = await registerJoinFamily(username, password, familyCode);
       setAuthCookie(res, user.token);
