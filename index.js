@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const fs = require('fs').promises;
 const path = require('path');
+const bcrypt = require('bcrypt');
 
 const app = express();
 
@@ -20,8 +21,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Get database operation functions
-const { dbConnect, getUser, getFamilyTaskLists, getFamilyTaskList, updateTaskList, createTask, updateProfilePicture, getFamily,
-  addFamilyMember, removeFamilyMember, changeFamilyMemberRole, getUserFamilyCode, deleteTaskList } = require('./database');
+const { dbConnect, getUser, getFamilyTaskLists, getFamilyTaskList, updateTaskList, createTask, updateProfilePicture,
+  getFamily, removeFamilyMember, changeFamilyMemberRole, getUserFamilyCode, deleteTaskList, loginUser,
+  registerNewFamily, registerJoinFamily } = require('./database');
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 8080;
@@ -38,15 +40,9 @@ app.use(`/api`, apiRouter);
 
 // Endpoints for user data
 
-// PUT login user
-app.put('/api/login', async (req, res) => {
-  const { username, password } = req.body;
-  // Placeholder for future authentication logic
-});
-
 // GET user information 
 app.get('/api/user', async (req, res) => {
-  const username = 'john_doe'; // Will implement authentication logic later
+  const username = req.body;
   try {
     const user = await getUser(username);
     if (user) {
@@ -65,7 +61,7 @@ app.get('/api/user', async (req, res) => {
 
 // GET profile picture of current user
 app.get('/api/user/profile-pic', async (req, res) => {
-  const username = 'john_doe'; // Placeholder for future authentication logic
+  const username = req.body;
   try {
     const user = await getUser(username);
     if (user.profilePic) {
@@ -80,7 +76,7 @@ app.get('/api/user/profile-pic', async (req, res) => {
 
 // PUT (update) profile picture of current user
 app.put('/api/user/profile-pic', upload.single('profilePic'), async (req, res) => {
-  const username = 'john_doe'; // Placeholder for future authentication logic
+  const username = req.body;
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded.' });
   }
@@ -108,11 +104,57 @@ app.put('/api/user/profile-pic', upload.single('profilePic'), async (req, res) =
   }
 });
 
+// Endpoints for authentication
+
+// POST login a user
+app.post('/api/auth/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const isAuthenticated = await loginUser(username, password);
+
+    if (isAuthenticated) {
+      // Generate and return an authentication token (e.g., JWT)
+      const token = generateAuthToken(username);
+      res.json({ token });
+    } else {
+      res.status(401).json({ error: 'Invalid username or password' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// PUT register a new user and join an existing family
+app.put('/api/auth/join', async (req, res) => {
+  const { username, password, familyCode } = req.body;
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  await registerJoinFamily(username, passwordHash, familyCode);
+});
+
+// PUT register a new user and create a new family
+app.put('/api/auth/create', async (req, res) => {
+  const { username, password } = req.body;
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  try {
+    const user = await getUser(username);
+    if (user) {
+      res.status(409).json({ error: 'Username already exists' });
+    } else {
+      await registerNewFamily(username, passwordHash);
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Endpoints for family data
 
 // GET family code for the authenticated user
 app.get('/api/family/family-code', async (req, res) => {
-  const username = 'john_doe'; // Placeholder for future authentication logic
+  const username = req.body;
   try {
     const familyCode = await getUserFamilyCode(username);
     if (familyCode) {
@@ -131,18 +173,6 @@ app.get('/api/family/:familyCode', async (req, res) => {
   try {
     const family = await getFamily(familyCode);
     res.json(family);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// POST (add) a new family member
-app.post('/api/family/:familyCode', async (req, res) => {
-  const { familyCode } = req.params;
-  const { username, role } = req.body;
-  try {
-    await addFamilyMember({ username, familyCode, role });
-    res.sendStatus(201);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

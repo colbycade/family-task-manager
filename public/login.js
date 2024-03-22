@@ -28,7 +28,7 @@ function login() {
 
     if (!username || !password) {
         alert('All fields are required.');
-        return; 
+        return;
     }
 
     updateUsername(username);
@@ -44,8 +44,8 @@ function joinFamily() {
     if (!username || !password || !familyCode) {
         alert('All fields are required.');
         return;
-    }    
-    
+    }
+
     updateUsername(username);
     window.location.href = "home.html";
 }
@@ -63,28 +63,4 @@ function createFamily() {
     const familyCode = generateUniqueCode();
     localStorage.setItem("familyCode", familyCode);
     window.location.href = "home.html";
-}
-
-function generateUniqueCode() {
-    let code = generateRandomCode();
-    while (!checkUniqueCode(code)) {
-        code = generateRandomCode();
-    }
-    return code;
-}
-
-function generateRandomCode() {
-    length = 8
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-}
-
-function checkUniqueCode(code) {
-    // Check if code has already been used in the database
-    return true;
 }

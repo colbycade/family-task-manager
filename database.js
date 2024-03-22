@@ -18,7 +18,7 @@ async function dbConnect() {
   // Test the connection
   await db.command({ ping: 1 });
 
-  // clear collections and insert test data for demonstration
+  // Clear collections and insert test data for demonstration
   await insertTestData();
 
 }
@@ -64,13 +64,35 @@ async function loginUser(username, password) {
   return user && user.password === password;
 }
 
-async function registerNewFamily(username, password, familyCode) {
-  await user_collection.insertOne({ username, password, familyCode, role: 'Parent', profilePic: null });
+// Register user and join an existing family
+async function registerJoinFamily(username, passwordHash, familyCode) {
+
+  const user = {
+    username: username,
+    password: passwordHash,
+    token: uuid.v4(),
+    familyCode: familyCode,
+    role: 'Parent',
+    profilePic: null
+  };
+
+  await user_collection.insertOne(user);
 }
 
-async function registerJoinFamily(username, password) {
+// Register user and create a new family
+async function registerNewFamily(username, passwordHash) {
   const familyCode = generateRandomCode();
-  await user_collection.insertOne({ username, password, familyCode, role: 'Child', profilePic: null });
+
+  const user = {
+    username: username,
+    password: passwordHash,
+    token: uuid.v4(),
+    familyCode: familyCode,
+    role: 'Child',
+    profilePic: null
+  };
+
+  await user_collection.insertOne(user);
 }
 
 // Task list functions
@@ -120,6 +142,9 @@ module.exports = {
   registerJoinFamily
 };
 
+// Insert test data for demonstration
+const bcrypt = require('bcrypt');
+
 async function insertTestData() {
   try {
     // Clear the user_collection
@@ -131,6 +156,7 @@ async function insertTestData() {
     // Insert test user data
     await user_collection.insertOne({
       username: 'john_doe',
+      password: await bcrypt.hash('password', 10),
       familyCode: 'a273B1',
       role: 'Parent',
       profilePic: null
