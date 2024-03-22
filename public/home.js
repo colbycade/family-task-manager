@@ -16,6 +16,7 @@ async function displayUserInfo() {
         // Redirect the user to the login page
         window.location.href = '/login';
         alert('You have been signed out. Please log in again.')
+        throw new Error('Unauthorized'); // stop loading window
     } else {
         const errorData = await userResponse.json();
         console.error('Error fetching user information: ', errorData.error);
@@ -75,10 +76,14 @@ async function displayProfilePic() {
 
 // Run when the page loads
 window.onload = async () => {
-    await displayUserInfo();
-    await displayProfilePic();
-    await initializeTaskLists();
-};
+    try {
+        await displayUserInfo(); // throws error if unauthorized
+        await displayProfilePic();
+        await initializeTaskLists();
+    } catch (error) {
+        console.error('Error during window.onload:', error);
+    };
+}
 
 // TASK LIST
 
