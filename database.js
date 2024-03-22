@@ -77,13 +77,16 @@ async function registerJoinFamily(username, password, familyCode) {
     profilePic: null
   };
 
+  // Create user
+  await user_collection.insertOne(user);
+
   // Insert new blank task list for the user
-  await collection.updateOne(
+  await task_collection.updateOne(
     { familyCode: familyCode },
     { $set: { [`tasks.${username}`]: [] } }
   );
 
-  return await user_collection.insertOne(user);
+  return user;
 }
 
 // Register user and create a new family
@@ -100,17 +103,20 @@ async function registerNewFamily(username, password) {
     profilePic: null
   };
 
+  // Create user
+  await user_collection.insertOne(user);
+
   // Insert new blank task document for the family and user
   await task_collection.insertOne({ familyCode: familyCode, tasks: {} })
 
 
   // Insert new blank task list for the user
-  await collection.updateOne(
+  await task_collection.updateOne(
     { familyCode: familyCode },
     { $set: { [`tasks.${username}`]: [] } }
   );
 
-  return await user_collection.insertOne(user);
+  return user;
 }
 
 // Task list functions
