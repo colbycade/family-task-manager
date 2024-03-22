@@ -1,15 +1,28 @@
 async function displayUserInfo() {
-    try {
-        const userResponse = await fetch('/api/user');
-        const userInfo = await userResponse.json();
+    const userResponse = await fetch('/api/user', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Include cookies in the request
+    });
 
+    if (userResponse.ok) {
+        const userData = await userResponse.json();
         const usernameEl = document.getElementById("usernameDisplay");
-        usernameEl.textContent = userInfo.username || "Unknown";
-
+        usernameEl.textContent = userData.username || "Unknown";
         const familyCodeEl = document.getElementById("familyCodeDisplay");
-        familyCodeEl.textContent = userInfo.familyCode || "Unknown";
-    } catch (error) {
-        console.error('Error fetching user information:', error);
+        familyCodeEl.textContent = userData.familyCode || "Unknown";
+    } else {
+        // Handle unauthorized access
+        if (userResponse.status === 404 || userResponse.status === 401) {
+            console.error('User not logged in. Redirecting to login page.');
+            // Redirect the user to the login page
+            window.location.href = '/login';
+        } else {
+            const errorData = await userResponse.json();
+            console.error('Error fetching user information: ', errorData.error);
+        }
     }
 }
 
@@ -125,7 +138,7 @@ async function loadSelectedTaskList() {
 
             const removeTaskCell = newRow.insertCell(4);
             removeTaskCell.className = 'remove-task';
-            removeTaskCell.innerHTML = `<button onclick="removeTask(this, '${selectedList}', ${index})">Remove</button>`;
+            removeTaskCell.innerHTML = `<button onclick="removeTask(${selectedList}, ${index})">Remove</button>`;
         });
 
         const tableBody = document.getElementById('task-list-data');
@@ -162,16 +175,31 @@ async function toggleTaskCompletion(listName, taskIndex) {
 }
 
 async function getUserRole() {
-    try {
-        const userResponse = await fetch('/api/user');
+    const userResponse = await fetch('/api/user', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Include cookies in the request
+    });
+
+    if (userResponse.ok) {
         const userInfo = await userResponse.json();
         return userInfo.role;
-    } catch (error) {
-        console.error('Error fetching user role:', error);
+    } else {
+        // Handle unauthorized access
+        if (userResponse.status === 404 || userResponse.status === 401) {
+            console.error('User not logged in. Redirecting to login page.');
+            // Redirect the user to the login page
+            window.location.href = '/login';
+        } else {
+            const errorData = await userResponse.json();
+            console.error('Error fetching user information: ', errorData.error);
+        }
     }
 }
 
-async function removeTask(button, listName, taskIndex) {
+async function removeTask(listName, taskIndex) {
     try {
         const userRole = await getUserRole();
 
