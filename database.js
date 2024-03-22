@@ -40,12 +40,8 @@ async function getFamily(familyCode) {
   return await user_collection.find({ familyCode: familyCode }).toArray();
 }
 
-async function addFamilyMember(newMember) {
-  await user_collection.insertOne(newMember);
-}
-
-async function removeFamilyMember(familyCode, username) {
-  await user_collection.deleteOne({ username: username, familyCode: familyCode });
+async function removeUser(username) {
+  return await user_collection.deleteOne({ username: username });
 }
 
 async function changeFamilyMemberRole(familyCode, username) {
@@ -56,11 +52,6 @@ async function changeFamilyMemberRole(familyCode, username) {
     return await getUser(username); // Return the updated user
   }
   return null;
-}
-
-async function getUserFamilyCode(username) {
-  const user = await getUser(username);
-  return user ? user.familyCode : null;
 }
 
 // Authentication functions
@@ -119,15 +110,15 @@ async function getFamilyTaskList(familyCode, listName) {
 }
 
 async function updateTaskList(familyCode, listName, updatedTasks) {
-  await task_collection.updateOne({ familyCode: familyCode }, { $set: { [`tasks.${listName}`]: updatedTasks } });
+  return await task_collection.updateOne({ familyCode: familyCode }, { $set: { [`tasks.${listName}`]: updatedTasks } });
 }
 
 async function deleteTaskList(familyCode, listName) {
-  await task_collection.updateOne({ familyCode: familyCode }, { $unset: { [`tasks.${listName}`]: "" } });
+  return await task_collection.updateOne({ familyCode: familyCode }, { $unset: { [`tasks.${listName}`]: "" } });
 }
 
 async function createTask(familyCode, listName, newTask) {
-  await task_collection.updateOne({ familyCode: familyCode }, { $push: { [`tasks.${listName}`]: newTask } });
+  return await task_collection.updateOne({ familyCode: familyCode }, { $push: { [`tasks.${listName}`]: newTask } });
 }
 
 async function updateProfilePicture(username, profilePicPath) {
@@ -137,16 +128,14 @@ async function updateProfilePicture(username, profilePicPath) {
 module.exports = {
   dbConnect,
   getUser,
+  removeUser,
   getFamilyTaskLists,
   getFamilyTaskList,
   updateTaskList,
   createTask,
   updateProfilePicture,
   getFamily,
-  addFamilyMember,
-  removeFamilyMember,
   changeFamilyMemberRole,
-  getUserFamilyCode,
   deleteTaskList,
   loginUser,
   registerNewFamily,
@@ -174,7 +163,7 @@ async function insertTestData() {
 
     await user_collection.insertOne({
       username: 'jane_doe',
-      password: await bcrypt.hash('password2', 10),
+      password: await bcrypt.hash('password', 10),
       token: uuid.v4(),
       familyCode: 'a273B1',
       role: 'Child',
