@@ -22,7 +22,7 @@ const upload = multer({ storage: storage });
 
 // Get database operation functions
 const { dbConnect, getUser, getUserByToken, getFamilyTaskLists, getFamilyTaskList, updateTaskList, createTask,
-  updateProfilePicture, getFamily, removeFamilyMember, changeFamilyMemberRole, getUserFamilyCode, deleteTaskList,
+  updateProfilePicture, getFamily, removeUser, changeFamilyMemberRole, deleteTaskList,
   loginUser, registerNewFamily, registerJoinFamily } = require('./database');
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
@@ -182,8 +182,9 @@ app.get('/api/family/:familyCode', async (req, res) => {
 app.delete('/api/family/:familyCode/:username', async (req, res) => {
   const { familyCode, username } = req.params;
   try {
-    const result = await removeFamilyMember(familyCode, username);
+    const result = await removeUser(username);
     if (result.deletedCount === 1) {
+      await deleteTaskList(familyCode, username)
       res.sendStatus(200);
     } else {
       res.status(404).json({ error: 'Family member not found' });
@@ -201,7 +202,7 @@ app.put('/api/family/:familyCode/:username/role', async (req, res) => {
     if (updatedUser) {
       res.sendStatus(200);
     } else {
-      res.sendStatus(404).json({ error: 'Family member not found' });
+      res.status(404).json({ error: 'Family member not found' });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -241,8 +242,12 @@ app.put('/api/tasks/:familyCode/:listName', async (req, res) => {
   const { familyCode, listName } = req.params;
   const updatedTasks = req.body;
   try {
-    await updateTaskList(familyCode, listName, updatedTasks);
-    res.json({ success: true });
+    const result = await updateTaskList(familyCode, listName, updatedTasks);
+    if (result.modifiedCount === 1) {
+      res.sendStatus(200);
+    } else {
+      res.status(404).json({ error: 'Task list not found' });
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -254,7 +259,7 @@ app.delete('/api/tasks/:familyCode/:listName', async (req, res) => {
   try {
     const result = await deleteTaskList(familyCode, listName);
     if (result.modifiedCount === 1) {
-      res.json({ success: true });
+      res.sendStatus(200);
     } else {
       res.status(404).json({ error: 'Task list not found' });
     }
@@ -268,8 +273,12 @@ app.post('/api/tasks/:familyCode/:listName', async (req, res) => {
   const { familyCode, listName } = req.params;
   const newTask = req.body;
   try {
-    await createTask(familyCode, listName, newTask);
-    res.sendStatus(200);
+    const result = await createTask(familyCode, listName, newTask);
+    if (result.insertedCount === 1) {
+      res.sendStatus(201);
+    } else {
+      res.status(500).json({ error: 'Failed to create task' });
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
