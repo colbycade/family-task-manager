@@ -252,6 +252,11 @@ async function removeTask(listName, taskIndex) {
         const userData = await userResponse.json();
         const familyCode = userData.familyCode;
 
+        if (userData.role === 'Child') {
+            alert('Only parents can remove tasks');
+            return;
+        }
+
         const response = await fetch(`/api/tasks/${familyCode}/${listName}`);
         const tasks = await response.json();
 
