@@ -22,9 +22,7 @@ async function dbConnect() {
 
   // Clear collections and insert test data for demonstration
   await insertTestData();
-
 }
-dbConnect().catch(console.error);
 
 // User and family data functions
 
@@ -73,7 +71,7 @@ async function registerJoinFamily(username, password, familyCode) {
     password: passwordHash,
     token: uuid.v4(),
     familyCode: familyCode,
-    role: 'Parent',
+    role: 'Child',
     profilePic: null
   };
 
@@ -91,7 +89,7 @@ async function registerJoinFamily(username, password, familyCode) {
 
 // Register user and create a new family
 async function registerNewFamily(username, password) {
-  const familyCode = generateRandomCode();
+  const familyCode = await generateRandomCode();
   const passwordHash = await bcrypt.hash(password, 10);
 
   const user = {
@@ -99,22 +97,15 @@ async function registerNewFamily(username, password) {
     password: passwordHash,
     token: uuid.v4(),
     familyCode: familyCode,
-    role: 'Child',
+    role: 'Parent',
     profilePic: null
   };
 
   // Create user
   await user_collection.insertOne(user);
 
-  // Insert new blank task document for the family and user
-  await task_collection.insertOne({ familyCode: familyCode, tasks: {} })
-
-
-  // Insert new blank task list for the user
-  await task_collection.updateOne(
-    { familyCode: familyCode },
-    { $set: { [`tasks.${username}`]: [] } }
-  );
+  // Insert new blank tasklists for the family and user
+  await task_collection.insertOne({ familyCode: familyCode, tasks: { Family: [], username: [] } })
 
   return user;
 }
