@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const fs = require('fs').promises;
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -30,6 +31,9 @@ const port = process.argv.length > 2 ? process.argv[2] : 8080;
 // JSON body parsing using built-in middleware
 app.use(express.json());
 
+// Use the cookie-parser middleware
+app.use(cookieParser());
+
 // Serve up the front-end static content hosting
 app.use(express.static('public'));
 
@@ -39,10 +43,10 @@ app.use(`/api`, apiRouter);
 
 // Endpoints for user data
 
-// GET user information by authentication token
+// GET user information by authentication token (cookie)
 app.get('/api/user', async (req, res) => {
   const authToken = req.cookies && req.cookies['token'];
-  if (!authToken) return res.status(404).json({ error: 'Unauthorized' });
+  if (!authToken) return res.status(401).json({ error: 'Unauthorized' });
 
   try {
     const user = await getUserByToken(authToken);
@@ -50,25 +54,11 @@ app.get('/api/user', async (req, res) => {
       res.json({
         username: user.username,
         familyCode: user.familyCode,
-        role: user.role
+        role: user.role,
+        profilePic: user.profilePic
       });
     } else {
-      res.status(404).json({ error: 'Unauthorized' });
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// GET profile picture of current user
-app.get('/api/user/profile-pic', async (req, res) => {
-  const username = req.body;
-  try {
-    const user = await getUser(username);
-    if (user.profilePic) {
-      res.json({ profilePicPath: user.profilePic });
-    } else {
-      res.status(404).json({ error: 'Profile picture not found' });
+      res.status(401).json({ error: 'Unauthorized' });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -77,7 +67,9 @@ app.get('/api/user/profile-pic', async (req, res) => {
 
 // PUT (update) profile picture of current user
 app.put('/api/user/profile-pic', upload.single('profilePic'), async (req, res) => {
-  const username = req.body;
+  const authToken = req.cookies && req.cookies['token'];
+  if (!authToken) return res.status(401).json({ error: 'Unauthorized' });
+
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded.' });
   }
@@ -88,12 +80,12 @@ app.put('/api/user/profile-pic', upload.single('profilePic'), async (req, res) =
 
   try {
     // Delete the previous profile picture file from storage if it exists
-    const user = await getUser(username);
+    const user = await getUserByToken(authToken);
     if (user.profilePic) {
       const previousPicPath = `public/${user.profilePic}`;
       await fs.unlink(previousPicPath);
     }
-    const result = await updateProfilePicture(username, relativePath);
+    const result = await updateProfilePicture(user.username, relativePath);
     if (result.modifiedCount === 1) {
       res.sendStatus(200);
     } else {
@@ -160,34 +152,20 @@ app.put('/api/auth/create', async (req, res) => {
 
 // DELETE logout a user
 app.delete('/api/auth/logout', async (req, res) => {
+  // TODO: await deleteToken(req.cookies['token'])
   res.clearCookie('token');
   res.sendStatus(200);
 });
 
 function setAuthCookie(res, authToken) {
   res.cookie('token', authToken, {
-    secure: true,
+    secure: false, // Set to false for testing on HTTP    
     httpOnly: true,
     sameSite: 'strict',
   });
 }
 
 // Endpoints for family data
-
-// GET family code for the authenticated user
-app.get('/api/family/family-code', async (req, res) => {
-  const username = req.body;
-  try {
-    const familyCode = await getUserFamilyCode(username);
-    if (familyCode) {
-      res.json({ familyCode });
-    } else {
-      res.status(404).json({ error: 'User not found' });
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 // GET family members
 app.get('/api/family/:familyCode', async (req, res) => {
