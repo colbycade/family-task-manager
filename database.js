@@ -180,7 +180,7 @@ async function insertTestData() {
       token: uuid.v4(),
       familyCode: 'a273B1',
       role: 'Child',
-      profilePic: null
+      profilePic: 'uploads/jane_doe_profile.jpeg'
     });
 
     // Insert test task data
