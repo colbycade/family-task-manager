@@ -2,6 +2,7 @@
 
 const { MongoClient } = require('mongodb');
 const config = require('./dbConfig.json');
+const bcrypt = require('bcrypt');
 
 let client, db, user_collection, task_collection;
 
@@ -61,11 +62,16 @@ async function getUserFamilyCode(username) {
 
 async function loginUser(username, password) {
   const user = await getUser(username);
-  return user && user.password === password;
+  if (!user) {
+    return false;
+  }
+  const passwordHash = await bcrypt.hash(user.password, 10);
+  return bcrypt.compare(password, passwordHash);
 }
 
 // Register user and join an existing family
-async function registerJoinFamily(username, passwordHash, familyCode) {
+async function registerJoinFamily(username, password, familyCode) {
+  const passwordHash = await bcrypt.hash(password, 10);
 
   const user = {
     username: username,
@@ -76,12 +82,13 @@ async function registerJoinFamily(username, passwordHash, familyCode) {
     profilePic: null
   };
 
-  await user_collection.insertOne(user);
+  return await user_collection.insertOne(user);
 }
 
 // Register user and create a new family
-async function registerNewFamily(username, passwordHash) {
+async function registerNewFamily(username, password) {
   const familyCode = generateRandomCode();
+  const passwordHash = await bcrypt.hash(password, 10);
 
   const user = {
     username: username,
@@ -92,7 +99,7 @@ async function registerNewFamily(username, passwordHash) {
     profilePic: null
   };
 
-  await user_collection.insertOne(user);
+  return await user_collection.insertOne(user);
 }
 
 // Task list functions
@@ -120,7 +127,7 @@ async function createTask(familyCode, listName, newTask) {
 }
 
 async function updateProfilePicture(username, profilePicPath) {
-  return user_collection.updateOne({ username: username }, { $set: { profilePic: profilePicPath } });
+  return await user_collection.updateOne({ username: username }, { $set: { profilePic: profilePicPath } });
 }
 
 module.exports = {
@@ -141,9 +148,6 @@ module.exports = {
   registerNewFamily,
   registerJoinFamily
 };
-
-// Insert test data for demonstration
-const bcrypt = require('bcrypt');
 
 async function insertTestData() {
   try {

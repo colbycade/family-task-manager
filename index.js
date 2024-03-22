@@ -2,7 +2,6 @@ const express = require('express');
 const multer = require('multer');
 const fs = require('fs').promises;
 const path = require('path');
-const bcrypt = require('bcrypt');
 
 const app = express();
 
@@ -92,10 +91,9 @@ app.put('/api/user/profile-pic', upload.single('profilePic'), async (req, res) =
       const previousPicPath = `public/${user.profilePic}`;
       await fs.unlink(previousPicPath);
     }
-
     const result = await updateProfilePicture(username, relativePath);
     if (result.modifiedCount === 1) {
-      res.json({ success: true });
+      res.sendStatus(200);
     } else {
       res.status(404).json({ error: 'User not found or no update needed' });
     }
@@ -112,11 +110,10 @@ app.post('/api/auth/login', async (req, res) => {
 
   try {
     const isAuthenticated = await loginUser(username, password);
-
     if (isAuthenticated) {
-      // Generate and return an authentication token (e.g., JWT)
-      const token = generateAuthToken(username);
-      res.json({ token });
+      const user = await getUser(username);
+      setAuthCookie(res, user.token);
+      res.sendStatus(200);
     } else {
       res.status(401).json({ error: 'Invalid username or password' });
     }
@@ -128,27 +125,44 @@ app.post('/api/auth/login', async (req, res) => {
 // PUT register a new user and join an existing family
 app.put('/api/auth/join', async (req, res) => {
   const { username, password, familyCode } = req.body;
-  const passwordHash = await bcrypt.hash(password, 10);
-
-  await registerJoinFamily(username, passwordHash, familyCode);
-});
-
-// PUT register a new user and create a new family
-app.put('/api/auth/create', async (req, res) => {
-  const { username, password } = req.body;
-  const passwordHash = await bcrypt.hash(password, 10);
 
   try {
-    const user = await getUser(username);
-    if (user) {
+    if (await getUser(username)) {
       res.status(409).json({ error: 'Username already exists' });
     } else {
-      await registerNewFamily(username, passwordHash);
+      const user = await registerJoinFamily(username, password, familyCode);
+      setAuthCookie(res, user.token);
+      res.sendStatus(200);
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
+// PUT register a new user and create a new family
+app.put('/api/auth/create', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    if (await getUser(username)) {
+      res.status(409).json({ error: 'Username already exists' });
+    } else {
+      const user = await registerNewFamily(username, password);
+      setAuthCookie(res, user.token);
+      res.sendStatus(200);
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+function setAuthCookie(res, authToken) {
+  res.cookie('token', authToken, {
+    secure: true,
+    httpOnly: true,
+    sameSite: 'strict',
+  });
+}
 
 // Endpoints for family data
 
@@ -172,7 +186,7 @@ app.get('/api/family/:familyCode', async (req, res) => {
   const { familyCode } = req.params;
   try {
     const family = await getFamily(familyCode);
-    res.json(family);
+    res.json({ family });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -269,7 +283,7 @@ app.post('/api/tasks/:familyCode/:listName', async (req, res) => {
   const newTask = req.body;
   try {
     await createTask(familyCode, listName, newTask);
-    res.json({ success: true });
+    res.sendStatus(200);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
