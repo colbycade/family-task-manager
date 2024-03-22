@@ -56,54 +56,6 @@ async function displayFamilyMembers() {
     }
 }
 
-// Add a new family member
-// async function addFamilyMember(event) {
-
-//     try {
-//         const familyCodeResponse = await fetch('/api/family/family-code');
-//         const { familyCode } = await familyCodeResponse.json();
-
-//         // Check if the username already exists
-//         const existingMemberResponse = await fetch(`/api/family/${familyCode}`);
-//         const existingMembers = await existingMemberResponse.json();
-//         const usernameExists = existingMembers.some(member => member.username === username);
-
-//         if (usernameExists) {
-//             alert('Username already exists. Please choose a different username.');
-//             return;
-//         }
-
-//         const response = await fetch(`/api/family/${familyCode}`, {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify({ username, role })
-//         });
-
-//         if (response.ok) {
-//             usernameInput.value = '';
-//             roleSelect.value = 'Child';
-
-//             // Create a new blank task list for the added user
-//             await fetch(`/api/tasks/${familyCode}/${username}`, {
-//                 method: 'PUT',
-//                 headers: {
-//                     'Content-Type': 'application/json'
-//                 },
-//                 body: JSON.stringify([])
-//             });
-
-//             displayFamilyMembers();
-//         } else {
-//             console.error('Error adding family member:', response.statusText);
-//         }
-//     } catch (error) {
-//         console.error('Error adding family member:', error);
-//     }
-// }
-
-
 // Remove a family member
 async function removeFamilyMember(username) {
     const userResponse = await fetch('/api/user', {
