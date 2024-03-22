@@ -3,6 +3,7 @@
 const { MongoClient } = require('mongodb');
 const config = require('./dbConfig.json');
 const bcrypt = require('bcrypt');
+const uuid = require('uuid');
 
 let client, db, user_collection, task_collection;
 
@@ -165,8 +166,18 @@ async function insertTestData() {
     await user_collection.insertOne({
       username: 'john_doe',
       password: await bcrypt.hash('password', 10),
+      token: uuid.v4(),
       familyCode: 'a273B1',
       role: 'Parent',
+      profilePic: null
+    });
+
+    await user_collection.insertOne({
+      username: 'jane_doe',
+      password: await bcrypt.hash('password2', 10),
+      token: uuid.v4(),
+      familyCode: 'a273B1',
+      role: 'Child',
       profilePic: null
     });
 
@@ -182,6 +193,10 @@ async function insertTestData() {
         john_doe: [
           { name: "Buy groceries", dueDate: "2024-03-01", completed: false },
           { name: "Doctor's appointment", dueDate: "2024-03-05", completed: false }
+        ],
+        jane_doe: [
+          { name: "Study for math test", dueDate: "2024-03-10", completed: true },
+          { name: "Practice piano", dueDate: "2024-03-15", completed: false }
         ]
       }
     });
