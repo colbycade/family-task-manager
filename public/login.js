@@ -1,29 +1,5 @@
-// Example data until database is implemented
-const exampleFamily = [
-    { username: "John", role: "Parent" },
-    { username: "Jane", role: "Parent" },
-    { username: "Jill", role: "Child" },
-    { username: "Bobby", role: "Child" }
-];
-localStorage.setItem('familyData', JSON.stringify(exampleFamily));
-
-function updateUsername(username) { // This is temporary just to update the example data
-    localStorage.setItem("username", username);
-    familyData = JSON.parse(localStorage.getItem('familyData'));
-    if (familyData) {
-        for (let i = 0; i < familyData.length; i++) {
-            if (familyData[i].role === "Parent") {
-                familyData[i].username = username;
-                break;
-            }
-        }
-
-        localStorage.setItem('familyData', JSON.stringify(familyData));
-    }
-}
-
-function login() {
-    const username = document.querySelector("#login-username").value;
+async function login() {
+    const username = document.getElementById('login-username').value;
     const password = document.getElementById('login-password').value;
 
     if (!username || !password) {
@@ -31,12 +7,28 @@ function login() {
         return;
     }
 
-    updateUsername(username);
-    window.location.href = "home.html";
+    try {
+        const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
+
+        if (response.ok) {
+            window.location.href = "home.html";
+        } else {
+            const data = await response.json();
+            alert(data.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    }
 }
 
-
-function joinFamily() {
+async function joinFamily() {
     const username = document.getElementById("join-username").value;
     const password = document.getElementById("join-password").value;
     const familyCode = document.getElementById("join-familycode").value;
@@ -46,11 +38,28 @@ function joinFamily() {
         return;
     }
 
-    updateUsername(username);
-    window.location.href = "home.html";
+    try {
+        const response = await fetch('/api/auth/join', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password, familyCode }),
+        });
+
+        if (response.ok) {
+            window.location.href = "home.html";
+        } else {
+            const data = await response.json();
+            alert(data.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    }
 }
 
-function createFamily() {
+async function createFamily() {
     const username = document.getElementById("create-username").value;
     const password = document.getElementById("create-password").value;
 
@@ -59,8 +68,23 @@ function createFamily() {
         return;
     }
 
-    updateUsername(username);
-    const familyCode = generateUniqueCode();
-    localStorage.setItem("familyCode", familyCode);
-    window.location.href = "home.html";
+    try {
+        const response = await fetch('/api/auth/create', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
+
+        if (response.ok) {
+            window.location.href = "home.html";
+        } else {
+            const data = await response.json();
+            alert(data.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    }
 }

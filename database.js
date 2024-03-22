@@ -65,8 +65,7 @@ async function loginUser(username, password) {
   if (!user) {
     return false;
   }
-  const passwordHash = await bcrypt.hash(user.password, 10);
-  return bcrypt.compare(password, passwordHash);
+  return await bcrypt.compare(password, user.password);
 }
 
 // Register user and join an existing family
