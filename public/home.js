@@ -386,6 +386,15 @@ function generateCalendarUrl(taskData) {
 
 // Functionality for Family Event Log using WebSocket
 
+function configureWebSocket() {
+    const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+    this.socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
+    this.socket.onmessage = async (event) => {
+        const msg = JSON.parse(await event.data.text());
+        addEvent(msg.familyMember, msg.task);
+    };
+}
+
 async function addEvent(familyMember, task) {
     const eventLog = document.querySelector('#events');
     eventLog.innerHTML +=
@@ -394,5 +403,4 @@ async function addEvent(familyMember, task) {
             <span class="task-name">${task}</span>
         </div>`
 }
-
 
