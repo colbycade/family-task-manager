@@ -3,6 +3,7 @@ const multer = require('multer');
 const fs = require('fs').promises;
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const { peerProxy } = require('./peerProxy.js');
 
 const app = express();
 
@@ -304,9 +305,10 @@ app.use((err, req, res, next) => {
 // Connect to database then start the server
 dbConnect()
   .then(() => {
-    app.listen(port, () => {
+    const httpService = app.listen(port, () => {
       console.log(`Listening on port ${port}`);
     });
+    peerProxy(httpService);
   })
   .catch((error) => {
     console.error('Error connecting to the database:', error);
