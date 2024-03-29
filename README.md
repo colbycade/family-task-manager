@@ -120,3 +120,19 @@ For this deliverable I associated a user with a family and a task list. I stored
   - Additionally, each user has a role: either 'Parent' or 'Child'. 
   - A parent can remove family members and change their roles, as well as delete tasks from a task list. 
   - A child can only add tasks and mark them as completed
+
+  
+
+## WebSocket deliverable
+
+For this deliverable I used webSocket to display a family event log for task completion.
+
+**Backend listens for WebSocket connection** - Completed in peerProxy.js
+**Frontend makes WebSocket connection** - Completed in home.js
+**Data sent over WebSocket connection** - Completed in home.js
+- Upon a task being marked as complete, the frontend sends the user and task information through webSocket
+- Upon any update to a task list, the frontend sends a reload request through webSocket
+**WebSocket data displayed** - The event log and task lists are updated in real time!
+- User and task data is received and displayed in the event log of all other family members
+- When a reload request is received from someone in the same family, the task list is refreshed to provide real time updates
+
