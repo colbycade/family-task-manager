@@ -180,7 +180,7 @@ async function loadSelectedTaskList() {
         const tableBody = document.getElementById('task-list-data');
         const isAscending = tableBody.getAttribute('data-sort-ascending') === 'true';
         tableBody.setAttribute('data-sort-ascending', !isAscending);
-        sortByDate();
+        await sortByDate();
 
     } else if (userResponse.status === 401) {
         // Handle unauthorized access
@@ -220,6 +220,7 @@ async function toggleTaskCompletion(listName, taskIndex) {
             body: JSON.stringify(tasks)
         });
         await loadSelectedTaskList();
+        await forceRefresh(); // Refresh the tasklist for other websocket clients
 
     } else if (userResponse.status === 401) {
         // Handle unauthorized access
@@ -282,6 +283,7 @@ async function removeTask(listName, taskIndex) {
             body: JSON.stringify(tasks)
         });
         await loadSelectedTaskList();
+        await forceRefresh(); // Refresh the tasklist for other websocket clients
 
     } else if (userResponse.status === 401) {
         // Handle unauthorized access
@@ -327,6 +329,7 @@ async function addTask() {
         await loadSelectedTaskList();
         document.getElementById('new-task-name').value = '';
         document.getElementById('new-task-date').value = '';
+        await forceRefresh(); // Refresh the tasklist for other websocket clients
 
     } else if (userResponse.status === 401) {
         // Handle unauthorized access
@@ -340,7 +343,7 @@ async function addTask() {
     }
 }
 
-function sortByDate() {
+async function sortByDate() {
     const tableBody = document.getElementById('task-list-data');
 
     const rows = Array.from(tableBody.rows);
@@ -392,22 +395,30 @@ function generateCalendarUrl(taskData) {
 let socket;
 configureWebSocket();
 
-function configureWebSocket() {
+async function configureWebSocket() {
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
     socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
     socket.onmessage = async (event) => {
-        const msg = JSON.parse(await event.data.text());
-        addEvent(msg.familyCode, msg.familyMember, msg.task);
+        if (event.data === 'refresh') {
+            await loadSelectedTaskList(); // Reload the task list when a new event is received
+        } else {
+            const msg = JSON.parse(await event.data.text());
+            await addEvent(msg.familyCode, msg.familyMember, msg.task);
+        }
     };
 }
 
-function broadcastEvent(familyCode, familyMember, task) {
+async function broadcastEvent(familyCode, familyMember, task) {
     const event = {
         familyCode: familyCode,
         familyMember: familyMember,
         task: task
     };
     socket.send(JSON.stringify(event));
+}
+
+async function forceRefresh() {
+    socket.send('refresh');
 }
 
 async function addEvent(msgFamilyCode, familyMember, task) {
