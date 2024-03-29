@@ -404,3 +404,10 @@ async function addEvent(familyMember, task) {
         </div>`
 }
 
+function broadcastEvent(familyMember, task) {
+    const event = {
+        familyMember: familyMember,
+        task: task
+    };
+    this.socket.send(JSON.stringify(event));
+}
