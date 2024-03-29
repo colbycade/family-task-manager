@@ -384,21 +384,15 @@ function generateCalendarUrl(taskData) {
 }
 
 
-// WEB SOCKET Live Family Event Log
-// will log when family members complete a task
-
-
-
-
-
+// Functionality for Family Event Log using WebSocket
 
 async function addEvent(familyMember, task) {
     const eventLog = document.querySelector('#events');
     eventLog.innerHTML +=
         `<div class="event">
-        <span class="event-action"> 
-            <span class="family-member">${familyMember}</span> completed: 
-        </span>
-        <span class="task-name">${task}</span>
-    </div>`
+            <span class="event-action"> <span class="family-member">${familyMember}</span> completed: </span>
+            <span class="task-name">${task}</span>
+        </div>`
 }
+
+
