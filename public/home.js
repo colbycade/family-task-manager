@@ -208,6 +208,9 @@ async function toggleTaskCompletion(listName, taskIndex) {
         const tasks = await response.json();
 
         tasks[taskIndex].completed = !tasks[taskIndex].completed;
+        if (tasks[taskIndex].completed) {
+            broadcastEvent(userData.username, tasks[taskIndex].name);
+        }
 
         await fetch(`/api/tasks/${familyCode}/${listName}`, {
             method: 'PUT',
