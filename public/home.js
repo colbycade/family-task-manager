@@ -1,3 +1,18 @@
+async function handleApiError(response) {
+    if (response.status === 401) {
+        // Handle unauthorized access
+        console.error('Authentication cookie not found. Redirecting to login page.');
+        // Redirect the user to the login page
+        window.location.href = '/login';
+        alert('You have been logged out. Please log in again.');
+        throw new Error('Unauthorized'); // stop loading window
+    } else {
+        const errorData = await response.json();
+        console.error('Error fetching data: ', errorData.error);
+        throw new Error('API Error'); // Throw an error to be caught by the calling function
+    }
+}
+
 async function displayUserInfo() {
     const userResponse = await fetch('/api/user', {
         method: 'GET',
@@ -10,21 +25,11 @@ async function displayUserInfo() {
         usernameEl.textContent = userData.username || "Unknown";
         const familyCodeEl = document.getElementById("familyCodeDisplay");
         familyCodeEl.textContent = userData.familyCode || "Unknown";
-    } else if (userResponse.status === 401) {
-        // Handle unauthorized access
-        console.error('Authentication cookie not found. Redirecting to login page.');
-        // Redirect the user to the login page
-        window.location.href = '/login';
-        alert('You have been signed out. Please log in again.')
-        throw new Error('Unauthorized'); // stop loading window
     } else {
-        const errorData = await userResponse.json();
-        console.error('Error fetching user information: ', errorData.error);
+        await handleApiError(userResponse);
     }
 }
 
-
-// Save profile picture
 async function saveProfilePic(fileInput) {
     const file = fileInput.files[0];
     const formData = new FormData();
@@ -38,19 +43,11 @@ async function saveProfilePic(fileInput) {
 
     if (response.ok) {
         displayProfilePic();
-    } else if (response.status === 401) {
-        // Handle unauthorized access
-        console.error('Authentication cookie not found. Redirecting to login page.');
-        // Redirect the user to the login page
-        window.location.href = '/login';
-        alert('You have been signed out. Please log in again.')
     } else {
-        const errorData = await response.json();
-        console.error('Error saving profile picture: ', errorData.error);
+        await handleApiError(response);
     }
 }
 
-// Display profile picture or generic profile picture if not found
 async function displayProfilePic() {
     const profilePicEl = document.getElementById('profilePic');
 
@@ -62,19 +59,11 @@ async function displayProfilePic() {
     if (userResponse.ok) {
         const userData = await userResponse.json();
         profilePicEl.src = userData.profilePic ? userData.profilePic : profilePicEl.src = 'assets/generic_profile.jpeg';
-    } else if (userResponse.status === 401) {
-        // Handle unauthorized access
-        console.error('Authentication cookie not found. Redirecting to login page.');
-        // Redirect the user to the login page
-        window.location.href = '/login';
-        alert('You have been signed out. Please log in again.')
     } else {
-        const errorData = await userResponse.json();
-        console.error('Error displaying profile picture: ', errorData.error);
+        await handleApiError(userResponse);
     }
 }
 
-// Run when the page loads
 window.onload = async () => {
     try {
         await displayUserInfo(); // throws error if unauthorized
@@ -84,8 +73,6 @@ window.onload = async () => {
         console.error('Error during window.onload:', error);
     };
 }
-
-// TASK LIST
 
 async function initializeTaskLists() {
     const userResponse = await fetch('/api/user', {
@@ -110,15 +97,8 @@ async function initializeTaskLists() {
         await loadSelectedTaskList(); // Load default family list
         document.getElementById('task-list-dropdown') // Listen for new selection
             .addEventListener('change', loadSelectedTaskList);
-    } else if (userResponse.status === 401) {
-        // Handle unauthorized access
-        console.error('Authentication cookie not found. Redirecting to login page.');
-        // Redirect the user to the login page
-        window.location.href = '/login';
-        alert('You have been signed out. Please log in again.')
     } else {
-        const errorData = await userResponse.json();
-        console.error('Error fetching task lists: ', errorData.error);
+        await handleApiError(userResponse);
     }
 }
 
@@ -182,15 +162,8 @@ async function loadSelectedTaskList() {
         tableBody.setAttribute('data-sort-ascending', !isAscending);
         await sortByDate();
 
-    } else if (userResponse.status === 401) {
-        // Handle unauthorized access
-        console.error('Authentication cookie not found. Redirecting to login page.');
-        // Redirect the user to the login page
-        window.location.href = '/login';
-        alert('You have been signed out. Please log in again.')
     } else {
-        const errorData = await userResponse.json();
-        console.error('Error retrieving user info: ', errorData.error);
+        await handleApiError(userResponse);
     }
 }
 
@@ -222,15 +195,8 @@ async function toggleTaskCompletion(listName, taskIndex) {
         await loadSelectedTaskList();
         await broadcastRefreshRequest(familyCode); // Refresh the tasklist for other websocket clients
 
-    } else if (userResponse.status === 401) {
-        // Handle unauthorized access
-        console.error('Authentication cookie not found. Redirecting to login page.');
-        // Redirect the user to the login page
-        window.location.href = '/login';
-        alert('You have been signed out. Please log in again.')
     } else {
-        const errorData = await userResponse.json();
-        console.error('Error updating task list: ', errorData.error);
+        await handleApiError(userResponse);
     }
 }
 
@@ -243,15 +209,8 @@ async function getUserRole() {
     if (userResponse.ok) {
         const userInfo = await userResponse.json();
         return userInfo.role;
-    } else if (userResponse.status === 401) {
-        // Handle unauthorized access
-        console.error('Authentication cookie not found. Redirecting to login page.');
-        // Redirect the user to the login page
-        window.location.href = '/login';
-        alert('You have been signed out. Please log in again.')
     } else {
-        const errorData = await userResponse.json();
-        console.error('Error fetching user information: ', errorData.error);
+        await handleApiError(userResponse);
     }
 }
 
@@ -285,15 +244,8 @@ async function removeTask(listName, taskIndex) {
         await loadSelectedTaskList();
         await broadcastRefreshRequest(familyCode); // Refresh the tasklist for other websocket clients
 
-    } else if (userResponse.status === 401) {
-        // Handle unauthorized access
-        console.error('Authentication cookie not found. Redirecting to login page.');
-        // Redirect the user to the login page
-        window.location.href = '/login';
-        alert('You have been signed out. Please log in again.')
     } else {
-        const errorData = await userResponse.json();
-        console.error('Error updating task list: ', errorData.error);
+        await handleApiError(userResponse);
     }
 }
 
@@ -331,15 +283,8 @@ async function addTask() {
         document.getElementById('new-task-date').value = '';
         await broadcastRefreshRequest(familyCode); // Refresh the tasklist for other websocket clients
 
-    } else if (userResponse.status === 401) {
-        // Handle unauthorized access
-        console.error('Authentication cookie not found. Redirecting to login page.');
-        // Redirect the user to the login page
-        window.location.href = '/login';
-        alert('You have been signed out. Please log in again.')
     } else {
-        const errorData = await userResponse.json();
-        console.error('Error adding task: ', errorData.error);
+        await handleApiError(userResponse);
     }
 }
 
@@ -419,16 +364,9 @@ async function interpretEvent(event) {
             } else if (msg.type === 'event') {
                 await addEvent(msg.familyMember, msg.task); // Add the event to the log
             }
-        } else if (userResponse.status === 401) {
-            // Handle unauthorized access
-            console.error('Authentication cookie not found. Redirecting to login page.');
-            // Redirect the user to the login page
-            window.location.href = '/login';
-            alert('You have been signed out. Please log in again.');
-        } else {
-            const errorData = await userResponse.json();
-            console.error('Error adding event to log: ', errorData.error);
         }
+    } else {
+        await handleApiError(userResponse);
     }
 }
 
