@@ -116,3 +116,26 @@ async function logout() {
         console.error('Error logging out: ', errorData.error);
     }
 }
+
+async function checkLogin() {
+    const userResponse = await fetch('/api/user', {
+        method: 'GET',
+        credentials: 'include', // Include cookies in the request
+    });
+
+    const loginStatusEl = document.getElementById("login-status");
+    const loginHeaderEl = document.querySelector('#login-header h2');
+
+    if (userResponse.ok) {
+        const userData = await userResponse.json();
+        loginStatusEl.innerHTML = `(Currently logged in as: <span id="curr-user">${userData.username}</span>)`;
+        loginStatusEl.style.display = "inline";
+        loginHeaderEl.style.display = "inline";
+    }
+    else {
+        loginStatusEl.style.display = "none";
+        loginHeaderEl.style.display = "block";
+    }
+}
+
+checkLogin();
