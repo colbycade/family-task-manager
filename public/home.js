@@ -382,3 +382,23 @@ function generateCalendarUrl(taskData) {
     const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&dates=${formattedDate}%2F${formattedDate}`;
     return calendarUrl;
 }
+
+
+// WEB SOCKET Live Family Event Log
+// will log when family members complete a task
+
+
+
+
+
+
+async function addEvent(familyMember, task) {
+    const eventLog = document.querySelector('#events');
+    eventLog.innerHTML +=
+        `<div class="event">
+        <span class="event-action"> 
+            <span class="family-member">${familyMember}</span> completed: 
+        </span>
+        <span class="task-name">${task}</span>
+    </div>`
+}
