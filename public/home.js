@@ -209,7 +209,7 @@ async function toggleTaskCompletion(listName, taskIndex) {
 
         tasks[taskIndex].completed = !tasks[taskIndex].completed;
         if (tasks[taskIndex].completed) {
-            broadcastEvent(userData.familyCode, userData.username, tasks[taskIndex].name);
+            broadcastTaskCompletion(userData.familyCode, userData.username, tasks[taskIndex].name);
         }
 
         await fetch(`/api/tasks/${familyCode}/${listName}`, {
@@ -220,7 +220,7 @@ async function toggleTaskCompletion(listName, taskIndex) {
             body: JSON.stringify(tasks)
         });
         await loadSelectedTaskList();
-        await forceRefresh(); // Refresh the tasklist for other websocket clients
+        await broadcastRefreshRequest(familyCode); // Refresh the tasklist for other websocket clients
 
     } else if (userResponse.status === 401) {
         // Handle unauthorized access
@@ -283,7 +283,7 @@ async function removeTask(listName, taskIndex) {
             body: JSON.stringify(tasks)
         });
         await loadSelectedTaskList();
-        await forceRefresh(); // Refresh the tasklist for other websocket clients
+        await broadcastRefreshRequest(familyCode); // Refresh the tasklist for other websocket clients
 
     } else if (userResponse.status === 401) {
         // Handle unauthorized access
@@ -329,7 +329,7 @@ async function addTask() {
         await loadSelectedTaskList();
         document.getElementById('new-task-name').value = '';
         document.getElementById('new-task-date').value = '';
-        await forceRefresh(); // Refresh the tasklist for other websocket clients
+        await broadcastRefreshRequest(familyCode); // Refresh the tasklist for other websocket clients
 
     } else if (userResponse.status === 401) {
         // Handle unauthorized access
@@ -399,17 +399,51 @@ async function configureWebSocket() {
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
     socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
     socket.onmessage = async (event) => {
-        if (event.data === 'refresh') {
-            await loadSelectedTaskList(); // Reload the task list when a new event is received
-        } else {
-            const msg = JSON.parse(await event.data.text());
-            await addEvent(msg.familyCode, msg.familyMember, msg.task);
-        }
+        interpretEvent(event);
     };
 }
 
-async function broadcastEvent(familyCode, familyMember, task) {
+async function interpretEvent(event) {
+    const userResponse = await fetch('/api/user', {
+        method: 'GET',
+        credentials: 'include', // Include cookies in the request
+    });
+    if (userResponse.ok) {
+        const userData = await userResponse.json();
+        const userFamilyCode = userData.familyCode;
+
+        const msg = JSON.parse(await event.data.text());
+        if (msg.familyCode === userFamilyCode) { // Only act on websocket messages for the current user's family
+            if (msg.type === 'refresh') {
+                await loadSelectedTaskList(); // Refresh the current task list
+            } else if (msg.type === 'event') {
+                await addEvent(msg.familyMember, msg.task); // Add the event to the log
+            }
+        } else if (userResponse.status === 401) {
+            // Handle unauthorized access
+            console.error('Authentication cookie not found. Redirecting to login page.');
+            // Redirect the user to the login page
+            window.location.href = '/login';
+            alert('You have been signed out. Please log in again.');
+        } else {
+            const errorData = await userResponse.json();
+            console.error('Error adding event to log: ', errorData.error);
+        }
+    }
+}
+
+async function addEvent(familyMember, task) {
+    const eventLog = document.querySelector('#events');
+    eventLog.innerHTML +=
+        `<div class="event">
+            <span class="event-action"> <span class="family-member">${familyMember}</span> completed: </span>
+            <span class="task-name">${task}</span>
+        </div>`;
+}
+
+async function broadcastTaskCompletion(familyCode, familyMember, task) {
     const event = {
+        type: 'event',
         familyCode: familyCode,
         familyMember: familyMember,
         task: task
@@ -417,38 +451,6 @@ async function broadcastEvent(familyCode, familyMember, task) {
     socket.send(JSON.stringify(event));
 }
 
-async function forceRefresh() {
-    socket.send('refresh');
-}
-
-async function addEvent(msgFamilyCode, familyMember, task) {
-    const userResponse = await fetch('/api/user', {
-        method: 'GET',
-        credentials: 'include', // Include cookies in the request
-    });
-
-    if (userResponse.ok) {
-        const userData = await userResponse.json();
-        const userFamilyCode = userData.familyCode;
-
-        // Only add the event if it's within the user's family
-        if (msgFamilyCode === userFamilyCode) {
-            const eventLog = document.querySelector('#events');
-            eventLog.innerHTML +=
-                `<div class="event">
-                <span class="event-action"> <span class="family-member">${familyMember}</span> completed: </span>
-                <span class="task-name">${task}</span>
-            </div>`;
-        }
-
-    } else if (userResponse.status === 401) {
-        // Handle unauthorized access
-        console.error('Authentication cookie not found. Redirecting to login page.');
-        // Redirect the user to the login page
-        window.location.href = '/login';
-        alert('You have been signed out. Please log in again.')
-    } else {
-        const errorData = await userResponse.json();
-        console.error('Error adding event to log: ', errorData.error);
-    }
+async function broadcastRefreshRequest(familyCode) {
+    socket.send(JSON.stringify({ type: 'refresh', familyCode: familyCode }));
 }
