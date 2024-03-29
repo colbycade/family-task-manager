@@ -152,7 +152,7 @@ async function loadSelectedTaskList() {
 
             const completeTaskCell = newRow.insertCell(0);
             completeTaskCell.innerHTML = `<span class="checkbox ${task.completed ? 'completed' : ''}" 
-        onclick="toggleTaskCompletion('${selectedList}', ${index}, this)"></span>`;
+        onclick="toggleTaskCompletion('${selectedList}', ${index})"></span>`;
 
             const taskCell = newRow.insertCell(1);
             taskCell.textContent = task.name;
@@ -209,7 +209,7 @@ async function toggleTaskCompletion(listName, taskIndex) {
 
         tasks[taskIndex].completed = !tasks[taskIndex].completed;
         if (tasks[taskIndex].completed) {
-            broadcastEvent(userData.username, tasks[taskIndex].name);
+            broadcastEvent(userData.familyCode, userData.username, tasks[taskIndex].name);
         }
 
         await fetch(`/api/tasks/${familyCode}/${listName}`, {
@@ -397,23 +397,47 @@ function configureWebSocket() {
     socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
     socket.onmessage = async (event) => {
         const msg = JSON.parse(await event.data.text());
-        addEvent(msg.familyMember, msg.task);
+        addEvent(msg.familyCode, msg.familyMember, msg.task);
     };
 }
 
-function addEvent(familyMember, task) {
-    const eventLog = document.querySelector('#events');
-    eventLog.innerHTML +=
-        `<div class="event">
-            <span class="event-action"> <span class="family-member">${familyMember}</span> completed: </span>
-            <span class="task-name">${task}</span>
-        </div>`
-}
-
-function broadcastEvent(familyMember, task) {
+function broadcastEvent(familyCode, familyMember, task) {
     const event = {
+        familyCode: familyCode,
         familyMember: familyMember,
         task: task
     };
     socket.send(JSON.stringify(event));
+}
+
+async function addEvent(msgFamilyCode, familyMember, task) {
+    const userResponse = await fetch('/api/user', {
+        method: 'GET',
+        credentials: 'include', // Include cookies in the request
+    });
+
+    if (userResponse.ok) {
+        const userData = await userResponse.json();
+        const userFamilyCode = userData.familyCode;
+
+        // Only add the event if it's within the user's family
+        if (msgFamilyCode === userFamilyCode) {
+            const eventLog = document.querySelector('#events');
+            eventLog.innerHTML +=
+                `<div class="event">
+                <span class="event-action"> <span class="family-member">${familyMember}</span> completed: </span>
+                <span class="task-name">${task}</span>
+            </div>`;
+        }
+
+    } else if (userResponse.status === 401) {
+        // Handle unauthorized access
+        console.error('Authentication cookie not found. Redirecting to login page.');
+        // Redirect the user to the login page
+        window.location.href = '/login';
+        alert('You have been signed out. Please log in again.')
+    } else {
+        const errorData = await userResponse.json();
+        console.error('Error adding event to log: ', errorData.error);
+    }
 }
