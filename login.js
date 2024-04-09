@@ -124,7 +124,7 @@ async function checkLogin() {
     });
 
     const loginStatusEl = document.getElementById("login-status");
-    const loginHeaderEl = document.querySelector('#login-header h2');
+    const loginHeaderEl = document.getElementById("login-header");
 
     if (userResponse.ok) {
         const userData = await userResponse.json();
