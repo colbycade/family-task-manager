@@ -192,3 +192,14 @@ footer a {
         margin-bottom: 10px;
     }
 }
+
+/* Not Found Page */
+
+.not-found {
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background-color: rgb(124, 52, 52);
+    font-size: 40px;
+    font-weight: bold;
+}
