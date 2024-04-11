@@ -1,9 +1,9 @@
 import React from 'react';
 import './app.css';
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
-import { Login } from './login/login';
-import { Home } from './home/home';
-import { About } from './about/about';
+import Login from './login/login';
+import Home from './home/home';
+import About from './about/about';
 
 
 export default function App() {
