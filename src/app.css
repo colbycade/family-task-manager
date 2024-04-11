@@ -262,6 +262,7 @@ footer a {
 
 #login-form input {
     border: #ff43a18d 1px solid;
+    margin: 8px;
 }
 
 #curr-user {
