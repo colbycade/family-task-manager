@@ -1,24 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { TaskListHeader, TaskListTable } from './taskListComponents';
 import { handleApiError } from './../app';
 
 const TaskList = () => {
     const [tasks, setTasks] = useState([]);
-    const [selectedList, setSelectedList] = useState('family');
+    const [selectedList, setSelectedList] = useState('Family');
     const [taskLists, setTaskLists] = useState([]);
 
     useEffect(() => {
-        initializeTaskLists();
-    }, []);
+        loadTaskLists();
+    }, [selectedList]);
 
-    const initializeTaskLists = async () => {
+    const loadTaskLists = async () => {
         try {
-            const userResponse = await fetch('/api/user', {
-                method: 'GET',
-                credentials: 'include',
-            });
-            if (!userResponse.ok) throw new Error('Failed to fetch user data');
-            const userData = await userResponse.json();
-
+            const userData = await fetchUserData();
             const response = await fetch(`/api/tasks/${userData.familyCode}`);
             if (!response.ok) throw new Error('Failed to load tasks');
 
@@ -30,38 +25,93 @@ const TaskList = () => {
         }
     };
 
-    const addTask = async (taskName, taskDueDate) => {
-        // Assume the POST request adds a task and returns the updated list
-        // For simplicity, adding a new task locally to state
-        setTasks([...tasks, { name: taskName, dueDate: taskDueDate, completed: false }]);
-        // You should add API call to update backend here
+    const handleListChange = async (event) => {
+        setSelectedList(event.target.value);
     };
 
-    const toggleTaskCompletion = (index) => {
-        // Optimistically toggle task completion
+    const fetchUserData = async () => {
+        const userResponse = await fetch('/api/user', {
+            method: 'GET',
+            credentials: 'include',
+        });
+        if (!userResponse.ok) throw new Error('Unauthorized');
+        return userResponse.json();
+    };
+
+    const addTask = async (taskName, taskDueDate) => {
+        // Optimistically add task
+        const newTask = { name: taskName, dueDate: taskDueDate, completed: false };
+        const newTasks = [...tasks, newTask];
+        setTasks(newTasks);
+
+        const userData = await fetchUserData();
+        try {
+            const response = await fetch(`/api/tasks/${userData.familyCode}/${selectedList}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newTask)
+            });
+            if (!response.ok) throw new Error('Failed to add task');
+        } catch (error) {
+            handleApiError(error);
+            // Revert changes if the POST fails
+            setTasks(tasks);
+        }
+    };
+
+    const removeTask = async (index) => {
+        // Optimistically remove task
+        const oldTasks = [...tasks];
+        const updatedTasks = [...tasks];
+        updatedTasks.splice(index, 1);
+        setTasks(updatedTasks);
+
+        const userData = await fetchUserData();
+        if (userData.role === 'Child') {
+            alert('Only parents can remove tasks');
+            // Revert changes if not authorized
+            setTasks(oldTasks);
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/tasks/${userData.familyCode}/${selectedList}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedTasks)
+            });
+            if (!response.ok) throw new Error('Failed to update tasks');
+        } catch (error) {
+            handleApiError(error);
+            // Revert changes if the POST fails
+            setTasks(oldTasks);
+        }
+    };
+
+    const toggleTaskCompletion = async (index) => {
+        // Optimistically toggle completion
         const newTasks = [...tasks];
         newTasks[index].completed = !newTasks[index].completed;
         setTasks(newTasks);
-        // API call to update the task on the server
-    };
 
-    const removeTask = (index) => {
-        // Optimistically remove task
-        const newTasks = [...tasks];
-        newTasks.splice(index, 1);
-        setTasks(newTasks);
-        // API call to remove the task from the server
+        const userData = await fetchUserData();
+        try {
+            const response = await fetch(`/api/tasks/${userData.familyCode}/${selectedList}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newTasks)
+            });
+            if (!response.ok) throw new Error('Failed to update task completion');
+        } catch (error) {
+            handleApiError(error);
+            // Revert changes if the POST fails
+            newTasks[index].completed = !newTasks[index].completed;
+            setTasks(newTasks);
+        }
     };
 
     const addTaskToCalendar = (task) => {
-        // Function to handle adding a task to the calendar
         console.log('Add to Calendar:', task);
-    };
-
-    const handleListChange = (event) => {
-        setSelectedList(event.target.value);
-        // Re-fetch the tasks for the newly selected list
-        // initializeTaskLists(); Uncomment and adjust to fetch only for selected list
     };
 
     return (
@@ -75,131 +125,6 @@ const TaskList = () => {
                 addTask={addTask}
             />
         </section>
-    );
-};
-
-const TaskListHeader = ({ selectedList, onListChange, taskLists }) => {
-    return (
-        <div className="todolist-header">
-            <h2>Your Task Lists</h2>
-            <select
-                id="task-list-dropdown"
-                value={selectedList}
-                onChange={onListChange}
-            >
-                {taskLists.map((listName) => (
-                    <option key={listName} value={listName}>
-                        {listName}'s To-Do List
-                    </option>
-                ))}
-            </select>
-        </div>
-    );
-};
-
-const TaskListTable = ({ tasks, onToggleComplete, onRemoveTask, onAddToCalendar, addTask }) => {
-    const [taskName, setTaskName] = useState('');
-    const [taskDueDate, setTaskDueDate] = useState('');
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        addTask(taskName, taskDueDate);
-        setTaskName('');
-        setTaskDueDate('');
-    };
-
-    return (
-        <table id="task-list">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th id="task-name-header">Task</th>
-                    <th id="task-date-header">
-                        <span id="date-header-content"> Due Date <span id="date-sort-icon">⇅</span> </span>
-                    </th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody id="task-list-data" data-sort-ascending="true">
-                {tasks.map((task, index) => (
-                    <TaskRow
-                        key={index}
-                        task={task}
-                        index={index}
-                        onToggleComplete={onToggleComplete}
-                        onRemoveTask={onRemoveTask}
-                        onAddToCalendar={onAddToCalendar}
-                    />
-                ))}
-            </tbody>
-            <tfoot>
-                <TaskAddForm addTask={addTask} />
-            </tfoot>
-        </table>
-    );
-};
-
-
-const TaskRow = ({ task, index, onToggleComplete, onRemoveTask, onAddToCalendar }) => {
-    return (
-        <tr className={task.completed ? 'completed-task' : ''}>
-            <td>
-                <span className={`checkbox ${task.completed ? 'completed' : ''}`} onClick={() => onToggleComplete(index)}></span>
-            </td>
-            <td>{task.name}</td>
-            <td>{task.dueDate}</td>
-            <td>
-                <button onClick={() => onAddToCalendar(task)}>Add to Calendar</button>
-            </td>
-            <td>
-                <button onClick={() => onRemoveTask(index)}>Remove</button>
-            </td>
-        </tr>
-    );
-};
-
-const TaskAddForm = ({ addTask }) => {
-    const [taskName, setTaskName] = useState('');
-    const [taskDueDate, setTaskDueDate] = useState('');
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (!taskName || !taskDueDate) {
-            alert('Please enter both a task name and a due date.');
-            return;
-        }
-        addTask(taskName, taskDueDate);
-        setTaskName('');
-        setTaskDueDate('');
-    };
-
-    return (
-        <tr>
-            <td></td>
-            <td>
-                <input
-                    type="text"
-                    id="new-task-name"
-                    value={taskName}
-                    onChange={(e) => setTaskName(e.target.value)}
-                    placeholder="Enter task name"
-                    required
-                />
-            </td>
-            <td>
-                <input
-                    type="date"
-                    id="new-task-date"
-                    value={taskDueDate}
-                    onChange={(e) => setTaskDueDate(e.target.value)}
-                    required
-                />
-            </td>
-            <td colSpan="2">
-                <button type="button" id="add-task-button" onClick={handleSubmit}>Add Task</button>
-            </td>
-        </tr>
     );
 };
 
