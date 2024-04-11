@@ -24,7 +24,7 @@ div#task-lists {
     border: 1px solid #ddd;
     border-radius: 4px;
     background-color: #ffa500;
-    color:white;
+    color: white;
     font-size: 90%;
 }
 
@@ -45,7 +45,8 @@ section.sidebar {
     padding: 10px;
     margin: 15px;
     background-color: #e6ffe6;
-    height: calc(100% - 30px); /* Adjust based on total vertical margins */
+    height: calc(100% - 30px);
+    /* Adjust based on total vertical margins */
     flex: 2.5;
 }
 
@@ -70,7 +71,8 @@ section.sidebar .profile {
 }
 
 .fileInputLabel:hover {
-    background-color: #004d00; /* Darker shade for hover effect */
+    background-color: #004d00;
+    /* Darker shade for hover effect */
 }
 
 #profilePic {
@@ -143,7 +145,8 @@ section.todolist {
     flex: 5;
 }
 
-.todolist-header h2, .todolist-header {
+.todolist-header h2,
+.todolist-header {
     text-align: center;
     margin: 10px 0 10px;
     color: #e16200;
@@ -156,7 +159,8 @@ section.todolist {
     border: 2px solid #fd8b33;
 }
 
-#task-list th, #task-list td {
+#task-list th,
+#task-list td {
     border: 1px solid #ffcc80;
     padding: 8px;
     text-align: center;
@@ -235,8 +239,8 @@ section.todolist {
     width: 28px;
     height: 28px;
     cursor: pointer;
-    background-color: #f0f0f0; 
-    border: 1px solid #dcdcdc; 
+    background-color: #f0f0f0;
+    border: 1px solid #dcdcdc;
     text-align: center;
 }
 
@@ -247,7 +251,8 @@ section.todolist {
 }
 
 .checkbox.completed::before {
-    content: "\2713"; /* add checkmark */
+    content: "\2713";
+    /* add checkmark */
 }
 
 #task-date-header {
@@ -264,8 +269,9 @@ section.todolist {
     cursor: pointer;
     position: absolute;
     right: 10px;
-    top: 50%; /* Center the icon vertically */
-    transform: translateY(-50%); 
+    top: 50%;
+    /* Center the icon vertically */
+    transform: translateY(-50%);
 }
 
 
@@ -281,19 +287,22 @@ section.todolist {
     border: 1px solid #ffcc80;
     border-radius: 4px;
     text-align: center;
-    color: #db8f31; /* date text */
+    color: #db8f31;
+    /* date text */
     background-color: #fff5e6;
 }
 
 #task-list input::placeholder {
-    color: #db8f31; /* task placeholder text */
+    color: #db8f31;
+    /* task placeholder text */
 }
 
 
 /* Adjustments for small screens */
 
 .alt-task-list-dropdown {
-    display: none; /* Initially hidden */
+    display: none;
+    /* Initially hidden */
 }
 
 
