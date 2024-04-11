@@ -24,7 +24,7 @@ export default function Login() {
     };
 
     return (
-        <main>
+        <main className="login-main">
             <div id="login-form">
                 <LoginForm />
                 <JoinFamilyForm />

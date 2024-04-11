@@ -46,7 +46,7 @@ export default function App() {
 
 function NotFound() {
     return (
-        <main className="not-found">
+        <main className="not-found-main">
             404: Return to sender. Address unknown.
         </main>
     );

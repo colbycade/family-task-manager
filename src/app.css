@@ -195,7 +195,9 @@ footer a {
 
 /* Not Found Page */
 
-.not-found {
+main.not-found-main {
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     color: white;

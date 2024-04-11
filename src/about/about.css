@@ -1,9 +1,14 @@
+main.about-main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
 #family-members-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     max-width: 600px;
-
 }
 
 #family-members-container h1 {

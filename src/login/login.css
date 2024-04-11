@@ -1,3 +1,9 @@
+main.login-main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
 #login-form label {
     color: #ff69b4;
 }

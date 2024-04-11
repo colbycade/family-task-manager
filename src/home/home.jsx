@@ -6,7 +6,7 @@ import './home.css';
 
 const Home = () => {
     return (
-        <main>
+        <main className="home-main">
             <section className="sidebar">
                 <Profile />
                 <EventLog />
