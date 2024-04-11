@@ -61,7 +61,7 @@ nav .menu li {
     margin: 5px;
 }
 
-nav a {
+nav .nav-link {
     text-decoration: none;
     color: #354bf0;
     padding: 10px 15px;
@@ -71,8 +71,8 @@ nav a {
     transition: background-color 0.3s;
 }
 
-nav a:hover,
-nav a.current-page {
+nav .nav-link:hover,
+nav .nav-link.current-page {
     background-color: #384dea;
     color: white;
 }
