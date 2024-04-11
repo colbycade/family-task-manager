@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 export default function About() {
     return (
@@ -27,24 +27,41 @@ export default function About() {
 }
 
 function AboutSection() {
+    const [quote, setQuote] = useState({ text: '', author: '' });
+    const quoteAPIKey = 'OjGxIKgEi0GdgkCLjXu8Zg==qdPcUObV6hC4DX7m';
+    const quoteAPIURL = 'https://api.api-ninjas.com/v1/quotes?category=family';
+
+    useEffect(() => { getFamilyQuotes(); }, []);
+
+    async function getFamilyQuotes() {
+        try {
+            const response = await fetch(quoteAPIURL, {
+                headers: {
+                    'X-Api-Key': quoteAPIKey
+                }
+            });
+            const data = await response.json();
+            if (data && data.length > 0) {
+                const { quote, author } = data[0];
+                setQuote({ text: quote, author: author });
+            }
+        } catch (error) {
+            console.error('Error fetching family quotes:', error);
+            setQuote({ text: 'Error loading quote.', author: '' });
+        }
+    }
+
     return (
         <div>
             <h1>About</h1>
             <p>This is a web application made for CS260 at Brigham Young University.</p>
             <p>Here's a quote for your family!</p>
             <blockquote id="quote">
-                <i id="quote-text"></i>
-                <p id="quote-author"></p>
+                <i id="quote-text">{quote.text}</i>
+                <p id="quote-author">{`- ${quote.author}`}</p>
             </blockquote>
         </div>
     );
 }
 
-function FamilyMembers() {
-    return (
-        <div id="family-members-container">
-            <h1>Family Members</h1>
-            <div id="family-container"></div>
-        </div>
-    );
-}
+
