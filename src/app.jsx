@@ -51,3 +51,16 @@ function NotFound() {
         </main>
     );
 }
+
+export async function handleApiError(response) {
+    if (response.status === 401) {
+        console.error('Authentication cookie not found. Redirecting to login page.');
+        alert('You have been logged out. Please log in again.');
+        window.location.href = '/';
+        throw new Error('Unauthorized');
+    } else {
+        const errorData = await response.json();
+        console.error('Error fetching data:', errorData.error);
+        throw new Error('API Error');
+    }
+};
