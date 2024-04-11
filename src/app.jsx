@@ -21,9 +21,10 @@ export default function App() {
                             <li><NavLink className='nav-link' to='home'>Home</NavLink></li>
                             <li><NavLink className='nav-link' to='about'>About</NavLink></li>
                         </div>
-                        {/* <div className="log-out">
-                        <button id="log-out-button" onClick={logout}>Logout</button>
-                    </div> */}
+                        <div className="log-out">
+                            <button id="log-out-button">Logout</button>
+                            {/* onClick={logout} */}
+                        </div>
                     </nav>
                 </header>
                 <Routes>
