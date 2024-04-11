@@ -2,21 +2,16 @@ import React from 'react';
 import Profile from './profile';
 import EventLog from './eventLog';
 import TaskList from './taskList';
+import './home.css';
 
 const Home = () => {
     return (
         <main>
             <section className="sidebar">
-                <div className="profile">
-                    <Profile />
-                </div>
-                <div id="event-log">
-                    <EventLog />
-                </div>
+                <Profile />
+                <EventLog />
             </section>
-            <section className="todolist">
-                <TaskList />
-            </section>
+            <TaskList />
         </main>
     );
 };

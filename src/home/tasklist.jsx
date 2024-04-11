@@ -7,9 +7,7 @@ const TaskList = () => {
                 <div id="task-lists">
                     <h2>Your Task Lists</h2>
                     <select id="task-list-dropdown">
-                        <option value="family" selected>
-                            Family To-Do List
-                        </option>
+                        <option defaultValue={"family"}>Family To-Do List</option>
                         <option value="user">My To-Do List</option>
                     </select>
                 </div>

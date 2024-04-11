@@ -1,3 +1,4 @@
+/* Global Styles */
 main {
     display: flex;
     flex-direction: row;
@@ -5,58 +6,31 @@ main {
 }
 
 /* Sidebar Design */
-
-div.profile {
-    border-bottom: 2px solid #2a8668;
-}
-
-div#task-lists {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-}
-
-.task-list-dropdown {
-    display: block;
-    width: 100%;
-    margin: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #ffa500;
-    color: white;
-    font-size: 90%;
-}
-
-#event-log h2 {
-    text-align: center;
-    margin-top: 5px;
-    margin-bottom: 10px;
-    color: #006600;
-}
-
-#event-log h2 {
-    margin-top: 20px;
-}
-
-
 section.sidebar {
     flex-basis: 500px;
     padding: 10px;
     margin: 15px;
     background-color: #e6ffe6;
     height: calc(100% - 30px);
-    /* Adjust based on total vertical margins */
     flex: 2.5;
 }
 
-section.sidebar .profile {
+/* Profile Component Styles */
+.profile {
     text-align: center;
     padding-bottom: 10px;
     border-bottom: 1px solid #ddd;
     margin-bottom: 10px;
 }
 
+#profilePic {
+    width: 150px;
+    height: 150px;
+    border-radius: 20%;
+    object-fit: cover;
+    margin-bottom: 5px;
+    border: 2px solid #004d00;
+}
 
 .fileInputLabel {
     display: inline-block;
@@ -72,70 +46,54 @@ section.sidebar .profile {
 
 .fileInputLabel:hover {
     background-color: #004d00;
-    /* Darker shade for hover effect */
 }
 
-#profilePic {
-    width: 150px;
-    height: 150px;
-    border-radius: 20%;
-    object-fit: cover;
-    margin-bottom: 5px;
-    border: 2px solid #004d00;
-}
-
-section.sidebar .profile #userInfo {
+#userInfo {
     color: #004d00;
-    margin: 0px 0;
+    margin: 0;
 }
 
-section.sidebar .profile .userDisplay {
+.userDisplay {
     color: #053205;
-    margin: 0px 0;
+    margin: 0;
     font-weight: bold;
 }
 
-section.sidebar .task-list-dropdown {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #e6ffe6;
-    font-size: 90%;
+/* EventLog Component Styles */
+#event-log h2 {
+    text-align: center;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    color: #006600;
 }
-
-/* Event Log Design */
 
 #events {
     padding: 3px;
     margin-left: 2px;
 }
 
-#event-log .event {
+.event {
     display: flex;
     flex-direction: row;
     margin-top: 3px;
 }
 
-#event-log .event-action {
+.event-action {
     color: #004d00;
     width: 190px;
 }
 
-#event-log .family-member {
+.family-member {
     font-weight: bold;
 }
 
-#event-log .task-name {
+.task-name {
     color: #2cb02c;
     font-style: italic;
     font-size: medium;
-
 }
 
-
-/* Todo List Design */
-
+/* TaskList Component Styles */
 section.todolist {
     display: flex;
     flex-direction: column;
@@ -150,6 +108,24 @@ section.todolist {
     text-align: center;
     margin: 10px 0 10px;
     color: #e16200;
+}
+
+#task-lists {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.task-list-dropdown {
+    display: block;
+    width: 100%;
+    margin: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #ffa500;
+    color: white;
+    font-size: 90%;
 }
 
 /* Table */
@@ -203,7 +179,6 @@ section.todolist {
     color: #fcf5d9;
 }
 
-
 /* Buttons */
 #task-list button {
     padding: 5px 10px;
@@ -252,7 +227,6 @@ section.todolist {
 
 .checkbox.completed::before {
     content: "\2713";
-    /* add checkmark */
 }
 
 #task-date-header {
@@ -270,14 +244,10 @@ section.todolist {
     position: absolute;
     right: 10px;
     top: 50%;
-    /* Center the icon vertically */
     transform: translateY(-50%);
 }
 
-
-
 /* Form for adding tasks */
-
 #task-list input {
     display: flex;
     align-items: center;
@@ -288,23 +258,17 @@ section.todolist {
     border-radius: 4px;
     text-align: center;
     color: #db8f31;
-    /* date text */
     background-color: #fff5e6;
 }
 
 #task-list input::placeholder {
     color: #db8f31;
-    /* task placeholder text */
 }
-
 
 /* Adjustments for small screens */
-
 .alt-task-list-dropdown {
     display: none;
-    /* Initially hidden */
 }
-
 
 @media (max-width: 1000px) {
     main {
