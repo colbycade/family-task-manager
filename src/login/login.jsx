@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './login.css';
 
 export default function Login() {
     const [loginStatus, setLoginStatus] = useState('');
@@ -39,6 +40,7 @@ export default function Login() {
                     If you are the parent and have not yet created a family, create a username and password, then give the
                     provided code to other family members so they can join.
                 </p>
+                <h3>Demo</h3>
                 <p>
                     To login to the demo family, use username: 'john_doe' and password: 'password' as a Parent, or use
                     username: 'jane_doe' and password: 'password' to login as a Child.

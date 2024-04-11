@@ -1,0 +1,18 @@
+#login-form label {
+    color: #ff69b4;
+}
+
+#login-form input {
+    border: #ff43a18d 1px solid;
+    margin: 8px;
+}
+
+#curr-user {
+    color: #660057;
+    font-weight: bold;
+}
+
+#login-status {
+    font-size: large;
+    color: #de5399f6;
+}

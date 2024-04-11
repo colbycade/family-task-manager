@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import './about.css';
 
 export default function About() {
     return (
         <main>
             <AboutSection />
-            <hr />
             <FamilyMembers />
-            <hr />
             <div className="how-to-use">
                 <h1>How to Use</h1>
                 <h3>Setting Up Your Family</h3>
