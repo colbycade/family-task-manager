@@ -63,4 +63,109 @@ function AboutSection() {
     );
 }
 
+function FamilyMembers() {
+    const [familyMembers, setFamilyMembers] = useState([]);
 
+    useEffect(() => {
+        displayFamilyMembers();
+    }, []);
+
+    async function displayFamilyMembers() {
+        const userResponse = await fetch('/api/user', {
+            method: 'GET',
+            credentials: 'include',
+        });
+        if (!userResponse.ok) {
+            console.error('Authentication failed or user not found.');
+            return;
+        }
+
+        const userData = await userResponse.json();
+        const response = await fetch(`/api/family/${userData.familyCode}`);
+        const familyData = await response.json();
+        setFamilyMembers(familyData.family);
+    }
+
+    async function removeFamilyMember(username) {
+        const userResponse = await fetch('/api/user', {
+            method: 'GET',
+            credentials: 'include',
+        });
+        const userData = await userResponse.json();
+
+        if (userData.role === 'Child') {
+            alert('Only parents can remove family members');
+            return;
+        }
+        if (userData.username === username) {
+            alert('You cannot delete yourself from the family. Please ask another parent to remove you.');
+            return;
+        }
+
+        const response = await fetch(`/api/family/${userData.familyCode}/${username}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            await removeTaskList(username);
+            await displayFamilyMembers();
+        } else {
+            const errorData = await response.json();
+            console.error('Error removing family member:', errorData.error);
+        }
+    }
+
+    async function removeTaskList(username) {
+        const response = await fetch(`/api/tasks/${userData.familyCode}/${username}`, {
+            method: 'DELETE'
+        });
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Error removing family member tasks:', errorData.error);
+        }
+    }
+
+    async function changeRole(username) {
+        const userResponse = await fetch('/api/user', {
+            method: 'GET',
+            credentials: 'include',
+        });
+        const userData = await userResponse.json();
+
+        if (userData.role === 'Child') {
+            alert('Only parents can change roles');
+            return;
+        }
+        if (userData.username === username) {
+            alert('You cannot change your own role to child. Please ask another parent to change your role.');
+            return;
+        }
+
+        const response = await fetch(`/api/family/${userData.familyCode}/${username}/role`, {
+            method: 'PUT'
+        });
+
+        if (response.ok) {
+            await displayFamilyMembers();
+        } else {
+            const errorData = await response.json();
+            console.error('Error changing role:', errorData.error);
+        }
+    }
+
+    return (
+        <div id="family-members-container">
+            <h1>Family Members</h1>
+            <div id="family-container">
+                {familyMembers.map((member) => (
+                    <div key={member.username} className="family-member">
+                        <span className="family-member-name">{member.username}</span>
+                        <span className="family-member-role">({member.role})</span>
+                        <button onClick={() => removeFamilyMember(member.username)}>Remove</button>
+                        <button onClick={() => changeRole(member.username)}>Change Role</button>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
