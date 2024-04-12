@@ -6,6 +6,7 @@ const TaskList = () => {
     const [tasks, setTasks] = useState([]);
     const [selectedList, setSelectedList] = useState('Family');
     const [taskLists, setTaskLists] = useState([]);
+    const [sortAscending, setSortAscending] = useState(true);
 
     useEffect(() => {
         loadTaskLists();
@@ -103,6 +104,16 @@ const TaskList = () => {
         }
     };
 
+    const sortByDate = () => {
+        const sortedTasks = [...tasks].sort((a, b) => {
+            const dateA = new Date(a.dueDate);
+            const dateB = new Date(b.dueDate);
+            return sortAscending ? dateA - dateB : dateB - dateA;
+        });
+        setTasks(sortedTasks);
+        setSortAscending(!sortAscending);
+    };
+
     const addTaskToCalendar = (task) => {
         console.log('Add to Calendar:', task);
     };
@@ -116,6 +127,7 @@ const TaskList = () => {
                 onRemoveTask={removeTask}
                 onAddToCalendar={addTaskToCalendar}
                 addTask={addTask}
+                sortByDate={sortByDate}
             />
         </section>
     );

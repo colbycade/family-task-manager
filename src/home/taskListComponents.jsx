@@ -19,7 +19,7 @@ export const TaskListHeader = ({ selectedList, onListChange, taskLists }) => {
     );
 };
 
-export const TaskListTable = ({ tasks, onToggleComplete, onRemoveTask, onAddToCalendar, addTask }) => {
+export const TaskListTable = ({ tasks, onToggleComplete, onRemoveTask, onAddToCalendar, addTask, sortByDate }) => {
     const [taskName, setTaskName] = useState('');
     const [taskDueDate, setTaskDueDate] = useState('');
 
@@ -37,13 +37,15 @@ export const TaskListTable = ({ tasks, onToggleComplete, onRemoveTask, onAddToCa
                     <th></th>
                     <th id="task-name-header">Task</th>
                     <th id="task-date-header">
-                        <span id="date-header-content"> Due Date <span id="date-sort-icon">⇅</span> </span>
+                        <span id="date-header-content">
+                            Due Date <span id="date-sort-icon" onClick={sortByDate}>⇅</span>
+                        </span>
                     </th>
                     <th></th>
                     <th></th>
                 </tr>
             </thead>
-            <tbody id="task-list-data" data-sort-ascending="true">
+            <tbody id="task-list-data">
                 {tasks.map((task, index) => (
                     <TaskRow
                         key={index}
