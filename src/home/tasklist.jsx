@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { TaskListHeader, TaskListTable } from './taskListComponents';
 import { handleApiError } from './../app';
 
-const TaskList = () => {
+const TaskList = ({ broadcastTaskCompletion, broadcastRefreshRequest }) => {
     const [tasks, setTasks] = useState([]);
     const [selectedList, setSelectedList] = useState('Family');
     const [taskLists, setTaskLists] = useState([]);
@@ -57,7 +57,9 @@ const TaskList = () => {
         if (!response.ok) {
             await handleApiError(response);
             setTasks(tasks); // Revert if the POST fails after handling error
+            return;
         }
+        broadcastRefreshRequest(userData.familyCode);
     };
 
     const removeTask = async (index) => {
@@ -82,7 +84,9 @@ const TaskList = () => {
         if (!response.ok) {
             await handleApiError(response);
             setTasks(oldTasks); // Revert if the PUT fails
+            return;
         }
+        broadcastRefreshRequest(userData.familyCode);
     };
 
     const toggleTaskCompletion = async (index) => {
@@ -101,8 +105,15 @@ const TaskList = () => {
             await handleApiError(response);
             newTasks[index].completed = !newTasks[index].completed;
             setTasks(newTasks); // Revert if the PUT fails
+            return
         }
+
+        if (newTasks[index].completed) {
+            broadcastTaskCompletion(userData.familyCode, userData.username, newTasks[index].name);
+        }
+        broadcastRefreshRequest(userData.familyCode);
     };
+
 
     const sortByDate = () => {
         const sortedTasks = [...tasks].sort((a, b) => {
