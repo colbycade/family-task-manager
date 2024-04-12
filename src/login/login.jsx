@@ -27,7 +27,7 @@ export default function Login() {
     return (
         <main className="login-main">
             <div id="login-form">
-                <LoginForm />
+                <LoginForm loginStatus={loginStatus} />
                 <JoinFamilyForm />
                 <CreateFamilyForm />
             </div>
@@ -54,7 +54,7 @@ export default function Login() {
 };
 
 
-function LoginForm() {
+const LoginForm = ({ loginStatus }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -86,7 +86,7 @@ function LoginForm() {
 
     return (
         <div id="login-section">
-            <h2>Login</h2>
+            <h2 id="login-header">Login <span id="login-status">{loginStatus}</span> </h2>
             <label htmlFor="login-username">Username:</label>
             <input
                 type="text"
