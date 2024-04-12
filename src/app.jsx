@@ -22,8 +22,7 @@ export default function App() {
                             <li><NavLink className='nav-link' to='about'>About</NavLink></li>
                         </div>
                         <div className="log-out">
-                            <button id="log-out-button">Logout</button>
-                            {/* onClick={logout} */}
+                            <button id="log-out-button" onClick={logout}>Logout</button>
                         </div>
                     </nav>
                 </header>
@@ -44,6 +43,21 @@ export default function App() {
     );
 }
 
+async function logout() {
+    const response = await fetch('/api/auth/logout', {
+        method: 'DELETE',
+        credentials: 'include',
+    });
+
+    if (response.ok) {
+        window.location.href = '/';
+        alert('You have been logged out.');
+    } else {
+        const errorData = await response.json();
+        console.error('Error logging out: ', errorData.error);
+    }
+}
+
 function NotFound() {
     return (
         <main className="not-found-main">
@@ -60,7 +74,7 @@ export async function handleApiError(response) {
     } else if (response.status === 500) {
         console.error('Internal server error');
         alert('The server is having trouble. Please try again later.');
-        window.location.href = '/';
+        // window.location.href = '/';
     } else {
         const errorData = await response.json();
         console.error('Error fetching data:', errorData.error);
