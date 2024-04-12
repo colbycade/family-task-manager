@@ -117,9 +117,9 @@ const TaskList = ({ broadcastTaskCompletion, broadcastRefreshRequest, onReload }
 
 
     const sortByDate = () => {
-        const sortedTasks = [...tasks].sort((a, b) => {
-            const dateA = new Date(a.dueDate);
-            const dateB = new Date(b.dueDate);
+        const sortedTasks = tasks.sort((a, b) => {
+            const dateA = a.dueDate ? new Date(a.dueDate) : new Date(0);    // if no date set
+            const dateB = b.dueDate ? new Date(b.dueDate) : new Date(0);
             return sortAscending ? dateA - dateB : dateB - dateA;
         });
         setTasks(sortedTasks);
