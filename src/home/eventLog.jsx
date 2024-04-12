@@ -1,4 +1,5 @@
 import React from 'react';
+import { handleApiError } from './../app';
 
 const EventLog = () => {
     return (

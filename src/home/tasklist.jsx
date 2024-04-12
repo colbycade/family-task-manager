@@ -34,79 +34,72 @@ const TaskList = () => {
             method: 'GET',
             credentials: 'include',
         });
-        if (!userResponse.ok) throw new Error('Unauthorized');
+        if (!userResponse.ok) {
+            await handleApiError(userResponse);
+            return null;
+        }
         return userResponse.json();
     };
 
     const addTask = async (taskName, taskDueDate) => {
-        // Optimistically add task
         const newTask = { name: taskName, dueDate: taskDueDate, completed: false };
         const newTasks = [...tasks, newTask];
-        setTasks(newTasks);
+        setTasks(newTasks); // Optimistically add the task
 
         const userData = await fetchUserData();
-        try {
-            const response = await fetch(`/api/tasks/${userData.familyCode}/${selectedList}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newTask)
-            });
-            if (!response.ok) throw new Error('Failed to add task');
-        } catch (error) {
-            handleApiError(error);
-            // Revert changes if the POST fails
-            setTasks(tasks);
+        const response = await fetch(`/api/tasks/${userData.familyCode}/${selectedList}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newTask)
+        });
+
+        if (!response.ok) {
+            await handleApiError(response);
+            setTasks(tasks); // Revert if the POST fails after handling error
         }
     };
 
     const removeTask = async (index) => {
-        // Optimistically remove task
         const oldTasks = [...tasks];
         const updatedTasks = [...tasks];
         updatedTasks.splice(index, 1);
-        setTasks(updatedTasks);
+        setTasks(updatedTasks); // Optimistically remove the task
 
         const userData = await fetchUserData();
         if (userData.role === 'Child') {
             alert('Only parents can remove tasks');
-            // Revert changes if not authorized
             setTasks(oldTasks);
             return;
         }
 
-        try {
-            const response = await fetch(`/api/tasks/${userData.familyCode}/${selectedList}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updatedTasks)
-            });
-            if (!response.ok) throw new Error('Failed to update tasks');
-        } catch (error) {
-            handleApiError(error);
-            // Revert changes if the POST fails
-            setTasks(oldTasks);
+        const response = await fetch(`/api/tasks/${userData.familyCode}/${selectedList}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedTasks)
+        });
+
+        if (!response.ok) {
+            await handleApiError(response);
+            setTasks(oldTasks); // Revert if the PUT fails
         }
     };
 
     const toggleTaskCompletion = async (index) => {
-        // Optimistically toggle completion
         const newTasks = [...tasks];
         newTasks[index].completed = !newTasks[index].completed;
-        setTasks(newTasks);
+        setTasks(newTasks); // Optimistically toggle completion
 
         const userData = await fetchUserData();
-        try {
-            const response = await fetch(`/api/tasks/${userData.familyCode}/${selectedList}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newTasks)
-            });
-            if (!response.ok) throw new Error('Failed to update task completion');
-        } catch (error) {
-            handleApiError(error);
-            // Revert changes if the POST fails
+        const response = await fetch(`/api/tasks/${userData.familyCode}/${selectedList}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newTasks)
+        });
+
+        if (!response.ok) {
+            await handleApiError(response);
             newTasks[index].completed = !newTasks[index].completed;
-            setTasks(newTasks);
+            setTasks(newTasks); // Revert if the PUT fails
         }
     };
 

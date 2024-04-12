@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './about.css';
+import { handleApiError } from './../app';
 
 export default function About() {
     return (
@@ -30,7 +31,9 @@ function AboutSection() {
     const quoteAPIKey = 'OjGxIKgEi0GdgkCLjXu8Zg==qdPcUObV6hC4DX7m';
     const quoteAPIURL = 'https://api.api-ninjas.com/v1/quotes?category=family';
 
-    useEffect(() => { getFamilyQuotes(); }, []);
+    useEffect(() => {
+        getFamilyQuotes();
+    }, []);
 
     async function getFamilyQuotes() {
         try {
@@ -75,15 +78,15 @@ function FamilyMembers() {
             method: 'GET',
             credentials: 'include',
         });
-        if (!userResponse.ok) {
-            console.error('Authentication failed or user not found.');
-            return;
-        }
 
-        const userData = await userResponse.json();
-        const response = await fetch(`/api/family/${userData.familyCode}`);
-        const familyData = await response.json();
-        setFamilyMembers(familyData.family);
+        if (userResponse.ok) {
+            const userData = await userResponse.json();
+            const response = await fetch(`/api/family/${userData.familyCode}`);
+            const familyData = await response.json();
+            setFamilyMembers(familyData.family);
+        } else {
+            await handleApiError(userResponse);
+        }
     }
 
     async function removeFamilyMember(username) {
@@ -110,8 +113,7 @@ function FamilyMembers() {
             await removeTaskList(username);
             await displayFamilyMembers();
         } else {
-            const errorData = await response.json();
-            console.error('Error removing family member:', errorData.error);
+            await handleApiError(userResponse);
         }
     }
 
@@ -148,8 +150,7 @@ function FamilyMembers() {
         if (response.ok) {
             await displayFamilyMembers();
         } else {
-            const errorData = await response.json();
-            console.error('Error changing role:', errorData.error);
+            await handleApiError(userResponse);
         }
     }
 

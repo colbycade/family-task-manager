@@ -63,7 +63,7 @@ export const TaskListTable = ({ tasks, onToggleComplete, onRemoveTask, onAddToCa
 };
 
 
-export const TaskRow = ({ task, index, onToggleComplete, onRemoveTask, onAddToCalendar }) => {
+const TaskRow = ({ task, index, onToggleComplete, onRemoveTask, onAddToCalendar }) => {
     return (
         <tr className={task.completed ? 'completed-task' : ''}>
             <td>
@@ -81,7 +81,7 @@ export const TaskRow = ({ task, index, onToggleComplete, onRemoveTask, onAddToCa
     );
 };
 
-export const TaskAddForm = ({ addTask }) => {
+const TaskAddForm = ({ addTask }) => {
     const [taskName, setTaskName] = useState('');
     const [taskDueDate, setTaskDueDate] = useState('');
 

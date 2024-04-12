@@ -4,7 +4,7 @@ import EventLog from './eventLog';
 import TaskList from './taskList';
 import './home.css';
 
-const Home = () => {
+export default function Home() {
     return (
         <main className="home-main">
             <section className="sidebar">
@@ -15,5 +15,3 @@ const Home = () => {
         </main>
     );
 };
-
-export default Home;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './login.css';
+import { handleApiError } from './../app';
 
 export default function Login() {
     const [loginStatus, setLoginStatus] = useState('');
@@ -19,6 +20,7 @@ export default function Login() {
             const userData = await userResponse.json();
             setLoginStatus(`(Currently logged in as: ${userData.username})`);
         } else {
+            await handleApiError(userResponse);
             setLoginStatus('');
         }
     };
@@ -62,29 +64,22 @@ function LoginForm() {
             return;
         }
 
-        try {
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
-            });
+        const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
 
-            if (response.ok) {
-                navigate('/home');
-            } else if (response.status === 409) {
-                alert('Username already exists. Please try again.');
-            } else if (response.status === 401) {
-                alert('Invalid username or password.');
-            } else {
-                const data = await response.json();
-                console.error('Error:', data.error);
-                alert('An error occurred. Please try again.');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred. Please try again.');
+        if (response.ok) {
+            navigate('/home');
+        } else if (response.status === 409) {
+            alert('Username already exists. Please try again.');
+        } else if (response.status === 401) {
+            alert('Invalid username or password.');
+        } else {
+            await handleApiError(response);
         }
     };
 
@@ -126,29 +121,22 @@ function JoinFamilyForm() {
             return;
         }
 
-        try {
-            const response = await fetch('/api/auth/join', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password, familyCode }),
-            });
+        const response = await fetch('/api/auth/join', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password, familyCode }),
+        });
 
-            if (response.ok) {
-                navigate('/home');
-            } else if (response.status === 409) {
-                alert('Username already exists. Please try again.');
-            } else if (response.status === 404) {
-                alert('Invalid family code. Please try again.');
-            } else {
-                const data = await response.json();
-                console.error('Error:', data.error);
-                alert('An error occurred. Please try again.');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred. Please try again.');
+        if (response.ok) {
+            navigate('/home');
+        } else if (response.status === 409) {
+            alert('Username already exists. Please try again.');
+        } else if (response.status === 404) {
+            alert('Invalid family code. Please try again.');
+        } else {
+            await handleApiError(response);
         }
     };
 
@@ -198,27 +186,20 @@ function CreateFamilyForm() {
             return;
         }
 
-        try {
-            const response = await fetch('/api/auth/create', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
-            });
+        const response = await fetch('/api/auth/create', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
 
-            if (response.ok) {
-                navigate('/home');
-            } else if (response.status === 409) {
-                alert('Username already exists. Please try again.');
-            } else {
-                const data = await response.json();
-                console.error('Error:', data.error);
-                alert('An error occurred. Please try again.');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred. Please try again.');
+        if (response.ok) {
+            navigate('/home');
+        } else if (response.status === 409) {
+            alert('Username already exists. Please try again.');
+        } else {
+            await handleApiError(response);
         }
     };
 
