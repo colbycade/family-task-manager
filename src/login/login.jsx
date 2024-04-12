@@ -20,7 +20,6 @@ export default function Login() {
             const userData = await userResponse.json();
             setLoginStatus(`(Currently logged in as: ${userData.username})`);
         } else {
-            await handleApiError(userResponse);
             setLoginStatus('');
         }
     };
