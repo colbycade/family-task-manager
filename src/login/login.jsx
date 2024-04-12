@@ -43,8 +43,10 @@ export default function Login() {
                 </p>
                 <h3>Demo</h3>
                 <p>
-                    To login to the demo family, use username: 'john_doe' and password: 'password' as a Parent, or use
-                    username: 'jane_doe' and password: 'password' to login as a Child.
+                    To login to the demo family, use username: 'john_doe' and password: 'password' as a Parent,
+                    or use username: 'jane_doe' and password: 'password' to login as a Child.
+                    <br />
+                    Login to both accounts at the same time to see the event log and real-time updates between users of the same family.
                 </p>
             </div>
         </main>
@@ -209,7 +211,6 @@ function CreateFamilyForm() {
             <input
                 type="text"
                 id="create-username"
-                name="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -218,7 +219,6 @@ function CreateFamilyForm() {
             <input
                 type="password"
                 id="create-password"
-                name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
