@@ -89,8 +89,8 @@ const TaskAddForm = ({ addTask }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!taskName || !taskDueDate) {
-            alert('Please enter both a task name and a due date.');
+        if (!taskName) {
+            alert('Please enter a task name.');
             return;
         }
         addTask(taskName, taskDueDate);
