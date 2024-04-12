@@ -17,9 +17,21 @@ export default function App() {
                     </div>
                     <nav>
                         <div className="menu">
-                            <li><NavLink className='nav-link' to=''>Login</NavLink></li>
-                            <li><NavLink className='nav-link' to='home'>Home</NavLink></li>
-                            <li><NavLink className='nav-link' to='about'>About</NavLink></li>
+                            <li>
+                                <NavLink className={({ isActive }) => isActive ? "nav-link current-page" : "nav-link"} to='' end>
+                                    Login
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink className={({ isActive }) => isActive ? "nav-link current-page" : "nav-link"} to='/home'>
+                                    Home
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink className={({ isActive }) => isActive ? "nav-link current-page" : "nav-link"} to='/about'>
+                                    About
+                                </NavLink>
+                            </li>
                         </div>
                         <div className="log-out">
                             <button id="log-out-button" onClick={logout}>Logout</button>
