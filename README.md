@@ -136,3 +136,19 @@ For this deliverable I used webSocket to display a family event log for task com
 - User and task data is received and displayed in the event log of all other family members
 - When a reload request is received from someone in the same family, the task list is refreshed to provide real time updates
 
+
+
+## React deliverable
+
+For this deliverable I converted the application over to use React.
+
+- **Bundled and transpiled** - done using Vite! 
+- **Components** - Components for each page, broken down further into subcomponents:
+  - Login Page: components for each login/registration form
+  - Home Page: components for user profile, event log, and task lists (broken down further into subcomponents where neccesary)
+  - About Page: components for quote display as well as family member management
+- **Router** - Routing between page components.
+- **Hooks** - Hooks are used throughout app
+  - Components use the `useState` hook extensively to track user information, events, tasks, etc.
+  - Components use the `useEffect` hook to perform actions upon rendering (such as verifying user's authentication cookies haven't expired) as well as rerendering upon updates to state (like when a user selects a different task list to view)
+  - The Home component uses the `useRef` hook to hold a reference to the WebSocket object across renders, as well as to hold a callback to the task list when an update comes across websocket, enabling real-time updates to task lists

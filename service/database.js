@@ -105,7 +105,7 @@ async function registerNewFamily(username, password) {
   await user_collection.insertOne(user);
 
   // Insert new blank tasklists for the family and user
-  await task_collection.insertOne({ familyCode: familyCode, tasks: { Family: [], username: [] } })
+  await task_collection.insertOne({ familyCode: familyCode, tasks: { Family: [], [username]: [] } })
 
   return user;
 }
