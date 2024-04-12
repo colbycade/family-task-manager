@@ -86,11 +86,11 @@ export async function handleApiError(response) {
     } else if (response.status === 500) {
         console.error('Internal server error');
         alert('The server is having trouble. Please try again later.');
-        // window.location.href = '/';
+        window.location.href = '/';
     } else {
         const errorData = await response.json();
         console.error('Error fetching data:', errorData.error);
         alert('The server is having trouble. Please try again later.');
-        // window.location.href = '/';
+        window.location.href = '/';
     }
 };
