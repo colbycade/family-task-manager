@@ -8,6 +8,7 @@ import './home.css';
 const Home = () => {
     const [events, setEvents] = useState([]);
     const socketRef = useRef(null); // Create a ref to hold the WebSocket object across renders
+    const taskListReloadRef = useRef(null); // Reference to TaskList's loadTaskLists function
 
     useEffect(() => {
         // Create and configure WebSocket connection
@@ -46,12 +47,16 @@ const Home = () => {
         const event = JSON.parse(await eventJson.data.text());
         if (event.familyCode === userFamilyCode) { // Only act on websocket messages for the current user's family
             if (event.type === 'refresh') {
-                console.log("Refresh tasks not implemented yet."); // Refresh the current task list
+                taskListReloadRef.current(); // Force reload the current task list
             } else if (event.type === 'event') {
                 setEvents(pastEvents => [...pastEvents, event]); // Add the event to the log
             }
         }
     }
+
+    const handleReloadTasks = (reloadFunction) => {
+        taskListReloadRef.current = reloadFunction;
+    };
 
     function broadcastTaskCompletion(familyCode, familyMember, task) {
         const event = {
@@ -84,6 +89,7 @@ const Home = () => {
             <TaskList
                 broadcastTaskCompletion={broadcastTaskCompletion}
                 broadcastRefreshRequest={broadcastRefreshRequest}
+                onReload={handleReloadTasks}
             />
         </main>
     );

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { TaskListHeader, TaskListTable } from './taskListComponents';
 import { handleApiError } from './../app';
 
-const TaskList = ({ broadcastTaskCompletion, broadcastRefreshRequest }) => {
+const TaskList = ({ broadcastTaskCompletion, broadcastRefreshRequest, onReload }) => {
     const [tasks, setTasks] = useState([]);
     const [selectedList, setSelectedList] = useState('Family');
     const [taskLists, setTaskLists] = useState([]);
@@ -12,18 +12,19 @@ const TaskList = ({ broadcastTaskCompletion, broadcastRefreshRequest }) => {
         loadTaskLists();
     }, [selectedList]);
 
-    const loadTaskLists = async () => {
-        try {
-            const userData = await fetchUserData();
-            const response = await fetch(`/api/tasks/${userData.familyCode}`);
-            if (!response.ok) throw new Error('Failed to load tasks');
+    useEffect(() => {
+        onReload(loadTaskLists); // send the loadTaskLists function to the parent component as a callback
+    }, [onReload]);
 
-            const familyTaskLists = await response.json();
-            setTaskLists(Object.keys(familyTaskLists));
-            setTasks(familyTaskLists[selectedList] || []);
-        } catch (error) {
-            handleApiError(error);
-        }
+    const loadTaskLists = async () => {
+        const userData = await fetchUserData();
+        const response = await fetch(`/api/tasks/${userData.familyCode}`);
+        if (!response.ok) {
+            handleApiError(response);
+        };
+        const familyTaskLists = await response.json();
+        setTaskLists(Object.keys(familyTaskLists));
+        setTasks(familyTaskLists[selectedList] || []);
     };
 
     const handleListChange = async (event) => {
