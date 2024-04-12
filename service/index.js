@@ -277,7 +277,7 @@ app.post('/api/tasks/:familyCode/:listName', async (req, res) => {
   const newTask = req.body;
   try {
     const result = await createTask(familyCode, listName, newTask);
-    if (result.insertedCount === 1) {
+    if (result.modifiedCount === 1) {
       res.sendStatus(201);
     } else {
       res.status(500).json({ error: 'Failed to create task' });
