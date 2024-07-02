@@ -2,6 +2,25 @@
 
 This is a web application that allows families to efficiently plan and track tasks and events at home.
 
+## Set-up
+This server is no longer being hosted on AWS, but can be ran locally:
+1. Install Node.js
+2. Setup a MongoDB database and add a `dbConfig.json` file to the `service` folder with the format:
+    ```
+    {
+        "hostname": "xxxx.xxxxx.mongodb.net",
+        "userName": "xxxxxxxx",
+        "password": "xxxxxxxx"
+    }
+    ```
+3. Start up the server by running `node service/index.js`
+4. Serve up frontend using vite with `npm run dev`
+5. Navigate to `localhost:5173` in a web browser to use the website!
+
+---
+# Deliverables
+This project was done in several stages as part of the CS260 Web Programming class at BYU
+
 ## Specification Deliverable
 ### Elevator pitch
 
