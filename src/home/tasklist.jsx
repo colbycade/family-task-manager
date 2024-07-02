@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TaskListHeader, TaskListTable } from './taskListComponents';
-import { handleApiError } from './../app';
+import { handleApiError } from '../app';
 
 const TaskList = ({ broadcastTaskCompletion, broadcastRefreshRequest, onReload }) => {
     const [tasks, setTasks] = useState([]);
