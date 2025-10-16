@@ -30,7 +30,7 @@ function AboutSection() {
     const [quote, setQuote] = useState({ text: '', author: '' });
     // API key was obtained for free with basic rate limits so I don't care if it's public
     const quoteAPIKey = 'OjGxIKgEi0GdgkCLjXu8Zg==qdPcUObV6hC4DX7m';
-    const quoteAPIURL = 'https://api.api-ninjas.com/v1/quotes?category=family';
+    const quoteAPIURL = 'https://api.api-ninjas.com/v1/quotes';
 
     useEffect(() => {
         getFamilyQuotes();
