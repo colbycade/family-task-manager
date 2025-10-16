@@ -23,7 +23,14 @@ const TaskList = ({ broadcastTaskCompletion, broadcastRefreshRequest, onReload }
             handleApiError(response);
         };
         const familyTaskLists = await response.json();
-        setTaskLists(Object.keys(familyTaskLists));
+
+        // If the user is a child, they can only see the "Family" list and their own list
+        if (userData.role === 'Child') {
+            setTaskLists(['Family', userData.username]);
+        } else {
+            setTaskLists(Object.keys(familyTaskLists));
+        }
+
         setTasks(familyTaskLists[selectedList] || []);
     };
 
