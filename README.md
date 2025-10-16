@@ -1,8 +1,7 @@
 # Family Task Tracker
 
 This is a web application that allows families to efficiently plan and track tasks and events at home.
-It is hosted at [family-tasks.app](family-tasks.app) (at least until Oct 2026).
-The backend server runs on an AWS EC2 instance.
+It is available at [family-tasks.app](https://family-tasks.app) (at least until Oct 2026) and is hosted on an AWS EC2 instance.
 
 ## Set-up
 To run locally:
