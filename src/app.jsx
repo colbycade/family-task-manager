@@ -13,7 +13,7 @@ export default function App() {
                 <header>
                     <div className="logotitle">
                         <img src="assets/favicon.ico" alt="logo" width="100" height="100" />
-                        <h1>Family Tracker</h1>
+                        <h1>Family Task Tracker</h1>
                     </div>
                     <nav>
                         <div className="menu">

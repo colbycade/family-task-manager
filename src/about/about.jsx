@@ -57,7 +57,7 @@ function AboutSection() {
     return (
         <div>
             <h1>About</h1>
-            <p>This is a web application made for CS260 at Brigham Young University.</p>
+            <p>This is a web application made for CS260 Web Programming at Brigham Young University.</p>
             <p>Here's a quote for your family!</p>
             <blockquote id="quote">
                 <i id="quote-text">{quote.text}</i>
