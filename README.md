@@ -1,9 +1,11 @@
-# Family To-Do Tracker
+# Family Task Tracker
 
 This is a web application that allows families to efficiently plan and track tasks and events at home.
+It is hosted at [family-tasks.app](family-tasks.app) (at least until Oct 2026).
+The backend server runs on an AWS EC2 instance.
 
 ## Set-up
-This server is no longer being hosted on AWS, but can be ran locally:
+To run locally:
 1. Install Node.js
 2. Setup a MongoDB database and add a `dbConfig.json` file to the `service` folder with the format:
     ```
@@ -19,7 +21,7 @@ This server is no longer being hosted on AWS, but can be ran locally:
 
 ---
 # Deliverables
-This project was done in several stages as part of the CS260 Web Programming class at BYU
+This project was completed in several stages as part of the CS260 Web Programming class at Brigham Young University
 
 ## Specification Deliverable
 ### Elevator pitch
