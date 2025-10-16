@@ -3,6 +3,29 @@
 This is a web application that allows families to efficiently plan and track tasks and events at home.
 It is available at [family-tasks.app](https://family-tasks.app) (at least until Oct 2026) and is hosted on an AWS EC2 instance.
 
+## Key Features
+
+* **Task Lists**: Every family has a main 'Family' to-do list that everyone can see and add to. Each member also has their own personal to-do list for individual responsibilities.
+* **Task Management**: Any family member can add tasks to the shared list or their own personal list and mark them as complete when finished.
+* **Live Event Log**: There is a live event log that displays a feed of recently completed tasks by others in the family.
+* **Family Creation and Joining**: A user can create a new family, which automatically assigns them the 'Parent' role and generates a unique family code. Other members can then use this code to join the family, and they will be assigned the 'Child' role by default.
+* **User Roles and Permissions**:
+    * **Parents** have administrative privileges. They can remove family members and change their roles, and they can delete tasks from any of the task lists.
+    * **Children** have restricted permissions. They can view the family task list and their personal task list, add tasks, and mark them as complete, but cannot delete tasks or manage other family members.
+    * **Parents** have full administrative control, allowing them to add or remove family members, change user roles, and delete tasks.
+    * **Children** have limited permissions; they can view lists, add tasks, and mark them as complete, but cannot delete tasks or manage other family members.
+* **Real-time Updates**: To ensure the task lists and event log are always up-to-date, the application uses WebSockets to instantly push changes to all family members. It also employs optimistic UI updates to make the interface feel responsive, updating the UI immediately while the server confirmation is in progress.
+* **Other Features**:
+    * Tasks have an 'add to calendar' button which creates an event in your Google calendar
+    * Users can upload profile picture
+    * About page gives a random quote by calling a free api.
+
+## Demo
+There is an included demo family:
+- **Parent**: use username: 'john_doe' and password: 'password'
+- **Child**: use username: 'jane_doe' and password: 'password'
+- Log into both accounts at the same time to see the event log and real-time updates between users of the same family.
+
 ## Set-up
 To run locally:
 1. Install Node.js
@@ -20,7 +43,7 @@ To run locally:
 
 ---
 # Deliverables
-This project was completed in several stages as part of the CS260 Web Programming class at Brigham Young University
+This project was completed in several stages as part of the CS260 Web Programming class at Brigham Young University.
 
 ## Specification Deliverable
 ### Elevator pitch
@@ -31,7 +54,7 @@ Does your family struggle to keep track of everything going on in your busy live
 
 ![Mock](public/assets/mock.png)
 
-### Key features
+### Planned features
 
 - Secure login over HTTPS
 - Ability to create tasks
