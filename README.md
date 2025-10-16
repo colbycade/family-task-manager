@@ -12,9 +12,7 @@ It is available at [family-tasks.app](https://family-tasks.app) (at least until 
 * **User Roles and Permissions**:
     * **Parents** have administrative privileges. They can remove family members and change their roles, and they can delete tasks from any of the task lists.
     * **Children** have restricted permissions. They can view the family task list and their personal task list, add tasks, and mark them as complete, but cannot delete tasks or manage other family members.
-    * **Parents** have full administrative control, allowing them to add or remove family members, change user roles, and delete tasks.
-    * **Children** have limited permissions; they can view lists, add tasks, and mark them as complete, but cannot delete tasks or manage other family members.
-* **Real-time Updates**: To ensure the task lists and event log are always up-to-date, the application uses WebSockets to instantly push changes to all family members. It also employs optimistic UI updates to make the interface feel responsive, updating the UI immediately while the server confirmation is in progress.
+* **Real-time Updates**: To ensure the task lists and event log are always up-to-date, the application uses WebSockets to instantly push changes to all family members. It also employs optimistic UI updates to make the interface feel responsive.
 * **Other Features**:
     * Tasks have an 'add to calendar' button which creates an event in your Google calendar
     * Users can upload profile picture
