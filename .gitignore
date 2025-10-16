@@ -1,5 +1,12 @@
 .vscode/
 .DS_Store
 node_modules/
+
+# Build output
 dist/
+
+# MongoDB auth
 dbConfig.json
+
+# SSL certificates
+ssl/*
