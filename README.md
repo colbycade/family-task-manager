@@ -148,20 +148,19 @@ For this deliverable I added backend endpoints for task lists
 
 For this deliverable I associated a user with a family and a task list. I stored the family members and the task lists in the database.
 
-**MongoDB Atlas database created** - done!
-**Stores data in MongoDB** - done!
+- **MongoDB Atlas database created** - done!
+- **Stores data in MongoDB** - done!
   - The server uses the multer middle-ware to store uploaded profile pictures on the server while the path to the picture is stored in MongoDB.
-**User registration** - User can either register and join an existing family using a family code or they can create a new family and receive a new code for others to join.
-**existing user** - User can login to access their family's task lists.
-**Use MongoDB to store credentials** - Securely stores hashed password for authentication and uses an authentication token stored as a cookie to keep user logged in. 
+- **User registration** - User can either register and join an existing family using a family code or they can create a new family and receive a new code for others to join.
+- **Existing user** - User can login to access their family's task lists.
+- **Use MongoDB to store credentials** - Securely stores hashed password for authentication and uses an authentication token stored as a cookie to keep user logged in. 
   - The frontend uses this token to identify/authenticate the user when making requests to the api
   - Logging out deletes the cookie. 
   - If cookies are cleared while logged in, the application logs the user out.
-**Restricts functionality** - You cannot access any other pages until logged in. 
+- **Restricts functionality** - You cannot access any other pages until logged in. 
   - Additionally, each user has a role: either 'Parent' or 'Child'. 
   - A parent can remove family members and change their roles, as well as delete tasks from a task list. 
-  - A child can only add tasks and mark them as completed
-
+  - A child can only add tasks and mark them as completed. They can only access their personal and family task lists.
   
 
 ## WebSocket deliverable
